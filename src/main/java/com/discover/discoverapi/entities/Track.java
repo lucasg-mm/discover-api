@@ -1,10 +1,15 @@
 package com.discover.discoverapi.entities;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "tracks")
+@Getter @Setter @NoArgsConstructor
 public class Track {
     // PROPERTIES
     @Id
@@ -37,9 +42,6 @@ public class Track {
     private List<Artist> artists;
 
     // CONSTRUCTORS
-    public Track() {
-    }
-
     public Track(String title, String lyrics, int length, Album album, List<Genre> genres, List<Artist> artists) {
         this.title = title;
         this.lyrics = lyrics;
@@ -49,65 +51,7 @@ public class Track {
         this.artists = artists;
     }
 
-    // GETTERS/SETTERS
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getLyrics() {
-        return lyrics;
-    }
-
-    public void setLyrics(String lyrics) {
-        this.lyrics = lyrics;
-    }
-
-    public int getLength() {
-        return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
-    }
-
-    public List<Genre> getGenres() {
-        return genres;
-    }
-
-    public void setGenres(List<Genre> genres) {
-        this.genres = genres;
-    }
-
-    public List<Artist> getArtists() {
-        return artists;
-    }
-
-    public void setArtists(List<Artist> artists) {
-        this.artists = artists;
-    }
-
-    public Album getAlbum() {
-        return album;
-    }
-
-    public void setAlbum(Album album) {
-        this.album = album;
-    }
-
     // METHODS
-
     @Override
     public String toString() {
         return "Track{" +

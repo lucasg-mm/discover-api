@@ -1,10 +1,16 @@
 package com.discover.discoverapi.entities;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "genres")
+@Getter @Setter @NoArgsConstructor
 public class Genre {
     // PROPERTIES
     @Id
@@ -36,54 +42,10 @@ public class Genre {
     private List<Track> tracks;
 
     // CONSTRUCTORS
-    public Genre() {
-    }
-
     public Genre(String name, List<Album> albums, List<Artist> artists, List<Track> tracks) {
         this.name = name;
         this.albums = albums;
         this.artists = artists;
-        this.tracks = tracks;
-    }
-
-    // GETTERS/SETTER
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Album> getAlbums() {
-        return albums;
-    }
-
-    public void setAlbums(List<Album> albums) {
-        this.albums = albums;
-    }
-
-    public List<Artist> getArtists() {
-        return artists;
-    }
-
-    public void setArtists(List<Artist> artists) {
-        this.artists = artists;
-    }
-
-    public List<Track> getTracks() {
-        return tracks;
-    }
-
-    public void setTracks(List<Track> tracks) {
         this.tracks = tracks;
     }
 
