@@ -51,11 +51,12 @@ public class Album {
     private List<Track> tracks;
 
     // CONSTRUCTORS
-    public Album(String title, Timestamp releaseDate, String coverArtUrl, String label, int seconds, List<Artist> artists, List<Genre> genres, List<Track> tracks) {
+    public Album(String title, Timestamp releaseDate, String coverArtUrl, String label, int length, List<Artist> artists, List<Genre> genres, List<Track> tracks) {
         this.title = title;
         this.releaseDate = releaseDate;
         this.coverArtUrl = coverArtUrl;
         this.label = label;
+        this.length = length;
         this.artists = artists;
         this.genres = genres;
         this.tracks = tracks;
