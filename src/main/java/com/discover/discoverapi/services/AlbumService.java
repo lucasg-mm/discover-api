@@ -25,12 +25,37 @@ public class AlbumService {
     }
 
     // update by id
+    public Album update(long id, Album toUpdate){
+        // finds the album to be updated
+        Album foundAlbum = findById(id);
+
+        // updates every field
+        foundAlbum.setLabel(toUpdate.getLabel());
+        foundAlbum.setTitle(toUpdate.getTitle());
+        foundAlbum.setCoverArtUrl(toUpdate.getCoverArtUrl());
+        foundAlbum.setTracks(toUpdate.getTracks());
+        foundAlbum.setLength(toUpdate.getLength());
+        foundAlbum.setGenres(toUpdate.getGenres());
+        foundAlbum.setReleaseDate(toUpdate.getReleaseDate());
+        foundAlbum.setArtists(toUpdate.getArtists());
+
+        // saves
+        return albumRepository.save(foundAlbum);
+    }
 
     // create
-
     public Album create(Album album){
+        album.setId(0);  // shouldn't be null?
         return albumRepository.save(album);
     }
 
-    // delete
+    // delete by id
+    public void deleteById(long id){
+        if (albumRepository.existsById(id)){
+            albumRepository.deleteById(id);
+        }
+        else{
+            throw new ObjectNotFoundException("Album of id " + id + " not found.");
+        }
+    }
 }
