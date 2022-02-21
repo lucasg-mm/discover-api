@@ -67,17 +67,14 @@ public class ArtistServiceTest {
     public void throwsExceptionWhenSearchesForNonExistingId() {
         // --- GIVEN ---
 
-        Optional<Artist> notFoundOptional = Optional.empty();
-
         // the repo returns an empty optional for every id
-        doReturn(notFoundOptional).when(artistRepository).findById(anyLong());
+        doReturn(Optional.empty()).when(artistRepository).findById(anyLong());
 
         // -- WHEN ---
 
         assertThrows(ObjectNotFoundException.class, () -> artistService.findById(1L),
                 "Expected findById() to throw an ObjectNotFoundException, but it didn't. " +
                         "Even though there is no artist with the searched id.");
-
     }
 
     @Test
@@ -226,7 +223,7 @@ public class ArtistServiceTest {
 
     @Test
     @DisplayName("Tests if deleting an artist with non-existing id throws an ObjectNotFoundException")
-    public void deleteAlbumWithNonExistingIdThrowsException(){
+    public void deleteArtistWithNonExistingIdThrowsException(){
         // --- GIVEN ---
 
         // input to delete method
