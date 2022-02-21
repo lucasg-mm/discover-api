@@ -21,7 +21,7 @@ public class Artist {
     private String name;
 
     @Column(name = "image_url")
-    private String image_url;
+    private String imageURL;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "artists_albums", joinColumns = @JoinColumn(name = "artist_id"),
@@ -40,9 +40,9 @@ public class Artist {
     private List<Track> tracks;
 
     // CONSTRUCTORS
-    public Artist(String name, String image_url, List<Album> albums, List<Genre> genres, List<Track> tracks) {
+    public Artist(String name, String imageURL, List<Album> albums, List<Genre> genres, List<Track> tracks) {
         this.name = name;
-        this.image_url = image_url;
+        this.imageURL = imageURL;
         this.albums = albums;
         this.genres = genres;
         this.tracks = tracks;
@@ -54,7 +54,7 @@ public class Artist {
         return "Artist{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", image_url='" + image_url + '\'' +
+                ", imageURL='" + imageURL + '\'' +
                 '}';
     }
 }

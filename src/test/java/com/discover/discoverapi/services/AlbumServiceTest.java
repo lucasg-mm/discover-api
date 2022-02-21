@@ -1,6 +1,7 @@
 package com.discover.discoverapi.services;
 
 import com.discover.discoverapi.entities.Album;
+import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.repositories.AlbumRepository;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,32 +38,35 @@ public class AlbumServiceTest {
 
     @Test
     @DisplayName("Tests the retrieval of an album with an id we already know exists.")
-    public void getAlbumByExistingIdTest() {
+    public void isFoundIdTheSameAsTheOneBeingSearched() {
         // --- GIVEN ---
 
-        // instantiating an album with 1L as id
-        final long id = 1L;
-        Album existingAlbum = new Album();
-        existingAlbum.setId(id);
-        Optional<Album> existingAlbumOptional = Optional.of(existingAlbum);
+        doAnswer(invocation -> {
+            // mocking repository response when searching for this user
+            Album expectedFoundAlbum = new Album();
+            expectedFoundAlbum.setId(invocation.getArgument(0));
 
-        // the repo returns the correct entity
-        doReturn(existingAlbumOptional).when(albumRepository).findById(1L);
+            // return the optional
+            return Optional.of(expectedFoundAlbum);
+        })
+                .when(albumRepository)
+                .findById(anyLong());
 
         // --- WHEN ---
 
-        Album foundAlbum = albumService.findById(id);
+        long searchedId = 1L;
+        Album foundAlbum = albumService.findById(searchedId);
 
         // --- THEN ---
 
-        assertEquals(existingAlbum.getId(), foundAlbum.getId(),
+        assertEquals(searchedId, foundAlbum.getId(),
                 "The returned album's id is different than the one being searched." +
                         " Even though the one being searched is also stored.");
     }
 
     @Test
     @DisplayName("Tests the retrieval of an album with an id we know it does not exist.")
-    public void getAlbumByNonExistentId() {
+    public void throwsExceptionWhenSearchesForNonExistingId() {
         // --- GIVEN ---
 
         Optional<Album> notFoundOptional = Optional.empty();
@@ -80,7 +84,7 @@ public class AlbumServiceTest {
 
     @Test
     @DisplayName("Tests the retrieval of every album stored.")
-    public void findAllAlbumsWhenItsNotEmpty() {
+    public void isFindingAllAlbums() {
         // --- GIVEN ---
 
         // sets up two albums
@@ -95,11 +99,11 @@ public class AlbumServiceTest {
 
         doReturn(existingAlbums).when(albumRepository).findAll();
 
-        // --- THEN ---
+        // --- WHEN ---
 
         List<Album> foundAlbums = albumService.findAll();
 
-        // --- WHEN ---
+        // --- THEN ---
 
         assertIterableEquals(existingAlbums, foundAlbums,
                 "Expected the function albumService.findAll() to return all the existing albums, but it didn't.");
@@ -110,29 +114,31 @@ public class AlbumServiceTest {
     public void createAlbum(){
         // --- GIVEN ---
 
+        // returns whatever what's passed as parameter to the save method
+        doAnswer(invocation -> invocation.getArgument(0)).when(albumRepository).save(any(Album.class));
+
         // properties for the album that will be created
         final String albumTitle = "The Blueprint";
         final String albumLabel = "Roc-A-Fella Records";
-
-        // sets up the created album returned by the mock repository
-        Album expectedCreatedAlbum = new Album();
-        expectedCreatedAlbum.setId(1L);
-        expectedCreatedAlbum.setTitle(albumTitle);
-        expectedCreatedAlbum.setLabel(albumLabel);
-
-        // return it when mocking
-        doReturn(expectedCreatedAlbum).when(albumRepository).save(any(Album.class));
 
         // object passed to the create method
         Album toCreate = new Album();
         toCreate.setTitle(albumTitle);
         toCreate.setLabel(albumLabel);
 
-        // --- THEN ---
+        // expected created album
+        Album expectedCreatedAlbum = new Album();
+        expectedCreatedAlbum.setTitle(albumTitle);
+        expectedCreatedAlbum.setLabel(albumLabel);
+
+        // --- WHEN ---
 
         Album actualCreatedAlbum = albumService.create(toCreate);
 
-        // --- WHEN ---
+        // --- THEN ---
+
+        assertEquals(0, actualCreatedAlbum.getId(), "Id of created album should be 0 when creating" +
+                " an album.");
 
         assertThat("The created album doesn't have the same properties" +
                 " as the album passed to the albumService.create() function.",
@@ -160,28 +166,28 @@ public class AlbumServiceTest {
 
         // mocking album before the update
         Album preUpdateAlbum = new Album();
-        updateInput.setId(id);
-        updateInput.setTitle("Flower Boy");
-        updateInput.setLabel("Def-Jam Records");
+        preUpdateAlbum.setId(id);
+        preUpdateAlbum.setTitle("Flower Boy");
+        preUpdateAlbum.setLabel("Def-Jam Records");
         Optional<Album> oldAlbum = Optional.of(preUpdateAlbum);
 
         doReturn(oldAlbum).when(albumRepository).findById(1L);
-        doReturn(expectedAlbum).when(albumRepository).save(any(Album.class));
+        doAnswer(invocation -> invocation.getArgument(0)).when(albumRepository).save(any(Album.class));
 
-        // --- THEN ---
+        // --- WHEN ---
 
         // call to the update method to get the actual output
         Album actualAlbum = albumService.update(id, updateInput);
 
-        // --- WHEN ---
+        // --- THEN ---
 
-        assertThat("Method did not return the album the given id, ene though it exists",
+        assertThat("Method did not return the album with the given id, even though it exists.",
                 actualAlbum, samePropertyValuesAs(expectedAlbum));
     }
 
     @Test
     @DisplayName("Tests an attempt of updating an album by id (case when an album with the passed id doesn't exist)")
-    public void updateAlbumWithNonExistingId(){
+    public void throwsExceptionWhenUpdatesAlbumWithNonExistingId(){
         // --- GIVEN ---
 
         // input to the update method
@@ -205,7 +211,7 @@ public class AlbumServiceTest {
 
     @Test
     @DisplayName("Tests if the albumRepository.deleteById() method is being executed once with an id that is supposed to" +
-            "exist in the database.")
+            " exist in the database.")
     public void deleteAlbumWithExistingId(){
         // --- GIVEN ---
 
