@@ -174,7 +174,7 @@ public class ArtistServiceTest {
 
         // --- THEN ---
 
-        assertThat("Method did not return the artist with the given id, even though it exists.",
+        assertThat("Method did not update every property from the artist with the given id.",
                 actualArtist, samePropertyValuesAs(expectedArtist));
     }
 

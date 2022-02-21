@@ -181,7 +181,7 @@ public class AlbumServiceTest {
 
         // --- THEN ---
 
-        assertThat("Method did not return the album with the given id, even though it exists.",
+        assertThat("Method did not update every property from the album with the given id.",
                 actualAlbum, samePropertyValuesAs(expectedAlbum));
     }
 

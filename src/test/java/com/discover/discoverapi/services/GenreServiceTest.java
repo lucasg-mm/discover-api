@@ -167,7 +167,7 @@ public class GenreServiceTest {
 
         // --- THEN ---
 
-        assertThat("Method did not return the genre with the given id, even though it exists.",
+        assertThat("Method did not update every property from the genre with the given id.",
                 actualGenre, samePropertyValuesAs(expectedGenre));
     }
 
