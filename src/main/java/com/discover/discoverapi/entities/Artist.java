@@ -28,7 +28,7 @@ public class Artist {
             inverseJoinColumns = @JoinColumn(name = "album_id"))
     private List<Album> albums;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST,
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST,
             CascadeType.REFRESH})
     @JoinTable(name = "artists_genres", joinColumns = @JoinColumn(name =  "artist_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd">
+
+    <changeSet author="Lucas Miranda" id="1">
+        <createTable tableName="albums">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="id_pk"/>
+            </column>
+            <column name="title" type="varchar(100)">
+                <constraints nullable="false" notNullConstraintName="title_not_null"/>
+            </column>
+            <column name="release_date" type="timestamp">
+            </column>
+            <column name="cover_art_url" type="varchar(512)">
+                <constraints unique="true" uniqueConstraintName="cover_art_url_unique"/>
+            </column>
+            <column name="label" type="varchar(100)"/>
+            <column name="length" type="int"/>
+        </createTable>
+
+        <createTable tableName="genres">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="id_pk"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints unique="true" uniqueConstraintName="name_unique"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="artists">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="id_pk"/>
+            </column>
+            <column name="name" type="varchar(100)">
+            </column>
+            <column name="image_url" type="varchar(512)">
+                <constraints unique="true" uniqueConstraintName="image_url_unique"/>
+            </column>
+        </createTable>
+        
+        <createTable tableName="tracks">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="id_pk"/>
+            </column>
+            <column name="album_id" type="bigint">
+                <constraints foreignKeyName="album_id_fk_tracks" references="albums(id)"/>
+            </column>
+            <column name="title" type="varchar(100)"/>
+            <column name="lyrics" type="text"/>
+            <column name="length" type="int"/>
+        </createTable>
+        
+        <createTable tableName="tracks_genres">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="id_pk"/>
+            </column>
+            <column name="track_id" type="bigint">
+                <constraints foreignKeyName="track_id_fk_tracks_genres" references="tracks(id)"/>
+            </column>
+            <column name="genre_id" type="bigint">
+                <constraints foreignKeyName="genre_id_fk_tracks_genres" references="genres(id)"/>
+            </column>
+        </createTable>
+        
+        <createTable tableName="albums_genres">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="id_pk"/>
+            </column>
+            <column name="album_id" type="bigint">
+                <constraints foreignKeyName="album_id_fk_albums_genres" references="albums(id)"/>
+            </column>
+            <column name="genre_id" type="bigint">
+                <constraints foreignKeyName="genre_id_fk_albums_genres" references="genres(id)"/>
+            </column>
+        </createTable>
+        
+        <createTable tableName="artists_albums">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="id_pk"/>
+            </column>
+            <column name="artist_id" type="bigint">
+                <constraints foreignKeyName="artist_id_fk_artists_albums" references="artists(id)"/>
+            </column>
+            <column name="album_id" type="bigint">
+                <constraints foreignKeyName="album_id_fk_artists_albums" references="albums(id)"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="artists_genres">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="id_pk"/>
+            </column>
+            <column name="artist_id" type="bigint">
+                <constraints foreignKeyName="artist_id_fk_artists_genres" references="artists(id)"/>
+            </column>
+            <column name="genre_id" type="bigint">
+                <constraints foreignKeyName="genre_id_fk_artists_genres" references="genres(id)"/>
+            </column>
+        </createTable>
+        
+        <createTable tableName="artists_tracks">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="id_pk"/>
+            </column>
+            <column name="artist_id" type="bigint">
+                <constraints foreignKeyName="artist_id_fk_artists_tracks" references="artists(id)"/>
+            </column>
+            <column name="track_id" type="bigint">
+                <constraints foreignKeyName="track_id_fk_artists_tracks" references="tracks(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
