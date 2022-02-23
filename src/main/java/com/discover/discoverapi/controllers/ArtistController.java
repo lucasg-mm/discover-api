@@ -41,7 +41,8 @@ public class ArtistController {
         URI createdArtistLocation = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("{id}")
-                .buildAndExpand(createdArtist.getId()).toUri();
+                .buildAndExpand(createdArtist.getId())
+                .toUri();
 
         // returns with 201 created status code
         return ResponseEntity.created(createdArtistLocation).body(createdArtist);
