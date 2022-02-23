@@ -1,5 +1,7 @@
 package com.discover.discoverapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "artists")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Getter @Setter @NoArgsConstructor
 public class Artist {
     // PROPERTIES
@@ -23,18 +26,17 @@ public class Artist {
     @Column(name = "image_url")
     private String imageURL;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "artists_albums", joinColumns = @JoinColumn(name = "artist_id"),
             inverseJoinColumns = @JoinColumn(name = "album_id"))
     private List<Album> albums;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST,
-            CascadeType.REFRESH})
+    @ManyToMany
     @JoinTable(name = "artists_genres", joinColumns = @JoinColumn(name =  "artist_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private List<Genre> genres;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "artists_tracks", joinColumns = @JoinColumn(name = "artist_id"),
             inverseJoinColumns = @JoinColumn(name = "track_id"))
     private List<Track> tracks;

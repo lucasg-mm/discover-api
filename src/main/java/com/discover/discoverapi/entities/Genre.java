@@ -1,15 +1,17 @@
 package com.discover.discoverapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "genres")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Getter @Setter @NoArgsConstructor
 public class Genre {
     // PROPERTIES
@@ -21,22 +23,19 @@ public class Genre {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST,
-            CascadeType.REFRESH})
+    @ManyToMany
     @JoinTable(name = "albums_genres", joinColumns = @JoinColumn(name = "genre_id"),
             inverseJoinColumns = @JoinColumn(name = "album_id"))
     private List<Album> albums;
 
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST,
-            CascadeType.REFRESH})
+    @ManyToMany
     @JoinTable(name = "artists_genres", joinColumns = @JoinColumn(name="genre_id"),
-            inverseJoinColumns = @JoinColumn(name="artists"))
+            inverseJoinColumns = @JoinColumn(name="artist_id"))
     private List<Artist> artists;
 
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST,
-            CascadeType.REFRESH})
+    @ManyToMany
     @JoinTable(name = "tracks_genres", joinColumns = @JoinColumn(name = "genre_id"),
             inverseJoinColumns = @JoinColumn(name = "track_id"))
     private List<Track> tracks;
