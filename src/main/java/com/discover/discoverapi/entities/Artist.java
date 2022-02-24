@@ -1,6 +1,7 @@
 package com.discover.discoverapi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +12,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "artists")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Getter @Setter @NoArgsConstructor
+@JsonIgnoreProperties({ "albums", "tracks", "genres" })
 public class Artist {
     // PROPERTIES
     @Id

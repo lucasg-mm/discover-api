@@ -1,7 +1,7 @@
 package com.discover.discoverapi.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,8 +12,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "albums")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Getter @Setter @NoArgsConstructor
+@JsonIgnoreProperties({ "artists", "tracks", "genres" })
 public class Album {
 
     // PROPERTIES
@@ -48,6 +48,7 @@ public class Album {
     private List<Genre> genres;
 
     @OneToMany(mappedBy = "album")
+    @JsonManagedReference
     private List<Track> tracks;
 
     // CONSTRUCTORS
