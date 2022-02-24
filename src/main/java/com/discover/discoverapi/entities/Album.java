@@ -47,7 +47,7 @@ public class Album {
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private List<Genre> genres;
 
-    @OneToMany(mappedBy = "album", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "album")
     private List<Track> tracks;
 
     // CONSTRUCTORS
