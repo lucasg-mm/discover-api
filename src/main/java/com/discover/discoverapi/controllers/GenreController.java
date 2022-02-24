@@ -63,6 +63,8 @@ public class GenreController {
     public ResponseEntity<Genre> deleteById(@PathVariable long id){
         // deletes the genre
         genreService.deleteById(id);
+
+        // no content response
         return ResponseEntity.noContent().build();
     }
 }

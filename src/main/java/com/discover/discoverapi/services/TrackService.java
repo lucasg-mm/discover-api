@@ -3,9 +3,13 @@ package com.discover.discoverapi.services;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.TrackRepository;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
+@AllArgsConstructor
 public class TrackService {
     private TrackRepository trackRepository;
 
