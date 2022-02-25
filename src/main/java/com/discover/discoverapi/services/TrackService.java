@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TrackService {
@@ -89,7 +90,7 @@ public class TrackService {
     }
 
     // find all the main artists that recorded a track
-    public List<Artist> findAllArtistsOfTrack(long trackId){
+    public Set<Artist> findAllArtistsOfTrack(long trackId){
         Track foundTrack = findById(trackId);
         return foundTrack.getArtists();
     }
@@ -123,7 +124,7 @@ public class TrackService {
     }
 
     // find all the genres from a track
-    public List<Genre> findAllGenresOfTrack(long trackId){
+    public Set<Genre> findAllGenresOfTrack(long trackId){
         Track foundTrack = findById(trackId);
         return foundTrack.getGenres();
     }

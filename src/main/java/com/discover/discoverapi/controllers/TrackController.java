@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/tracks")
@@ -96,9 +97,9 @@ public class TrackController {
     // ------- '/genres' SUBRESOURCE -------
     // find all the tracks' genres
     @GetMapping("{trackId}/genres")
-    public ResponseEntity<List<Genre>> findAllGenresOfTrack(@PathVariable long trackId){
+    public ResponseEntity<Set<Genre>> findAllGenresOfTrack(@PathVariable long trackId){
         // find the track's genres
-        List<Genre> foundGenres = trackService.findAllGenresOfTrack(trackId);
+        Set<Genre> foundGenres = trackService.findAllGenresOfTrack(trackId);
         return ResponseEntity.ok(foundGenres);
     }
 
@@ -122,9 +123,9 @@ public class TrackController {
     // ------- '/artists' SUBRESOURCE -------
     // find all the tracks' artists
     @GetMapping("{trackId}/artists")
-    public ResponseEntity<List<Artist>> findAllArtistsOfTrack(@PathVariable long trackId){
+    public ResponseEntity<Set<Artist>> findAllArtistsOfTrack(@PathVariable long trackId){
         // find the track's artists
-        List<Artist> foundArtists = trackService.findAllArtistsOfTrack(trackId);
+        Set<Artist> foundArtists = trackService.findAllArtistsOfTrack(trackId);
         return ResponseEntity.ok(foundArtists);
     }
 

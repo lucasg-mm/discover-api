@@ -1,14 +1,12 @@
 package com.discover.discoverapi.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "artists")
@@ -30,20 +28,22 @@ public class Artist {
     @ManyToMany
     @JoinTable(name = "artists_albums", joinColumns = @JoinColumn(name = "artist_id"),
             inverseJoinColumns = @JoinColumn(name = "album_id"))
-    private List<Album> albums;
+    private Set<Album> albums;
 
     @ManyToMany
     @JoinTable(name = "artists_genres", joinColumns = @JoinColumn(name =  "artist_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    private List<Genre> genres;
+    private Set<Genre> genres;
 
     @ManyToMany
     @JoinTable(name = "artists_tracks", joinColumns = @JoinColumn(name = "artist_id"),
             inverseJoinColumns = @JoinColumn(name = "track_id"))
-    private List<Track> tracks;
+    private Set<Track> tracks;
 
     // CONSTRUCTORS
-    public Artist(String name, String imageURL, List<Album> albums, List<Genre> genres, List<Track> tracks) {
+
+
+    public Artist(String name, String imageURL, Set<Album> albums, Set<Genre> genres, Set<Track> tracks) {
         this.name = name;
         this.imageURL = imageURL;
         this.albums = albums;
@@ -59,5 +59,20 @@ public class Artist {
                 ", name='" + name + '\'' +
                 ", imageURL='" + imageURL + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Artist artist = (Artist) o;
+
+        return name.equals(artist.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 }

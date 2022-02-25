@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/artists")
@@ -72,9 +73,9 @@ public class ArtistController {
     // ------- '/albums' SUBRESOURCE -------
     // find all the artists' albums
     @GetMapping("{artistId}/albums")
-    public ResponseEntity<List<Album>> findAllAlbumsOfArtist(@PathVariable long artistId){
+    public ResponseEntity<Set<Album>> findAllAlbumsOfArtist(@PathVariable long artistId){
         // find the artist's albums
-        List<Album> foundAlbums = artistService.findAllAlbumsOfArtist(artistId);
+        Set<Album> foundAlbums = artistService.findAllAlbumsOfArtist(artistId);
         return ResponseEntity.ok(foundAlbums);
     }
 
@@ -97,9 +98,9 @@ public class ArtistController {
     // ------- '/genres' SUBRESOURCE -------
     // find all the artists' genres
     @GetMapping("{artistId}/genres")
-    public ResponseEntity<List<Genre>> findAllGenresOfArtist(@PathVariable long artistId){
+    public ResponseEntity<Set<Genre>> findAllGenresOfArtist(@PathVariable long artistId){
         // find the artist's genres
-        List<Genre> foundGenres = artistService.findAllGenresOfArtist(artistId);
+        Set<Genre> foundGenres = artistService.findAllGenresOfArtist(artistId);
         return ResponseEntity.ok(foundGenres);
     }
 
@@ -122,9 +123,9 @@ public class ArtistController {
     // ------- '/tracks' SUBRESOURCE -------
     // find all the artists' tracks
     @GetMapping("{artistId}/tracks")
-    public ResponseEntity<List<Track>> findAllTracksOfArtist(@PathVariable long artistId){
+    public ResponseEntity<Set<Track>> findAllTracksOfArtist(@PathVariable long artistId){
         // find the artist's tracks
-        List<Track> foundTracks = artistService.findAllTracksOfArtist(artistId);
+        Set<Track> foundTracks = artistService.findAllTracksOfArtist(artistId);
         return ResponseEntity.ok(foundTracks);
     }
 

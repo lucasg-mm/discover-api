@@ -1,14 +1,12 @@
 package com.discover.discoverapi.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "genres")
@@ -27,21 +25,21 @@ public class Genre {
     @ManyToMany
     @JoinTable(name = "albums_genres", joinColumns = @JoinColumn(name = "genre_id"),
             inverseJoinColumns = @JoinColumn(name = "album_id"))
-    private List<Album> albums;
+    private Set<Album> albums;
 
     @ManyToMany
     @JoinTable(name = "artists_genres", joinColumns = @JoinColumn(name="genre_id"),
             inverseJoinColumns = @JoinColumn(name="artist_id"))
-    private List<Artist> artists;
+    private Set<Artist> artists;
 
 
     @ManyToMany
     @JoinTable(name = "tracks_genres", joinColumns = @JoinColumn(name = "genre_id"),
             inverseJoinColumns = @JoinColumn(name = "track_id"))
-    private List<Track> tracks;
+    private Set<Track> tracks;
 
     // CONSTRUCTORS
-    public Genre(String name, List<Album> albums, List<Artist> artists, List<Track> tracks) {
+    public Genre(String name, Set<Album> albums, Set<Artist> artists, Set<Track> tracks) {
         this.name = name;
         this.albums = albums;
         this.artists = artists;
@@ -55,5 +53,20 @@ public class Genre {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Genre genre = (Genre) o;
+
+        return name.equals(genre.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 }

@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "albums")
@@ -40,20 +40,20 @@ public class Album {
     @ManyToMany
     @JoinTable(name = "artists_albums", joinColumns = @JoinColumn(name = "album_id"),
             inverseJoinColumns = @JoinColumn(name = "artist_id"))
-    private List<Artist> artists;
+    private Set<Artist> artists;
 
     @ManyToMany
     @JoinTable(name = "albums_genres", joinColumns = @JoinColumn(name = "album_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    private List<Genre> genres;
+    private Set<Genre> genres;
 
     @OneToMany(mappedBy = "album")
     @JsonManagedReference
-    private List<Track> tracks;
+    private Set<Track> tracks;
 
     // CONSTRUCTORS
-    public Album(String title, Timestamp releaseDate, String coverArtUrl, String label,
-                 int length, List<Artist> artists, List<Genre> genres, List<Track> tracks) {
+    public Album(String title, Timestamp releaseDate, String coverArtUrl,
+                 String label, int length, Set<Artist> artists, Set<Genre> genres, Set<Track> tracks) {
         this.title = title;
         this.releaseDate = releaseDate;
         this.coverArtUrl = coverArtUrl;
@@ -75,5 +75,27 @@ public class Album {
                 ", label='" + label + '\'' +
                 ", length=" + length +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Album album = (Album) o;
+
+        if (length != album.length) return false;
+        if (!title.equals(album.title)) return false;
+        if (!releaseDate.equals(album.releaseDate)) return false;
+        return label.equals(album.label);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = title.hashCode();
+        result = 31 * result + releaseDate.hashCode();
+        result = 31 * result + label.hashCode();
+        result = 31 * result + length;
+        return result;
     }
 }
