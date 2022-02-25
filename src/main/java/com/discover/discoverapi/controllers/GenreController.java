@@ -81,7 +81,7 @@ public class GenreController {
     }
 
     // add an album to the genre's album
-    @PutMapping("{genreId}/{albumId}")
+    @PutMapping("{genreId}/genres/{albumId}")
     public ResponseEntity<Album> addAlbumToGenre(@PathVariable long genreId, @PathVariable long albumId){
         // add the album to the list of the genre's albums
         Album addedAlbum = genreService.addAlbumToGenre(genreId, albumId);
@@ -89,7 +89,7 @@ public class GenreController {
     }
 
     // delete an existing album from a given genre
-    @DeleteMapping("{genreId}/{albumId}")
+    @DeleteMapping("{genreId}/genres/{albumId}")
     public ResponseEntity<Album> removeAlbumFromGenre(@PathVariable long genreId, @PathVariable long albumId){
         // remove album from the genre's list of albums
         genreService.deleteAlbumFromGenre(genreId, albumId);
@@ -106,7 +106,7 @@ public class GenreController {
     }
 
     // add an artist to the genre's artist
-    @PutMapping("{genreId}/{artistId}")
+    @PutMapping("{genreId}/artists/{artistId}")
     public ResponseEntity<Artist> addArtistToGenre(@PathVariable long genreId, @PathVariable long artistId){
         // add the artist to the list of the genre's artists
         Artist addedArtist = genreService.addArtistToGenre(genreId, artistId);
@@ -114,7 +114,7 @@ public class GenreController {
     }
 
     // delete an existing artist from a given genre
-    @DeleteMapping("{genreId}/{artistId}")
+    @DeleteMapping("{genreId}/artists/{artistId}")
     public ResponseEntity<Artist> removeArtistFromGenre(@PathVariable long genreId, @PathVariable long artistId){
         // remove artist from the genre's list of artists
         genreService.deleteArtistFromGenre(genreId, artistId);
@@ -131,7 +131,7 @@ public class GenreController {
     }
 
     // add a track to the genre's track
-    @PutMapping("{genreId}/{trackId}")
+    @PutMapping("{genreId}/tracks/{trackId}")
     public ResponseEntity<Track> addTrackToGenre(@PathVariable long genreId, @PathVariable long trackId){
         // add the track to the list of the genre's tracks
         Track addedTrack = genreService.addTrackToGenre(genreId, trackId);
@@ -139,7 +139,7 @@ public class GenreController {
     }
 
     // delete an existing track from a given genre
-    @DeleteMapping("{genreId}/{trackId}")
+    @DeleteMapping("{genreId}/tracks/{trackId}")
     public ResponseEntity<Track> removeTrackFromGenre(@PathVariable long genreId, @PathVariable long trackId){
         // remove track from the genre's list of tracks
         genreService.deleteTrackFromGenre(genreId, trackId);

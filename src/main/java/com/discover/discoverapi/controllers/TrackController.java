@@ -80,7 +80,7 @@ public class TrackController {
     }
 
     // assign an album as the track's album
-    @PutMapping("{trackId}/{albumId}")
+    @PutMapping("{trackId}/album/{albumId}")
     public ResponseEntity<Album> assignAlbumToTrack(@PathVariable long trackId, @PathVariable long albumId){
         Album assignedAlbum = trackService.assignAlbumToTrack(trackId, albumId);
         return ResponseEntity.ok(assignedAlbum);
@@ -95,7 +95,7 @@ public class TrackController {
 
     // ------- '/genres' SUBRESOURCE -------
     // find all the tracks' genres
-    @GetMapping("{trackId}/genre")
+    @GetMapping("{trackId}/genres")
     public ResponseEntity<List<Genre>> findAllGenresOfTrack(@PathVariable long trackId){
         // find the track's genres
         List<Genre> foundGenres = trackService.findAllGenresOfTrack(trackId);
@@ -103,7 +103,7 @@ public class TrackController {
     }
 
     // add a genre to the track's genres
-    @PutMapping("{trackId}/{genreId}")
+    @PutMapping("{trackId}/genres/{genreId}")
     public ResponseEntity<Genre> addGenreToTrack(@PathVariable long trackId, @PathVariable long genreId){
         // add the genre to the list of the track's genres
         Genre addedGenre = trackService.addGenreToTrack(trackId, genreId);
@@ -111,7 +111,7 @@ public class TrackController {
     }
 
     // delete an existing genre from a given track
-    @DeleteMapping("{trackId}/{genreId}")
+    @DeleteMapping("{trackId}/genres/{genreId}")
     public ResponseEntity<Genre> removeGenreFromTrack(@PathVariable long trackId, @PathVariable long genreId) {
         // remove genre from the track's list of genres
         trackService.deleteGenreFromTrack(trackId, genreId);
@@ -121,7 +121,7 @@ public class TrackController {
 
     // ------- '/artists' SUBRESOURCE -------
     // find all the tracks' artists
-    @GetMapping("{trackId}/artist")
+    @GetMapping("{trackId}/artists")
     public ResponseEntity<List<Artist>> findAllArtistsOfTrack(@PathVariable long trackId){
         // find the track's artists
         List<Artist> foundArtists = trackService.findAllArtistsOfTrack(trackId);
@@ -129,7 +129,7 @@ public class TrackController {
     }
 
     // add an artist to the track's artist
-    @PutMapping("{trackId}/{artistId}")
+    @PutMapping("{trackId}/artists/{artistId}")
     public ResponseEntity<Artist> addArtistToTrack(@PathVariable long trackId, @PathVariable long artistId){
         // add the artist to the list of the track's artists
         Artist addedArtist = trackService.addArtistToTrack(trackId, artistId);
@@ -137,7 +137,7 @@ public class TrackController {
     }
 
     // delete an existing artist from a given track
-    @DeleteMapping("{trackId}/{artistId}")
+    @DeleteMapping("{trackId}/artists/{artistId}")
     public ResponseEntity<Artist> removeArtistFromTrack(@PathVariable long trackId, @PathVariable long artistId) {
         // remove artist from the track's list of artists
         trackService.deleteArtistFromTrack(trackId, artistId);

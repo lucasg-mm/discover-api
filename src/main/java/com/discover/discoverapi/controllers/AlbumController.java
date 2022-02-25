@@ -78,7 +78,7 @@ public class AlbumController {
     }
 
     // add an existing artist to the album's artists
-    @PutMapping("{albumId}/{artistId}")
+    @PutMapping("{albumId}/artists/{artistId}")
     public ResponseEntity<Artist> addArtistToAlbum(@PathVariable long albumId, @PathVariable long artistId){
         Artist addedArtist = albumService.addArtistToAlbum(albumId, artistId);
 
@@ -86,7 +86,7 @@ public class AlbumController {
     }
 
     // delete an existing artist from a given album
-    @DeleteMapping("{albumId}/{artistId}")
+    @DeleteMapping("{albumId}/artists/{artistId}")
     public ResponseEntity<Artist> deleteArtistFromAlbum(@PathVariable long albumId, @PathVariable long artistId){
         albumService.deleteArtistFromAlbum(albumId, artistId);
 
@@ -103,7 +103,7 @@ public class AlbumController {
     }
 
     // add an existing genre to the album's genres
-    @PutMapping("{albumId}/{genreId}")
+    @PutMapping("{albumId}/genres/{genreId}")
     public ResponseEntity<Genre> addGenreToAlbum(@PathVariable long albumId, @PathVariable long genreId){
         Genre addedGenre = albumService.addGenreToAlbum(albumId, genreId);
 
@@ -111,7 +111,7 @@ public class AlbumController {
     }
 
     // delete an existing genre from a given album
-    @DeleteMapping("{albumId}/{genreId}")
+    @DeleteMapping("{albumId}/genres/{genreId}")
     public ResponseEntity<Genre> deleteGenreFromAlbum(@PathVariable long albumId, @PathVariable long genreId){
         albumService.deleteGenreFromAlbum(albumId, genreId);
 
@@ -128,7 +128,7 @@ public class AlbumController {
     }
 
     // add an existing track to the album's tracks
-    @PutMapping("{albumId}/{trackId}")
+    @PutMapping("{albumId}/tracks/{trackId}")
     public ResponseEntity<Track> addTrackToAlbum(@PathVariable long albumId, @PathVariable long trackId){
         Track addedTrack = albumService.addTrackToAlbum(albumId, trackId);
 
@@ -136,7 +136,7 @@ public class AlbumController {
     }
 
     // delete an existing track from a given album
-    @DeleteMapping("{albumId}/{trackId}")
+    @DeleteMapping("{albumId}/tracks/{trackId}")
     public ResponseEntity<Track> deleteTrackFromAlbum(@PathVariable long albumId, @PathVariable long trackId){
         albumService.deleteTrackFromAlbum(albumId, trackId);
 
