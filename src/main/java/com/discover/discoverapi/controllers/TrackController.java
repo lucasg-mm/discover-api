@@ -95,10 +95,10 @@ public class TrackController {
 
     // ------- '/genres' SUBRESOURCE -------
     // find all the tracks' genres
-    @GetMapping("{trackId}/{genreId}")
-    public ResponseEntity<Genre> findAllGenresOfTrack(@PathVariable long trackId, @PathVariable long genreId){
+    @GetMapping("{trackId}/genre")
+    public ResponseEntity<Genre> findAllGenresOfTrack(@PathVariable long trackId){
         // find the track's genres
-        Genre foundGenres = trackService.findAllGenresOfTrack(trackId, genreId);
+        Genre foundGenres = trackService.findAllGenresOfTrack(trackId);
         return ResponseEntity.ok(foundGenres);
     }
 
@@ -121,10 +121,10 @@ public class TrackController {
 
     // ------- '/artists' SUBRESOURCE -------
     // find all the tracks' artists
-    @GetMapping("{trackId}/{artistId}")
-    public ResponseEntity<Artist> findAllArtistsOfTrack(@PathVariable long trackId, @PathVariable long artistId){
+    @GetMapping("{trackId}/artist")
+    public ResponseEntity<Artist> findAllArtistsOfTrack(@PathVariable long trackId){
         // find the track's artists
-        Artist foundArtists = trackService.findAllArtistsOfTrack(trackId, artistId);
+        Artist foundArtists = trackService.findAllArtistsOfTrack(trackId);
         return ResponseEntity.ok(foundArtists);
     }
 
