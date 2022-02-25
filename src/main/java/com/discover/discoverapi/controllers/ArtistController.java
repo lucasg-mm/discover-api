@@ -1,6 +1,9 @@
 package com.discover.discoverapi.controllers;
 
+import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Artist;
+import com.discover.discoverapi.entities.Genre;
+import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.ArtistService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -63,6 +66,81 @@ public class ArtistController {
     public ResponseEntity<Artist> deleteById(@PathVariable long id){
         // deletes the artist
         artistService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // ------- '/albums' SUBRESOURCE -------
+    // find all the artists' albums
+    @GetMapping("{artistId}/{albumId}")
+    public ResponseEntity<Album> findAllAlbumsOfArtist(@PathVariable long artistId, @PathVariable long albumId){
+        // find the artist's albums
+        Album foundAlbums = artistService.findAllAlbumsOfArtist(artistId, albumId);
+        return ResponseEntity.ok(foundAlbums);
+    }
+
+    // add an album to the artist's album
+    @PutMapping("{artistId}/{albumId}")
+    public ResponseEntity<Album> addAlbumToArtist(@PathVariable long artistId, @PathVariable long albumId){
+        // add the album to the list of the artist's albums
+        Album addedAlbum = artistService.addAlbumToArtist(artistId, albumId);
+        return ResponseEntity.ok(addedAlbum);
+    }
+
+    // delete an existing album from a given artist
+    @DeleteMapping("{artistId/albumId}")
+    public ResponseEntity<Album> removeAlbumFromArtist(@PathVariable long artistId, @PathVariable long albumId){
+        // remove album from the artist's list of albums
+        artistService.deleteAlbumFromArtist(artistId, albumId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // ------- '/genres' SUBRESOURCE -------
+    // find all the artists' genres
+    @GetMapping("{artistId}/{genreId}")
+    public ResponseEntity<Genre> findAllGenresOfArtist(@PathVariable long artistId, @PathVariable long genreId){
+        // find the artist's genres
+        Genre foundGenres = artistService.findAllGenresOfArtist(artistId, genreId);
+        return ResponseEntity.ok(foundGenres);
+    }
+
+    // add a genre to the artist's genres
+    @PutMapping("{artistId}/{genreId}")
+    public ResponseEntity<Genre> addGenreToArtist(@PathVariable long artistId, @PathVariable long genreId){
+        // add the genre to the list of the artist's genres
+        Genre addedGenre = artistService.addGenreToArtist(artistId, genreId);
+        return ResponseEntity.ok(addedGenre);
+    }
+
+    // delete an existing genre from a given artist
+    @DeleteMapping("{artistId/genreId}")
+    public ResponseEntity<Genre> removeGenreFromArtist(@PathVariable long artistId, @PathVariable long genreId){
+        // remove genre from the artist's list of genres
+        artistService.deleteGenreFromArtist(artistId, genreId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // ------- '/tracks' SUBRESOURCE -------
+    // find all the artists' tracks
+    @GetMapping("{artistId}/{trackId}")
+    public ResponseEntity<Track> findAllTracksOfArtist(@PathVariable long artistId, @PathVariable long trackId){
+        // find the artist's tracks
+        Track foundTracks = artistService.findAllTracksOfArtist(artistId, trackId);
+        return ResponseEntity.ok(foundTracks);
+    }
+
+    // add a track to the artist's tracks
+    @PutMapping("{artistId}/{trackId}")
+    public ResponseEntity<Track> addTrackToArtist(@PathVariable long artistId, @PathVariable long trackId){
+        // add the track to the list of the artist's tracks
+        Track addedTrack = artistService.addTrackToArtist(artistId, trackId);
+        return ResponseEntity.ok(addedTrack);
+    }
+
+    // delete an existing track from a given artist
+    @DeleteMapping("{artistId/trackId}")
+    public ResponseEntity<Track> removeTrackFromArtist(@PathVariable long artistId, @PathVariable long trackId){
+        // remove track from the artist's list of tracks
+        artistService.deleteTrackFromArtist(artistId, trackId);
         return ResponseEntity.noContent().build();
     }
 }
