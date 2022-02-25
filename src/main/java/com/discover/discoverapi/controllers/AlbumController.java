@@ -93,8 +93,8 @@ public class AlbumController {
         return ResponseEntity.noContent().build();
     }
 
-    // ------ '/genres' SUBRESOURCES -------
-    // find all the main genres that recorded the album
+    // ------ '/genres' SUBRESOURCE -------
+    // find all the main genres from the album
     @GetMapping("{albumId}/genres")
     public ResponseEntity<List<Genre>> findAllGenresOfAlbum(@PathVariable long albumId){
         List<Genre> allGenresOfAlbum = albumService.findAllGenresOfAlbum(albumId);
@@ -118,8 +118,8 @@ public class AlbumController {
         return ResponseEntity.noContent().build();
     }
 
-    // ------ '/tracks' SUBRESOURCES -------
-    // find all the main tracks that recorded the album
+    // ------ '/tracks' SUBRESOURCE -------
+    // find all the tracks from the album
     @GetMapping("{albumId}/tracks")
     public ResponseEntity<List<Track>> findAllTracksOfAlbum(@PathVariable long albumId){
         List<Track> allTracksOfAlbum = albumService.findAllTracksOfAlbum(albumId);
