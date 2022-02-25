@@ -1,6 +1,9 @@
 package com.discover.discoverapi.services;
 
+import com.discover.discoverapi.entities.Album;
+import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Genre;
+import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.GenreRepository;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
@@ -12,6 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 public class GenreService {
     private GenreRepository genreRepository;
+    private AlbumService albumService;
+    private TrackService trackService;
+    private ArtistService artistService;
 
     // find a genre by id
     public Genre findById(long id){
@@ -53,5 +59,101 @@ public class GenreService {
         else{
             throw new ObjectNotFoundException("Genre of id " + id + " not found.");
         }
+    }
+
+    // find all the albums from a genre
+    public List<Album> findAllAlbumsOfGenre(long genreId){
+        Genre foundGenre = findById(genreId);
+        return foundGenre.getAlbums();
+    }
+
+    // add album to the genre's list of albums
+    public Album addAlbumToGenre(long genreId, long albumId){
+        // finds the genre by id
+        Genre foundGenre = findById(genreId);
+
+        // finds the album by id
+        Album foundAlbum = albumService.findById(albumId);
+
+        // add the album to the list
+        foundGenre.getAlbums().add(foundAlbum);
+
+        return foundAlbum;
+    }
+
+    // delete an album from the list of albums from a genre
+    public void deleteAlbumFromGenre(long genreId, long albumId){
+        // finds the genre by id
+        Genre foundGenre = findById(genreId);
+
+        // finds the album by id
+        Album foundAlbum = albumService.findById(albumId);
+
+        // delete from the genre's albums
+        foundGenre.getAlbums().remove(foundAlbum);
+    }
+
+    // find all the tracks from a genre
+    public List<Track> findAllTracksOfGenre(long genreId){
+        Genre foundGenre = findById(genreId);
+        return foundGenre.getTracks();
+    }
+
+    // add track to the genre's list of tracks
+    public Track addTrackToGenre(long genreId, long trackId){
+        // finds the genre by id
+        Genre foundGenre = findById(genreId);
+
+        // finds the track by id
+        Track foundTrack = trackService.findById(trackId);
+
+        // add the track to the list
+        foundGenre.getTracks().add(foundTrack);
+
+        return foundTrack;
+    }
+
+    // delete a track from the list of tracks from a genre
+    public void deleteTrackFromGenre(long genreId, long trackId){
+        // finds the genre by id
+        Genre foundGenre = findById(genreId);
+
+        // finds the track by id
+        Track foundTrack = trackService.findById(trackId);
+
+        // delete from the genre's tracks
+        foundGenre.getTracks().remove(foundTrack);
+    }
+
+    // find all the main artists that from a genre
+    public List<Artist> findAllArtistsOfGenre(long genreId){
+        Genre foundGenre = findById(genreId);
+        return foundGenre.getArtists();
+    }
+
+    // add artist to the genre's list of artists
+    public Artist addArtistToGenre(long genreId, long artistId){
+        // finds the genre by id
+        Genre foundGenre = findById(genreId);
+
+        // finds the artist by id
+        Artist foundArtist = artistService.findById(artistId);
+
+        // gets genre's artists
+        foundGenre.getArtists().add(foundArtist);
+
+        return foundArtist;
+    }
+
+    // delete an artist from the genre's list of artists
+    public void deleteArtistFromGenre(long genreId, long artistId){
+        // finds the genre by id
+        Genre foundGenre = findById(genreId);
+
+        // finds the artist by id
+        Artist foundArtist = artistService.findById(artistId);
+
+        // delete from the genre's artists
+        foundGenre.getArtists().remove(foundArtist);
     }
 }
