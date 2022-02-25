@@ -130,7 +130,7 @@ public class GenreController {
         return ResponseEntity.ok(foundTracks);
     }
 
-    // add an track to the genre's track
+    // add a track to the genre's track
     @PutMapping("{genreId}/{trackId}")
     public ResponseEntity<Track> addTrackToGenre(@PathVariable long genreId, @PathVariable long trackId){
         // add the track to the list of the genre's tracks
