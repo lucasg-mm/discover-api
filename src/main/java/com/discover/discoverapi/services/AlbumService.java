@@ -7,17 +7,42 @@ import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.AlbumRepository;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class AlbumService {
-    private final AlbumRepository albumRepository;
-    private final ArtistService artistService;
-    private final GenreService genreService;
-    private final TrackService trackService;
+    private AlbumRepository albumRepository;
+    private ArtistService artistService;
+    private GenreService genreService;
+    private TrackService trackService;
+
+    @Autowired
+    @Lazy
+    public void setAlbumRepository(AlbumRepository albumRepository) {
+        this.albumRepository = albumRepository;
+    }
+
+    @Autowired
+    @Lazy
+    public void setArtistService(ArtistService artistService) {
+        this.artistService = artistService;
+    }
+
+    @Autowired
+    @Lazy
+    public void setGenreService(GenreService genreService) {
+        this.genreService = genreService;
+    }
+
+    @Autowired
+    @Lazy
+    public void setTrackService(TrackService trackService) {
+        this.trackService = trackService;
+    }
 
     // find all
     public List<Album> findAll(){

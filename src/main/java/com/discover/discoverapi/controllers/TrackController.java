@@ -111,7 +111,7 @@ public class TrackController {
     }
 
     // delete an existing genre from a given track
-    @DeleteMapping("{trackId/genreId}")
+    @DeleteMapping("{trackId}/{genreId}")
     public ResponseEntity<Genre> removeGenreFromTrack(@PathVariable long trackId, @PathVariable long genreId) {
         // remove genre from the track's list of genres
         trackService.deleteGenreFromTrack(trackId, genreId);
@@ -137,7 +137,7 @@ public class TrackController {
     }
 
     // delete an existing artist from a given track
-    @DeleteMapping("{trackId/artistId}")
+    @DeleteMapping("{trackId}/{artistId}")
     public ResponseEntity<Artist> removeArtistFromTrack(@PathVariable long trackId, @PathVariable long artistId) {
         // remove artist from the track's list of artists
         trackService.deleteArtistFromTrack(trackId, artistId);

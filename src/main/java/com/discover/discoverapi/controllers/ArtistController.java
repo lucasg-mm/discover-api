@@ -87,7 +87,7 @@ public class ArtistController {
     }
 
     // delete an existing album from a given artist
-    @DeleteMapping("{artistId/albumId}")
+    @DeleteMapping("{artistId}/{albumId}")
     public ResponseEntity<Album> removeAlbumFromArtist(@PathVariable long artistId, @PathVariable long albumId){
         // remove album from the artist's list of albums
         artistService.deleteAlbumFromArtist(artistId, albumId);
@@ -112,7 +112,7 @@ public class ArtistController {
     }
 
     // delete an existing genre from a given artist
-    @DeleteMapping("{artistId/genreId}")
+    @DeleteMapping("{artistId}/{genreId}")
     public ResponseEntity<Genre> removeGenreFromArtist(@PathVariable long artistId, @PathVariable long genreId){
         // remove genre from the artist's list of genres
         artistService.deleteGenreFromArtist(artistId, genreId);
@@ -121,7 +121,7 @@ public class ArtistController {
 
     // ------- '/tracks' SUBRESOURCE -------
     // find all the artists' tracks
-    @GetMapping("{artistId}/tracks}")
+    @GetMapping("{artistId}/tracks")
     public ResponseEntity<List<Track>> findAllTracksOfArtist(@PathVariable long artistId){
         // find the artist's tracks
         List<Track> foundTracks = artistService.findAllTracksOfArtist(artistId);
@@ -137,7 +137,7 @@ public class ArtistController {
     }
 
     // delete an existing track from a given artist
-    @DeleteMapping("{artistId/trackId}")
+    @DeleteMapping("{artistId}/{trackId}")
     public ResponseEntity<Track> removeTrackFromArtist(@PathVariable long artistId, @PathVariable long trackId){
         // remove track from the artist's list of tracks
         artistService.deleteTrackFromArtist(artistId, trackId);

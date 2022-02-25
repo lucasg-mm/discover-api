@@ -89,7 +89,7 @@ public class GenreController {
     }
 
     // delete an existing album from a given genre
-    @DeleteMapping("{genreId/albumId}")
+    @DeleteMapping("{genreId}/{albumId}")
     public ResponseEntity<Album> removeAlbumFromGenre(@PathVariable long genreId, @PathVariable long albumId){
         // remove album from the genre's list of albums
         genreService.deleteAlbumFromGenre(genreId, albumId);
@@ -114,7 +114,7 @@ public class GenreController {
     }
 
     // delete an existing artist from a given genre
-    @DeleteMapping("{genreId/artistId}")
+    @DeleteMapping("{genreId}/{artistId}")
     public ResponseEntity<Artist> removeArtistFromGenre(@PathVariable long genreId, @PathVariable long artistId){
         // remove artist from the genre's list of artists
         genreService.deleteArtistFromGenre(genreId, artistId);
@@ -139,7 +139,7 @@ public class GenreController {
     }
 
     // delete an existing track from a given genre
-    @DeleteMapping("{genreId/trackId}")
+    @DeleteMapping("{genreId}/{trackId}")
     public ResponseEntity<Track> removeTrackFromGenre(@PathVariable long genreId, @PathVariable long trackId){
         // remove track from the genre's list of tracks
         genreService.deleteTrackFromGenre(genreId, trackId);

@@ -6,18 +6,42 @@ import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.GenreRepository;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class GenreService {
     private GenreRepository genreRepository;
     private AlbumService albumService;
     private TrackService trackService;
     private ArtistService artistService;
+
+    @Autowired
+    @Lazy
+    public void setGenreRepository(GenreRepository genreRepository) {
+        this.genreRepository = genreRepository;
+    }
+
+    @Autowired
+    @Lazy
+    public void setAlbumService(AlbumService albumService) {
+        this.albumService = albumService;
+    }
+
+    @Autowired
+    @Lazy
+    public void setTrackService(TrackService trackService) {
+        this.trackService = trackService;
+    }
+
+    @Autowired
+    @Lazy
+    public void setArtistService(ArtistService artistService) {
+        this.artistService = artistService;
+    }
 
     // find a genre by id
     public Genre findById(long id){
