@@ -81,6 +81,7 @@ public class AlbumService {
 
         // gets album's artists
         foundAlbum.getArtists().add(foundArtist);
+        albumRepository.save(foundAlbum);
 
         return foundArtist;
     }
@@ -95,6 +96,7 @@ public class AlbumService {
 
         // delete from the album's artists
         foundAlbum.getArtists().remove(foundArtist);
+        albumRepository.save(foundAlbum);
     }
 
     // find all the album's genres
@@ -113,6 +115,7 @@ public class AlbumService {
 
         // gets album's genres
         foundAlbum.getGenres().add(foundGenre);
+        albumRepository.save(foundAlbum);
 
         return foundGenre;
     }
@@ -127,6 +130,7 @@ public class AlbumService {
 
         // delete from the album's genres
         foundAlbum.getGenres().remove(foundGenre);
+        albumRepository.save(foundAlbum);
     }
 
     // find all the album's tracks
@@ -145,6 +149,7 @@ public class AlbumService {
 
         // gets album's tracks
         foundAlbum.getTracks().add(foundTrack);
+        albumRepository.save(foundAlbum);
 
         return foundTrack;
     }
@@ -159,5 +164,6 @@ public class AlbumService {
 
         // delete from the album's tracks
         foundAlbum.getTracks().remove(foundTrack);
+        albumRepository.save(foundAlbum);
     }
 }

@@ -79,6 +79,7 @@ public class TrackService {
 
         // gets track's artists
         foundTrack.getArtists().add(foundArtist);
+        trackRepository.save(foundTrack);
 
         return foundArtist;
     }
@@ -93,6 +94,7 @@ public class TrackService {
 
         // delete from the track's artists
         foundTrack.getArtists().remove(foundArtist);
+        trackRepository.save(foundTrack);
     }
 
     // find all the genres from a track
@@ -111,6 +113,7 @@ public class TrackService {
 
         // add the genre to the list
         foundTrack.getGenres().add(foundGenre);
+        trackRepository.save(foundTrack);
 
         return foundGenre;
     }
@@ -125,6 +128,8 @@ public class TrackService {
 
         // delete from the track's genres
         foundTrack.getGenres().remove(foundGenre);
+
+        trackRepository.save(foundTrack);
     }
 
     // find the track's album
