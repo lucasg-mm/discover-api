@@ -89,16 +89,16 @@ public class TrackController {
     // unassign the track's album
     @DeleteMapping("{trackId}/album")
     public ResponseEntity<Album> unassignAlbumFromTrack(@PathVariable long trackId){
-        trackService.unasassignAlbumFromTrack(trackId);
+        trackService.unassignAlbumFromTrack(trackId);
         return ResponseEntity.noContent().build();
     }
 
     // ------- '/genres' SUBRESOURCE -------
     // find all the tracks' genres
     @GetMapping("{trackId}/genre")
-    public ResponseEntity<Genre> findAllGenresOfTrack(@PathVariable long trackId){
+    public ResponseEntity<List<Genre>> findAllGenresOfTrack(@PathVariable long trackId){
         // find the track's genres
-        Genre foundGenres = trackService.findAllGenresOfTrack(trackId);
+        List<Genre> foundGenres = trackService.findAllGenresOfTrack(trackId);
         return ResponseEntity.ok(foundGenres);
     }
 
@@ -122,9 +122,9 @@ public class TrackController {
     // ------- '/artists' SUBRESOURCE -------
     // find all the tracks' artists
     @GetMapping("{trackId}/artist")
-    public ResponseEntity<Artist> findAllArtistsOfTrack(@PathVariable long trackId){
+    public ResponseEntity<List<Artist>> findAllArtistsOfTrack(@PathVariable long trackId){
         // find the track's artists
-        Artist foundArtists = trackService.findAllArtistsOfTrack(trackId);
+        List<Artist> foundArtists = trackService.findAllArtistsOfTrack(trackId);
         return ResponseEntity.ok(foundArtists);
     }
 
