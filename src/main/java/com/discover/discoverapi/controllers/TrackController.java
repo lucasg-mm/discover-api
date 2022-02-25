@@ -1,5 +1,6 @@
 package com.discover.discoverapi.controllers;
 
+import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.entities.Track;
@@ -67,6 +68,28 @@ public class TrackController {
         trackService.deleteById(id);
 
         // no content response
+        return ResponseEntity.noContent().build();
+    }
+
+    // ------- '/album' SUBRESOURCE --------
+    // find the track's album
+    @GetMapping("{trackId}/album")
+    public ResponseEntity<Album> findAlbumOfTheTrack(@PathVariable long trackId){
+        Album albumOfTheTrack = trackService.findAlbumOfTheTrack(trackId);
+        return ResponseEntity.ok(albumOfTheTrack);
+    }
+
+    // assign an album as the track's album
+    @PutMapping("{trackId}/{albumId}")
+    public ResponseEntity<Album> assignAlbumToTrack(@PathVariable long trackId, @PathVariable long albumId){
+        Album assignedAlbum = trackService.assignAlbumToTrack(trackId, albumId);
+        return ResponseEntity.ok(assignedAlbum);
+    }
+
+    // unassign the track's album
+    @DeleteMapping("{trackId}/album")
+    public ResponseEntity<Album> unassignAlbumFromTrack(@PathVariable long trackId){
+        trackService.unasassignAlbumFromTrack(trackId);
         return ResponseEntity.noContent().build();
     }
 
