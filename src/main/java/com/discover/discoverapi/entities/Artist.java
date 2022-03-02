@@ -41,8 +41,6 @@ public class Artist {
     private Set<Track> tracks;
 
     // CONSTRUCTORS
-
-
     public Artist(String name, String imageURL, Set<Album> albums, Set<Genre> genres, Set<Track> tracks) {
         this.name = name;
         this.imageURL = imageURL;

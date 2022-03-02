@@ -95,31 +95,6 @@ public class ArtistController {
         return ResponseEntity.noContent().build();
     }
 
-    // ------- '/genres' SUBRESOURCE -------
-    // find all the artists' genres
-    @GetMapping("{artistId}/genres")
-    public ResponseEntity<Set<Genre>> findAllGenresOfArtist(@PathVariable long artistId){
-        // find the artist's genres
-        Set<Genre> foundGenres = artistService.findAllGenresOfArtist(artistId);
-        return ResponseEntity.ok(foundGenres);
-    }
-
-    // add a genre to the artist's genres
-    @PutMapping("{artistId}/genres/{genreId}")
-    public ResponseEntity<Genre> addGenreToArtist(@PathVariable long artistId, @PathVariable long genreId){
-        // add the genre to the list of the artist's genres
-        Genre addedGenre = artistService.addGenreToArtist(artistId, genreId);
-        return ResponseEntity.ok(addedGenre);
-    }
-
-    // delete an existing genre from a given artist
-    @DeleteMapping("{artistId}/genres/{genreId}")
-    public ResponseEntity<Genre> removeGenreFromArtist(@PathVariable long artistId, @PathVariable long genreId){
-        // remove genre from the artist's list of genres
-        artistService.deleteGenreFromArtist(artistId, genreId);
-        return ResponseEntity.noContent().build();
-    }
-
     // ------- '/tracks' SUBRESOURCE -------
     // find all the artists' tracks
     @GetMapping("{artistId}/tracks")

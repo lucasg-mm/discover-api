@@ -69,56 +69,6 @@ public class AlbumController {
         return ResponseEntity.noContent().build();
     }
 
-    // ------ '/artists' SUBRESOURCE -------
-    // find all the main artists that recorded the album
-    @GetMapping("{albumId}/artists")
-    public ResponseEntity<Set<Artist>> findAllArtistsOfAlbum(@PathVariable long albumId){
-        Set<Artist> allArtistsOfAlbum = albumService.findAllArtistsOfAlbum(albumId);
-
-        return ResponseEntity.ok(allArtistsOfAlbum);
-    }
-
-    // add an existing artist to the album's artists
-    @PutMapping("{albumId}/artists/{artistId}")
-    public ResponseEntity<Artist> addArtistToAlbum(@PathVariable long albumId, @PathVariable long artistId){
-        Artist addedArtist = albumService.addArtistToAlbum(albumId, artistId);
-
-        return ResponseEntity.ok(addedArtist);
-    }
-
-    // delete an existing artist from a given album
-    @DeleteMapping("{albumId}/artists/{artistId}")
-    public ResponseEntity<Artist> deleteArtistFromAlbum(@PathVariable long albumId, @PathVariable long artistId){
-        albumService.deleteArtistFromAlbum(albumId, artistId);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    // ------ '/genres' SUBRESOURCE -------
-    // find all the main genres from the album
-    @GetMapping("{albumId}/genres")
-    public ResponseEntity<Set<Genre>> findAllGenresOfAlbum(@PathVariable long albumId){
-        Set<Genre> allGenresOfAlbum = albumService.findAllGenresOfAlbum(albumId);
-
-        return ResponseEntity.ok(allGenresOfAlbum);
-    }
-
-    // add an existing genre to the album's genres
-    @PutMapping("{albumId}/genres/{genreId}")
-    public ResponseEntity<Genre> addGenreToAlbum(@PathVariable long albumId, @PathVariable long genreId){
-        Genre addedGenre = albumService.addGenreToAlbum(albumId, genreId);
-
-        return ResponseEntity.ok(addedGenre);
-    }
-
-    // delete an existing genre from a given album
-    @DeleteMapping("{albumId}/genres/{genreId}")
-    public ResponseEntity<Genre> deleteGenreFromAlbum(@PathVariable long albumId, @PathVariable long genreId){
-        albumService.deleteGenreFromAlbum(albumId, genreId);
-
-        return ResponseEntity.noContent().build();
-    }
-
     // ------ '/tracks' SUBRESOURCE -------
     // find all the tracks from the album
     @GetMapping("{albumId}/tracks")

@@ -1,49 +1,20 @@
 package com.discover.discoverapi.services;
 
 import com.discover.discoverapi.entities.Album;
-import com.discover.discoverapi.entities.Artist;
-import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.AlbumRepository;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
 
 @Service
+@AllArgsConstructor
 public class AlbumService {
     private AlbumRepository albumRepository;
-    private ArtistService artistService;
-    private GenreService genreService;
     private TrackService trackService;
-
-    @Autowired
-    @Lazy
-    public void setAlbumRepository(AlbumRepository albumRepository) {
-        this.albumRepository = albumRepository;
-    }
-
-    @Autowired
-    @Lazy
-    public void setArtistService(ArtistService artistService) {
-        this.artistService = artistService;
-    }
-
-    @Autowired
-    @Lazy
-    public void setGenreService(GenreService genreService) {
-        this.genreService = genreService;
-    }
-
-    @Autowired
-    @Lazy
-    public void setTrackService(TrackService trackService) {
-        this.trackService = trackService;
-    }
 
     // find all
     public List<Album> findAll(){
@@ -89,74 +60,6 @@ public class AlbumService {
         else{
             throw new ObjectNotFoundException("Album of id " + id + " not found.");
         }
-    }
-
-    // find all the main artists that recorded the album
-    public Set<Artist> findAllArtistsOfAlbum(long albumId){
-        Album foundAlbum = findById(albumId);
-        return foundAlbum.getArtists();
-    }
-
-    // add artist to list of artists
-    public Artist addArtistToAlbum(long albumId, long artistId){
-        // finds the album by id
-        Album foundAlbum = findById(albumId);
-
-        // finds the artist by id
-        Artist foundArtist = artistService.findById(artistId);
-
-        // gets album's artists
-        foundAlbum.getArtists().add(foundArtist);
-        albumRepository.save(foundAlbum);
-
-        return foundArtist;
-    }
-
-    // delete an artist from the list of artists from an album
-    public void deleteArtistFromAlbum(long albumId, long artistId){
-        // finds the album by id
-        Album foundAlbum = findById(albumId);
-
-        // finds the artist by id
-        Artist foundArtist = artistService.findById(artistId);
-
-        // delete from the album's artists
-        foundAlbum.getArtists().remove(foundArtist);
-        albumRepository.save(foundAlbum);
-    }
-
-    // find all the album's genres
-    public Set<Genre> findAllGenresOfAlbum(long albumId){
-        Album foundAlbum = findById(albumId);
-        return foundAlbum.getGenres();
-    }
-
-    // add genre to an album's list of genres
-    public Genre addGenreToAlbum(long albumId, long genreId){
-        // finds the album by id
-        Album foundAlbum = findById(albumId);
-
-        // finds the genre by id
-        Genre foundGenre = genreService.findById(genreId);
-
-        // gets album's genres
-        foundAlbum.getGenres().add(foundGenre);
-        albumRepository.save(foundAlbum);
-
-        return foundGenre;
-    }
-
-    // delete a genre from the list of genres from an album
-    public void deleteGenreFromAlbum(long albumId, long genreId){
-        // finds the album by id
-        Album foundAlbum = findById(albumId);
-
-        // finds the genre by id
-        Genre foundGenre = genreService.findById(genreId);
-
-        // delete from the album's genres
-        foundAlbum.getGenres().remove(foundGenre);
-        albumRepository.save(foundAlbum);
     }
 
     // find all the album's tracks
