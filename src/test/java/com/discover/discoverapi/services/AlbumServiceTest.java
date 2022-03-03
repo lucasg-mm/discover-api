@@ -1,7 +1,7 @@
 package com.discover.discoverapi.services;
 
 import com.discover.discoverapi.entities.Album;
-import com.discover.discoverapi.entities.Artist;
+import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.AlbumRepository;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,10 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.hamcrest.MockitoHamcrest;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
@@ -26,9 +25,12 @@ public class AlbumServiceTest {
     @InjectMocks
     private AlbumService albumService;
 
-    // mocks the album's repository, which is used by albumService
+    // mocks the albumRepository and trackService, which are used by albumService
     @Mock
     private AlbumRepository albumRepository;
+
+    @Mock
+    private TrackService trackService;
 
     @BeforeEach
     public void setUp() {
@@ -248,4 +250,114 @@ public class AlbumServiceTest {
         assertThrows(ObjectNotFoundException.class, () -> albumService.deleteById(id));
     }
 
+    @Test
+    @DisplayName("Tests if the method findAllTracksOfAlbum is returning all tracks of an album")
+    public void findAllTracksOfAlbumsReturnAllTracks(){
+        // --- GIVEN ---
+        // input to the method
+        final long id = 1L;
+
+        // define the expected returned tracks
+        Track track1 = new Track();
+        track1.setTitle("Dark Fantasy");
+
+        Track track2 = new Track();
+        track2.setTitle("POWER");
+
+        Set<Track> expectedTracks = new HashSet<>(Arrays.asList(track1, track2));
+
+        // define the Album object mocked
+        Album theAlbum = new Album();
+        theAlbum.setTracks(expectedTracks);
+
+        doReturn(Optional.of(theAlbum)).when(albumRepository).findById(id);
+
+        // --- WHEN ---
+
+        Set<Track> actualTracks = albumService.findAllTracksOfAlbum(1);
+
+        // --- THEN ---
+        assertIterableEquals(expectedTracks, actualTracks, "findAllTracksOfAlbum is not returning every " +
+                "track of the mocked album.");
+    }
+
+    @Test
+    @DisplayName("Tests if the method deleteTrackFromAlbum is executing the remove method (from the" +
+            " tracks set) once and if it's saving the album again after that.")
+    public void deleteTrackFromAlbumExecutesARemoveAndSavesAlbum(){
+        // --- GIVEN ---
+
+        // define the tracks referenced by the album mock
+        Track track1 = new Track();
+        track1.setTitle("Dark Fantasy");
+
+        Track track2 = new Track();
+        track2.setTitle("POWER");
+
+        Set<Track> expectedTracks = new HashSet<>(Arrays.asList(track1, track2));
+
+        // define the Album object mocked
+        Album theAlbum = new Album();
+        theAlbum.setTracks(expectedTracks);
+
+        doReturn(Optional.of(theAlbum)).when(albumRepository).findById(anyLong());
+
+        // define the Track object mocked
+        Track theTrackToBeRemoved = track2;
+
+        doReturn(theTrackToBeRemoved).when(trackService).findById(anyLong());
+
+        // --- WHEN ---
+
+        albumService.deleteTrackFromAlbum(1L, 1L);
+
+        // --- THEN ---
+
+        assertTrue(!theAlbum.getTracks().contains(theTrackToBeRemoved),
+                "The album should not contain the removed track after the execution of deleteTrackFromAlbum");
+
+        verify(albumRepository, times(1)
+                .description("The album should be updated after the track removal"))
+                .save(theAlbum);
+    }
+
+    @Test
+    @DisplayName("Tests if the method addTrackToAlbum is executing the add method (from the" +
+            " tracks set) once and if it's saving the album again after that.")
+    public void addTrackToAlbumExecutesAnAddAndSavesAlbum(){
+        // --- GIVEN ---
+
+        // define the tracks referenced by the album mock
+        Track track1 = new Track();
+        track1.setTitle("Dark Fantasy");
+
+        Track track2 = new Track();
+        track2.setTitle("POWER");
+
+        Set<Track> expectedTracks = new HashSet<>(Arrays.asList(track1, track2));
+
+        // define the Album object mocked
+        Album theAlbum = new Album();
+        theAlbum.setTracks(expectedTracks);
+
+        doReturn(Optional.of(theAlbum)).when(albumRepository).findById(anyLong());
+
+        // define the Track object mocked
+        Track theTrackToBeAdded = track2;
+
+        doReturn(theTrackToBeAdded).when(trackService).findById(anyLong());
+
+        // --- WHEN ---
+
+        albumService.addTrackToAlbum(1L, 1L);
+
+        // --- THEN ---
+
+        assertTrue(theAlbum.getTracks().contains(theTrackToBeAdded),
+                "The album should contain the added track after the execution of deleteTrackFromAlbum");
+
+        verify(albumRepository, times(1)
+                .description("The album should be updated after the track removal"))
+                .save(theAlbum);
+    }
 }
