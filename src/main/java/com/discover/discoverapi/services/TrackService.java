@@ -6,6 +6,7 @@ import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -14,23 +15,27 @@ public class TrackService {
     private TrackRepository trackRepository;
 
     // find a single track by its id
+    @Transactional
     public Track findById(long id){
         return trackRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Track of id " + id + " not found."));
     }
 
     // find every single stored track
+    @Transactional
     public List<Track> findAll(){
         return trackRepository.findAll();
     }
 
     // create a single track
+    @Transactional
     public Track create(Track toCreate){
         toCreate.setId(0);
         return trackRepository.save(toCreate);
     }
 
     // update a single track by id
+    @Transactional
     public Track update(long id, Track toUpdate){
         // retrieves the track
         Track retrievedTrack = findById(id);
@@ -48,6 +53,7 @@ public class TrackService {
     }
 
     // delete a single track by its id
+    @Transactional
     public void deleteById(long id){
         if (trackRepository.existsById(id)){
             trackRepository.deleteById(id);

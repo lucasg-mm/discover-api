@@ -8,6 +8,7 @@ import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 
@@ -19,23 +20,27 @@ public class ArtistService {
     private TrackService trackService;
 
     // find by id
+    @Transactional
     public Artist findById(long id){
         return artistRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Artist of id " + id + " not found."));
     }
 
     // find all artists
+    @Transactional
     public List<Artist> findAll(){
         return artistRepository.findAll();
     }
 
     // create an artist
+    @Transactional
     public Artist create(Artist toCreate){
         toCreate.setId(0);
         return artistRepository.save(toCreate);
     }
 
     // update an artist
+    @Transactional
     public Artist update(long id, Artist toUpdate){
         // retrieves the artist with the given id
         Artist retrievedArtist = findById(id);
@@ -52,6 +57,7 @@ public class ArtistService {
     }
 
     // delete an artist by id
+    @Transactional
     public void deleteById(long id){
         if (artistRepository.existsById(id)){
             artistRepository.deleteById(id);
@@ -62,12 +68,14 @@ public class ArtistService {
     }
 
     // find all the albums from an artist
+    @Transactional
     public Set<Album> findAllAlbumsOfArtist(long artistId){
         Artist foundArtist = findById(artistId);
         return foundArtist.getAlbums();
     }
 
     // add album to the artist's list of albums
+    @Transactional
     public Album addAlbumToArtist(long artistId, long albumId){
         // finds the artist by id
         Artist foundArtist = findById(artistId);
@@ -83,6 +91,7 @@ public class ArtistService {
     }
 
     // delete an album from the list of albums from an artist
+    @Transactional
     public void deleteAlbumFromArtist(long artistId, long albumId){
         // finds the artist by id
         Artist foundArtist = findById(artistId);
@@ -96,12 +105,14 @@ public class ArtistService {
     }
 
     // find all the tracks from an artist
+    @Transactional
     public Set<Track> findAllTracksOfArtist(long artistId){
         Artist foundArtist = findById(artistId);
         return foundArtist.getTracks();
     }
 
     // add track to the artist's list of tracks
+    @Transactional
     public Track addTrackToArtist(long artistId, long trackId){
         // finds the artist by id
         Artist foundArtist = findById(artistId);
@@ -117,6 +128,7 @@ public class ArtistService {
     }
 
     // delete a track from the list of tracks from an artist
+    @Transactional
     public void deleteTrackFromArtist(long artistId, long trackId){
         // finds the artist by id
         Artist foundArtist = findById(artistId);
