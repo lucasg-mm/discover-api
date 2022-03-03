@@ -346,10 +346,10 @@ public class ArtistServiceTest {
         // --- THEN ---
 
         assertTrue(theArtist.getTracks().contains(theTrackToBeAdded),
-                "The artist should contain the added track after the execution of deleteTrackFromArtist");
+                "The artist should contain the added track after the execution of addTrackFromArtist");
 
         verify(artistRepository, times(1)
-                .description("The artist should be updated after the track removal"))
+                .description("The artist should be updated after the track addition"))
                 .save(theArtist);
     }
 
@@ -457,10 +457,10 @@ public class ArtistServiceTest {
         // --- THEN ---
 
         assertTrue(theArtist.getAlbums().contains(theAlbumToBeAdded),
-                "The artist should contain the added album after the execution of deleteAlbumFromArtist");
+                "The artist should contain the added album after the execution of addAlbumFromArtist");
 
         verify(artistRepository, times(1)
-                .description("The artist should be updated after the album removal"))
+                .description("The artist should be updated after the album addition"))
                 .save(theArtist);
     }
 }

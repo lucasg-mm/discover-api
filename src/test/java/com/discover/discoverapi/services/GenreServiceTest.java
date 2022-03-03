@@ -1,7 +1,9 @@
 package com.discover.discoverapi.services;
 
 import com.discover.discoverapi.entities.Album;
+import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Genre;
+import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.GenreRepository;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,6 +28,15 @@ public class GenreServiceTest {
 
     @Mock
     private GenreRepository genreRepository;
+
+    @Mock
+    private AlbumService albumService;
+
+    @Mock
+    private ArtistService artistService;
+
+    @Mock
+    private TrackService trackService;
 
     @BeforeEach
     public void setUp(){
@@ -229,34 +239,336 @@ public class GenreServiceTest {
         assertThrows(ObjectNotFoundException.class, () -> genreService.deleteById(id));
     }
 
-//    @Test
-//    @DisplayName("Tests if the method findAllAlbumsOfGenre is returning all albums of a genre")
-//    public void findAllAlbumsOfGenreReturnsAllAlbums(){
-//        // --- GIVEN ---
-//        // input to the method
-//        final long id = 1L;
-//
-//        // define the expected returned albums
-//        Album album1 = new Album();
-//        album1.setTitle("My Beautiful Dark Twisted Fantasy");
-//        album1.setReleaseDate(new"2021-03-20");
-//
-//        Album album2 = new Album();
-//        album2.setTitle("Pinata");
-//
-//        Set<Album> expectedAlbums = new HashSet<>(Arrays.asList(album1, album2));
-//
-//        // define the Genre object mocked
-//        Genre theGenre = new Genre();
-//        theGenre.setAlbums(expectedAlbums);
-//
-//        doReturn(Optional.of(theGenre)).when(genreRepository).findById(id);
-//
-//        // --- WHEN ---
-//
-//        Set<Album> actualAlbums = genreService.findAllAlbumsOfGenre(1);
-//
-//        // --- THEN ---
-//        assertIterableEquals(expectedAlbums, actualAlbums, "");
-//    }
+    @Test
+    @DisplayName("Tests if the method findAllAlbumsOfGenre is returning all albums of a genre")
+    public void findAllAlbumsOfGenreReturnsAllAlbums(){
+        // --- GIVEN ---
+        // input to the method
+        final long id = 1L;
+
+        // define the expected returned albums
+        Album album1 = new Album();
+        album1.setTitle("My Beautiful Dark Twisted Fantasy");
+
+        Album album2 = new Album();
+        album2.setTitle("Pinata");
+
+        Set<Album> expectedAlbums = new HashSet<>(Arrays.asList(album1, album2));
+
+        // define the Genre object mocked
+        Genre theGenre = new Genre();
+        theGenre.setAlbums(expectedAlbums);
+
+        doReturn(Optional.of(theGenre)).when(genreRepository).findById(id);
+
+        // --- WHEN ---
+
+        Set<Album> actualAlbums = genreService.findAllAlbumsOfGenre(1);
+
+        // --- THEN ---
+        assertIterableEquals(expectedAlbums, actualAlbums, "findAllAlbumsOfGenre is not returning every " +
+                "album of the mocked genre.");
+    }
+
+    @Test
+    @DisplayName("Tests if the method deleteAlbumFromGenre is executing the remove method (from the" +
+            " albums set) once and if it's saving the genre again after that.")
+    public void deleteAlbumFromGenreExecutesARemoveAndSavesGenre(){
+        // --- GIVEN ---
+
+        // define the albums referenced by the genre mock
+        Album album1 = new Album();
+        album1.setTitle("Dark Fantasy");
+
+        Album album2 = new Album();
+        album2.setTitle("POWER");
+
+        Set<Album> expectedAlbums = new HashSet<>(Arrays.asList(album1, album2));
+
+        // define the Genre object mocked
+        Genre theGenre = new Genre();
+        theGenre.setAlbums(expectedAlbums);
+
+        doReturn(Optional.of(theGenre)).when(genreRepository).findById(anyLong());
+
+        // define the Album object mocked
+        Album theAlbumToBeRemoved = album2;
+
+        doReturn(theAlbumToBeRemoved).when(albumService).findById(anyLong());
+
+        // --- WHEN ---
+
+        genreService.deleteAlbumFromGenre(1L, 1L);
+
+        // --- THEN ---
+
+        assertFalse(theGenre.getAlbums().contains(theAlbumToBeRemoved),
+                "The genre should not contain the removed album after the execution of deleteAlbumFromGenre");
+
+        verify(genreRepository, times(1)
+                .description("The genre should be updated after the album removal"))
+                .save(theGenre);
+    }
+
+    @Test
+    @DisplayName("Tests if the method addAlbumToGenre is executing the add method (from the" +
+            " albums set) once and if it's saving the genre again after that.")
+    public void addAlbumToGenreExecutesAnAddAndSavesGenre(){
+        // --- GIVEN ---
+
+        // define the albums referenced by the genre mock
+        Album album1 = new Album();
+        album1.setTitle("Dark Fantasy");
+
+        Album album2 = new Album();
+        album2.setTitle("POWER");
+
+        Set<Album> expectedAlbums = new HashSet<>(Arrays.asList(album1, album2));
+
+        // define the Genre object mocked
+        Genre theGenre = new Genre();
+        theGenre.setAlbums(expectedAlbums);
+
+        doReturn(Optional.of(theGenre)).when(genreRepository).findById(anyLong());
+
+        // define the Album object mocked
+        Album theAlbumToBeAdded = album2;
+
+        doReturn(theAlbumToBeAdded).when(albumService).findById(anyLong());
+
+        // --- WHEN ---
+
+        genreService.addAlbumToGenre(1L, 1L);
+
+        // --- THEN ---
+
+        assertTrue(theGenre.getAlbums().contains(theAlbumToBeAdded),
+                "The genre should contain the added album after the execution of deleteAlbumFromGenre");
+
+        verify(genreRepository, times(1)
+                .description("The genre should be updated after the album removal"))
+                .save(theGenre);
+    }
+
+    @Test
+    @DisplayName("Tests if the method findAllArtistsOfGenre is returning all artists of a genre")
+    public void findAllArtistsOfGenreReturnsAllArtists(){
+        // --- GIVEN ---
+        // input to the method
+        final long id = 1L;
+
+        // define the expected returned artists
+        Artist artist1 = new Artist();
+        artist1.setName("Pusha T");
+
+        Artist artist2 = new Artist();
+        artist2.setName("Nina Simone");
+
+        Set<Artist> expectedArtists = new HashSet<>(Arrays.asList(artist1, artist2));
+
+        // define the Genre object mocked
+        Genre theGenre = new Genre();
+        theGenre.setArtists(expectedArtists);
+
+        doReturn(Optional.of(theGenre)).when(genreRepository).findById(id);
+
+        // --- WHEN ---
+
+        Set<Artist> actualArtists = genreService.findAllArtistsOfGenre(1);
+
+        // --- THEN ---
+        assertIterableEquals(expectedArtists, actualArtists, "findAllArtistsOfGenre is not returning every " +
+                "artist of the mocked genre.");
+    }
+
+    @Test
+    @DisplayName("Tests if the method deleteArtistFromGenre is executing the remove method (from the" +
+            " artists set) once and if it's saving the genre again after that.")
+    public void deleteArtistFromGenreExecutesARemoveAndSavesGenre(){
+        // --- GIVEN ---
+
+        // define the artists referenced by the genre mock
+        Artist artist1 = new Artist();
+        artist1.setName("Nina Simone");
+
+        Artist artist2 = new Artist();
+        artist2.setName("Pusha T");
+
+        Set<Artist> expectedArtists = new HashSet<>(Arrays.asList(artist1, artist2));
+
+        // define the Genre object mocked
+        Genre theGenre = new Genre();
+        theGenre.setArtists(expectedArtists);
+
+        doReturn(Optional.of(theGenre)).when(genreRepository).findById(anyLong());
+
+        // define the Artist object mocked
+        Artist theArtistToBeRemoved = artist2;
+
+        doReturn(theArtistToBeRemoved).when(artistService).findById(anyLong());
+
+        // --- WHEN ---
+
+        genreService.deleteArtistFromGenre(1L, 1L);
+
+        // --- THEN ---
+
+        assertFalse(theGenre.getArtists().contains(theArtistToBeRemoved),
+                "The genre should not contain the removed artist after the execution of deleteArtistFromGenre");
+
+        verify(genreRepository, times(1)
+                .description("The genre should be updated after the artist removal"))
+                .save(theGenre);
+    }
+
+    @Test
+    @DisplayName("Tests if the method addArtistToGenre is executing the add method (from the" +
+            " artists set) once and if it's saving the genre again after that.")
+    public void addArtistToGenreExecutesAnAddAndSavesGenre(){
+        // --- GIVEN ---
+
+        // define the artists referenced by the genre mock
+        Artist artist1 = new Artist();
+        artist1.setName("Kendrick Lamar");
+
+        Artist artist2 = new Artist();
+        artist2.setName("Kid Cudi");
+
+        Set<Artist> expectedArtists = new HashSet<>(Arrays.asList(artist1, artist2));
+
+        // define the Genre object mocked
+        Genre theGenre = new Genre();
+        theGenre.setArtists(expectedArtists);
+
+        doReturn(Optional.of(theGenre)).when(genreRepository).findById(anyLong());
+
+        // define the Artist object mocked
+        Artist theArtistToBeAdded = artist2;
+
+        doReturn(theArtistToBeAdded).when(artistService).findById(anyLong());
+
+        // --- WHEN ---
+
+        genreService.addArtistToGenre(1L, 1L);
+
+        // --- THEN ---
+
+        assertTrue(theGenre.getArtists().contains(theArtistToBeAdded),
+                "The genre should contain the added artist after the execution of addArtistFromGenre");
+
+        verify(genreRepository, times(1)
+                .description("The genre should be updated after the artist addition"))
+                .save(theGenre);
+    }
+
+    @Test
+    @DisplayName("Tests if the method findAllTracksOfGenre is returning all tracks of a genre")
+    public void findAllTracksOfGenreReturnsAllTracks(){
+        // --- GIVEN ---
+        // input to the method
+        final long id = 1L;
+
+        // define the expected returned tracks
+        Track track1 = new Track();
+        track1.setTitle("Who Dat Boy");
+
+        Track track2 = new Track();
+        track2.setTitle("Off the Grid");
+
+        Set<Track> expectedTracks = new HashSet<>(Arrays.asList(track1, track2));
+
+        // define the Genre object mocked
+        Genre theGenre = new Genre();
+        theGenre.setTracks(expectedTracks);
+
+        doReturn(Optional.of(theGenre)).when(genreRepository).findById(id);
+
+        // --- WHEN ---
+
+        Set<Track> actualTracks = genreService.findAllTracksOfGenre(1);
+
+        // --- THEN ---
+        assertIterableEquals(expectedTracks, actualTracks, "findAllTracksOfGenre is not returning every " +
+                "track of the mocked genre.");
+    }
+
+    @Test
+    @DisplayName("Tests if the method deleteTrackFromGenre is executing the remove method (from the" +
+            " tracks set) once and if it's saving the genre again after that.")
+    public void deleteTrackFromGenreExecutesARemoveAndSavesGenre(){
+        // --- GIVEN ---
+
+        // define the tracks referenced by the genre mock
+        Track track1 = new Track();
+        track1.setTitle("Who Dat Boy");
+
+        Track track2 = new Track();
+        track2.setTitle("Off The Grid");
+
+        Set<Track> expectedTracks = new HashSet<>(Arrays.asList(track1, track2));
+
+        // define the Genre object mocked
+        Genre theGenre = new Genre();
+        theGenre.setTracks(expectedTracks);
+
+        doReturn(Optional.of(theGenre)).when(genreRepository).findById(anyLong());
+
+        // define the Track object mocked
+        Track theTrackToBeRemoved = track2;
+
+        doReturn(theTrackToBeRemoved).when(trackService).findById(anyLong());
+
+        // --- WHEN ---
+
+        genreService.deleteTrackFromGenre(1L, 1L);
+
+        // --- THEN ---
+
+        assertFalse(theGenre.getTracks().contains(theTrackToBeRemoved),
+                "The genre should not contain the removed track after the execution of deleteTrackFromGenre");
+
+        verify(genreRepository, times(1)
+                .description("The genre should be updated after the track removal"))
+                .save(theGenre);
+    }
+
+    @Test
+    @DisplayName("Tests if the method addTrackToGenre is executing the add method (from the" +
+            " tracks set) once and if it's saving the genre again after that.")
+    public void addTrackToGenreExecutesAnAddAndSavesGenre(){
+        // --- GIVEN ---
+
+        // define the tracks referenced by the genre mock
+        Track track1 = new Track();
+        track1.setTitle("Gasoline");
+
+        Track track2 = new Track();
+        track2.setTitle("Out of Time");
+
+        Set<Track> expectedTracks = new HashSet<>(Arrays.asList(track1, track2));
+
+        // define the Genre object mocked
+        Genre theGenre = new Genre();
+        theGenre.setTracks(expectedTracks);
+
+        doReturn(Optional.of(theGenre)).when(genreRepository).findById(anyLong());
+
+        // define the Track object mocked
+        Track theTrackToBeAdded = track2;
+
+        doReturn(theTrackToBeAdded).when(trackService).findById(anyLong());
+
+        // --- WHEN ---
+
+        genreService.addTrackToGenre(1L, 1L);
+
+        // --- THEN ---
+
+        assertTrue(theGenre.getTracks().contains(theTrackToBeAdded),
+                "The genre should contain the added track after the execution of addTrackFromGenre");
+
+        verify(genreRepository, times(1)
+                .description("The genre should be updated after the track addition"))
+                .save(theGenre);
+    }
 }

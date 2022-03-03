@@ -354,10 +354,10 @@ public class AlbumServiceTest {
         // --- THEN ---
 
         assertTrue(theAlbum.getTracks().contains(theTrackToBeAdded),
-                "The album should contain the added track after the execution of deleteTrackFromAlbum");
+                "The album should contain the added track after the execution of addTrackFromAlbum");
 
         verify(albumRepository, times(1)
-                .description("The album should be updated after the track removal"))
+                .description("The album should be updated after the track addition"))
                 .save(theAlbum);
     }
 }
