@@ -22,6 +22,7 @@ public class Track {
     @Column(name = "title")
     private String title;
 
+    @JsonIgnore
     @Column(name = "lyrics")
     private String lyrics;
 
@@ -43,7 +44,8 @@ public class Track {
     @JsonIgnore
     @Getter(onMethod_=@JsonProperty)
     @ManyToMany
-    @JoinTable
+    @JoinTable(name = "artists_tracks", joinColumns = @JoinColumn(name = "track_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id"))
     private Set<Artist> artists;
 
     // CONSTRUCTORS
@@ -66,25 +68,5 @@ public class Track {
                 ", lyrics='" + lyrics + '\'' +
                 ", length=" + length +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Track track = (Track) o;
-
-        if (length != track.length) return false;
-        if (!title.equals(track.title)) return false;
-        return album.equals(track.album);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = title.hashCode();
-        result = 31 * result + length;
-        result = 31 * result + album.hashCode();
-        return result;
     }
 }

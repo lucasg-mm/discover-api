@@ -79,26 +79,4 @@ public class Album {
                 ", length=" + length +
                 '}';
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Album album = (Album) o;
-
-        if (length != album.length) return false;
-        if (!title.equals(album.title)) return false;
-        if (!releaseDate.equals(album.releaseDate)) return false;
-        return label.equals(album.label);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = title.hashCode();
-        result = 31 * result + releaseDate.hashCode();
-        result = 31 * result + label.hashCode();
-        result = 31 * result + length;
-        return result;
-    }
 }
