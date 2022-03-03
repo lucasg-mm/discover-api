@@ -44,7 +44,7 @@ public class TrackController {
         // gets the location of the created track
         URI createdTrackLocation = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("{id}")
+                .path("/{id}")
                 .buildAndExpand()
                 .toUri();
 

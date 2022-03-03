@@ -1,7 +1,7 @@
 package com.discover.discoverapi.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +12,6 @@ import java.util.Set;
 @Entity
 @Table(name = "tracks")
 @Getter @Setter @NoArgsConstructor
-@JsonIgnoreProperties({"album", "genres", "artists"})
 public class Track {
     // PROPERTIES
     @Id
@@ -29,16 +28,20 @@ public class Track {
     @Column(name = "length")
     private int length;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "album_id")
-    @JsonBackReference
     private Album album;
 
+    @JsonIgnore
+    @Getter(onMethod_=@JsonProperty)
     @ManyToMany
     @JoinTable(name = "tracks_genres", joinColumns = @JoinColumn(name = "track_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private Set<Genre> genres;
 
+    @JsonIgnore
+    @Getter(onMethod_=@JsonProperty)
     @ManyToMany
     @JoinTable
     private Set<Artist> artists;

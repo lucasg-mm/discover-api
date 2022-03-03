@@ -1,5 +1,6 @@
 package com.discover.discoverapi.services;
 
+import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.repositories.GenreRepository;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
@@ -10,9 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.lang.reflect.Array;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
@@ -228,4 +228,35 @@ public class GenreServiceTest {
         // --- WHEN THEN ---
         assertThrows(ObjectNotFoundException.class, () -> genreService.deleteById(id));
     }
+
+//    @Test
+//    @DisplayName("Tests if the method findAllAlbumsOfGenre is returning all albums of a genre")
+//    public void findAllAlbumsOfGenreReturnsAllAlbums(){
+//        // --- GIVEN ---
+//        // input to the method
+//        final long id = 1L;
+//
+//        // define the expected returned albums
+//        Album album1 = new Album();
+//        album1.setTitle("My Beautiful Dark Twisted Fantasy");
+//        album1.setReleaseDate(new"2021-03-20");
+//
+//        Album album2 = new Album();
+//        album2.setTitle("Pinata");
+//
+//        Set<Album> expectedAlbums = new HashSet<>(Arrays.asList(album1, album2));
+//
+//        // define the Genre object mocked
+//        Genre theGenre = new Genre();
+//        theGenre.setAlbums(expectedAlbums);
+//
+//        doReturn(Optional.of(theGenre)).when(genreRepository).findById(id);
+//
+//        // --- WHEN ---
+//
+//        Set<Album> actualAlbums = genreService.findAllAlbumsOfGenre(1);
+//
+//        // --- THEN ---
+//        assertIterableEquals(expectedAlbums, actualAlbums, "");
+//    }
 }
