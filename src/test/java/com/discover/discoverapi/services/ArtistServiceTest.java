@@ -1,6 +1,8 @@
 package com.discover.discoverapi.services;
 
+import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Artist;
+import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.ArtistRepository;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,9 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
@@ -27,6 +27,12 @@ public class ArtistServiceTest {
 
     @Mock
     private ArtistRepository artistRepository;
+
+    @Mock
+    private TrackService trackService;
+
+    @Mock
+    private AlbumService albumService;
 
     @BeforeEach
     public void setUp() {
@@ -234,5 +240,227 @@ public class ArtistServiceTest {
 
         // --- WHEN THEN ---
         assertThrows(ObjectNotFoundException.class, () -> artistService.deleteById(id));
+    }
+
+    @Test
+    @DisplayName("Tests if the method findAllTracksOfArtist is returning all tracks of an artist")
+    public void findAllTracksOfArtistsReturnAllTracks(){
+        // --- GIVEN ---
+        // input to the method
+        final long id = 1L;
+
+        // define the expected returned tracks
+        Track track1 = new Track();
+        track1.setTitle("Dark Fantasy");
+
+        Track track2 = new Track();
+        track2.setTitle("POWER");
+
+        Set<Track> expectedTracks = new HashSet<>(Arrays.asList(track1, track2));
+
+        // define the Artist object mocked
+        Artist theArtist = new Artist();
+        theArtist.setTracks(expectedTracks);
+
+        doReturn(Optional.of(theArtist)).when(artistRepository).findById(id);
+
+        // --- WHEN ---
+
+        Set<Track> actualTracks = artistService.findAllTracksOfArtist(1);
+
+        // --- THEN ---
+        assertIterableEquals(expectedTracks, actualTracks, "findAllTracksOfArtist is not returning every " +
+                "track of the mocked artist.");
+    }
+
+    @Test
+    @DisplayName("Tests if the method deleteTrackFromArtist is executing the remove method (from the" +
+            " tracks set) once and if it's saving the artist again after that.")
+    public void deleteTrackFromArtistExecutesARemoveAndSavesArtist(){
+        // --- GIVEN ---
+
+        // define the tracks referenced by the artist mock
+        Track track1 = new Track();
+        track1.setTitle("Dark Fantasy");
+
+        Track track2 = new Track();
+        track2.setTitle("POWER");
+
+        Set<Track> expectedTracks = new HashSet<>(Arrays.asList(track1, track2));
+
+        // define the Artist object mocked
+        Artist theArtist = new Artist();
+        theArtist.setTracks(expectedTracks);
+
+        doReturn(Optional.of(theArtist)).when(artistRepository).findById(anyLong());
+
+        // define the Track object mocked
+        Track theTrackToBeRemoved = track2;
+
+        doReturn(theTrackToBeRemoved).when(trackService).findById(anyLong());
+
+        // --- WHEN ---
+
+        artistService.deleteTrackFromArtist(1L, 1L);
+
+        // --- THEN ---
+
+        assertFalse(theArtist.getTracks().contains(theTrackToBeRemoved),
+                "The artist should not contain the removed track after the execution of deleteTrackFromArtist");
+
+        verify(artistRepository, times(1)
+                .description("The artist should be updated after the track removal"))
+                .save(theArtist);
+    }
+
+    @Test
+    @DisplayName("Tests if the method addTrackToArtist is executing the add method (from the" +
+            " tracks set) once and if it's saving the artist again after that.")
+    public void addTrackToArtistExecutesAnAddAndSavesArtist(){
+        // --- GIVEN ---
+
+        // define the tracks referenced by the artist mock
+        Track track1 = new Track();
+        track1.setTitle("Dark Fantasy");
+
+        Track track2 = new Track();
+        track2.setTitle("POWER");
+
+        Set<Track> expectedTracks = new HashSet<>(Arrays.asList(track1, track2));
+
+        // define the Artist object mocked
+        Artist theArtist = new Artist();
+        theArtist.setTracks(expectedTracks);
+
+        doReturn(Optional.of(theArtist)).when(artistRepository).findById(anyLong());
+
+        // define the Track object mocked
+        Track theTrackToBeAdded = track2;
+
+        doReturn(theTrackToBeAdded).when(trackService).findById(anyLong());
+
+        // --- WHEN ---
+
+        artistService.addTrackToArtist(1L, 1L);
+
+        // --- THEN ---
+
+        assertTrue(theArtist.getTracks().contains(theTrackToBeAdded),
+                "The artist should contain the added track after the execution of deleteTrackFromArtist");
+
+        verify(artistRepository, times(1)
+                .description("The artist should be updated after the track removal"))
+                .save(theArtist);
+    }
+
+    @Test
+    @DisplayName("Tests if the method findAllAlbumsOfArtist is returning all albums of an artist")
+    public void findAllAlbumsOfArtistsReturnAllAlbums(){
+        // --- GIVEN ---
+        // input to the method
+        final long id = 1L;
+
+        // define the expected returned albums
+        Album album1 = new Album();
+        album1.setTitle("Dark Fantasy");
+
+        Album album2 = new Album();
+        album2.setTitle("POWER");
+
+        Set<Album> expectedAlbums = new HashSet<>(Arrays.asList(album1, album2));
+
+        // define the Artist object mocked
+        Artist theArtist = new Artist();
+        theArtist.setAlbums(expectedAlbums);
+
+        doReturn(Optional.of(theArtist)).when(artistRepository).findById(id);
+
+        // --- WHEN ---
+
+        Set<Album> actualAlbums = artistService.findAllAlbumsOfArtist(1);
+
+        // --- THEN ---
+        assertIterableEquals(expectedAlbums, actualAlbums, "findAllAlbumsOfArtist is not returning every " +
+                "album of the mocked artist.");
+    }
+
+    @Test
+    @DisplayName("Tests if the method deleteAlbumFromArtist is executing the remove method (from the" +
+            " albums set) once and if it's saving the artist again after that.")
+    public void deleteAlbumFromArtistExecutesARemoveAndSavesArtist(){
+        // --- GIVEN ---
+
+        // define the albums referenced by the artist mock
+        Album album1 = new Album();
+        album1.setTitle("Dark Fantasy");
+
+        Album album2 = new Album();
+        album2.setTitle("POWER");
+
+        Set<Album> expectedAlbums = new HashSet<>(Arrays.asList(album1, album2));
+
+        // define the Artist object mocked
+        Artist theArtist = new Artist();
+        theArtist.setAlbums(expectedAlbums);
+
+        doReturn(Optional.of(theArtist)).when(artistRepository).findById(anyLong());
+
+        // define the Album object mocked
+        Album theAlbumToBeRemoved = album2;
+
+        doReturn(theAlbumToBeRemoved).when(albumService).findById(anyLong());
+
+        // --- WHEN ---
+
+        artistService.deleteAlbumFromArtist(1L, 1L);
+
+        // --- THEN ---
+
+        assertFalse(theArtist.getAlbums().contains(theAlbumToBeRemoved),
+                "The artist should not contain the removed album after the execution of deleteAlbumFromArtist");
+
+        verify(artistRepository, times(1)
+                .description("The artist should be updated after the album removal"))
+                .save(theArtist);
+    }
+
+    @Test
+    @DisplayName("Tests if the method addAlbumToArtist is executing the add method (from the" +
+            " albums set) once and if it's saving the artist again after that.")
+    public void addAlbumToArtistExecutesAnAddAndSavesArtist(){
+        // --- GIVEN ---
+
+        // define the albums referenced by the artist mock
+        Album album1 = new Album();
+        album1.setTitle("Dark Fantasy");
+
+        Album album2 = new Album();
+        album2.setTitle("POWER");
+
+        Set<Album> expectedAlbums = new HashSet<>(Arrays.asList(album1, album2));
+
+        // define the Artist object mocked
+        Artist theArtist = new Artist();
+        theArtist.setAlbums(expectedAlbums);
+
+        doReturn(Optional.of(theArtist)).when(artistRepository).findById(anyLong());
+
+        // define the Album object mocked
+        Album theAlbumToBeAdded = album2;
+
+        doReturn(theAlbumToBeAdded).when(albumService).findById(anyLong());
+
+        // --- WHEN ---
+
+        artistService.addAlbumToArtist(1L, 1L);
+
+        // --- THEN ---
+
+        assertTrue(theArtist.getAlbums().contains(theAlbumToBeAdded),
+                "The artist should contain the added album after the execution of deleteAlbumFromArtist");
+
+        verify(artistRepository, times(1)
+                .description("The artist should be updated after the album removal"))
+                .save(theArtist);
     }
 }

@@ -313,7 +313,7 @@ public class AlbumServiceTest {
 
         // --- THEN ---
 
-        assertTrue(!theAlbum.getTracks().contains(theTrackToBeRemoved),
+        assertFalse(theAlbum.getTracks().contains(theTrackToBeRemoved),
                 "The album should not contain the removed track after the execution of deleteTrackFromAlbum");
 
         verify(albumRepository, times(1)
