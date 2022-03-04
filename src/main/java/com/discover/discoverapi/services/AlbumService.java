@@ -4,8 +4,10 @@ import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.AlbumRepository;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
+import com.discover.discoverapi.services.fileupload.Uploader;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.Set;
 public class AlbumService {
     private AlbumRepository albumRepository;
     private TrackService trackService;
+    private Uploader imageUploader;
 
     // find all
     @Transactional
@@ -103,5 +106,11 @@ public class AlbumService {
         // delete from the album's tracks
         foundAlbum.getTracks().remove(foundTrack);
         albumRepository.save(foundAlbum);
+    }
+
+    // uploads an image as the cover of an album
+    @Transactional
+    public void setAlbumCover(long albumId, MultipartFile file){
+        imageUploader.upload(file, "album-covers");
     }
 }

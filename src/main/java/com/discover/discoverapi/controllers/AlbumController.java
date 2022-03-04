@@ -8,6 +8,7 @@ import com.discover.discoverapi.services.AlbumService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -92,5 +93,12 @@ public class AlbumController {
         albumService.deleteTrackFromAlbum(albumId, trackId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    // ------- '/cover' SUBRESOURCES --------
+    @PutMapping("{albumId}/cover")
+    public ResponseEntity<Album> setAlbumCover(@PathVariable long albumId, @RequestParam MultipartFile image){
+        albumService.setAlbumCover(albumId, image);
+        return ResponseEntity.ok().build();
     }
 }
