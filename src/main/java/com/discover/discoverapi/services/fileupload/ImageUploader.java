@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.apache.http.entity.ContentType.IMAGE_JPEG;
 import static org.apache.http.entity.ContentType.IMAGE_PNG;
@@ -27,9 +25,18 @@ public class ImageUploader implements Uploader {
         return supportedMimeTypes.contains(file.getContentType());
     }
 
+    public Map<String, String> getsImageMetadata(MultipartFile file){
+        //get file metadata
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("Content-Type", file.getContentType());
+        metadata.put("Content-Length", String.valueOf(file.getSize()));
+
+        return metadata;
+    }
+
     // verifies file, then upload it
     @Override
-    public void upload(MultipartFile file, String path) {
+    public void upload(MultipartFile file, String path, String fileName) {
         // check if file is empty
         if (file.isEmpty()) {
             throw new FailToUploadException("Cannot upload empty file!");
@@ -40,12 +47,12 @@ public class ImageUploader implements Uploader {
             throw new FailToUploadException("It's only possible to upload files of type PNG or JPEG.");
         }
 
-        // builds image name
-        String fileName = UUID.randomUUID() + file.getOriginalFilename();
+        // gets file metadata
+        Map<String, String> imageMetadata = getsImageMetadata(file);
 
         // saves the file
         try {
-            awsFileStore.save(path, fileName, file.getInputStream());
+            awsFileStore.save(path, fileName, file.getInputStream(), imageMetadata);
         } catch (IOException e) {
             throw new FailToUploadException("Failed to upload the file.");
         }

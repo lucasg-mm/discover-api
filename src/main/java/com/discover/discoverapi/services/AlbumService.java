@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -22,20 +23,20 @@ public class AlbumService {
 
     // find all
     @Transactional
-    public List<Album> findAll(){
+    public List<Album> findAll() {
         return albumRepository.findAll();
     }
 
     // find by id
     @Transactional
-    public Album findById(long id){
+    public Album findById(long id) {
         return albumRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Album of id " + id + " not found."));
     }
 
     // update by id
     @Transactional
-    public Album update(long id, Album toUpdate){
+    public Album update(long id, Album toUpdate) {
         // finds the album to be updated
         Album foundAlbum = findById(id);
 
@@ -55,32 +56,31 @@ public class AlbumService {
 
     // create
     @Transactional
-    public Album create(Album album){
+    public Album create(Album album) {
         album.setId(0);  // shouldn't be null?
         return albumRepository.save(album);
     }
 
     // delete by id
     @Transactional
-    public void deleteById(long id){
-        if (albumRepository.existsById(id)){
+    public void deleteById(long id) {
+        if (albumRepository.existsById(id)) {
             albumRepository.deleteById(id);
-        }
-        else{
+        } else {
             throw new ObjectNotFoundException("Album of id " + id + " not found.");
         }
     }
 
     // find all the album's tracks
     @Transactional
-    public Set<Track> findAllTracksOfAlbum(long albumId){
+    public Set<Track> findAllTracksOfAlbum(long albumId) {
         Album foundAlbum = findById(albumId);
         return foundAlbum.getTracks();
     }
 
     // add track to an album's list of tracks
     @Transactional
-    public Track addTrackToAlbum(long albumId, long trackId){
+    public Track addTrackToAlbum(long albumId, long trackId) {
         // finds the album by id
         Album foundAlbum = findById(albumId);
 
@@ -96,7 +96,7 @@ public class AlbumService {
 
     // delete a track from the list of tracks from an album
     @Transactional
-    public void deleteTrackFromAlbum(long albumId, long trackId){
+    public void deleteTrackFromAlbum(long albumId, long trackId) {
         // finds the album by id
         Album foundAlbum = findById(albumId);
 
@@ -110,7 +110,8 @@ public class AlbumService {
 
     // uploads an image as the cover of an album
     @Transactional
-    public void setAlbumCover(long albumId, MultipartFile file){
-        imageUploader.upload(file, "album-covers");
+    public void setAlbumCover(long albumId, MultipartFile file) {
+        String fileName = UUID.randomUUID() + file.getOriginalFilename();
+        imageUploader.upload(file, "album-covers", fileName);
     }
 }

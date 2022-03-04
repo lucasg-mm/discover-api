@@ -1,8 +1,8 @@
 package com.discover.discoverapi.services.fileupload;
 
-import java.io.File;
 import java.io.InputStream;
+import java.util.Map;
 
 public interface FileStore {
-    public void save(String path, String fileName, InputStream fileToUpload);
+    void save(String path, String fileName, InputStream fileToUpload, Map<String, String> imageMetadata);
 }
