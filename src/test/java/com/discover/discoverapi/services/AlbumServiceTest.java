@@ -3,6 +3,7 @@ package com.discover.discoverapi.services;
 import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.AlbumRepository;
+import com.discover.discoverapi.services.exceptions.FailedToDownloadException;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.hamcrest.MockitoHamcrest;
 
 import java.util.*;
 
@@ -359,5 +359,58 @@ public class AlbumServiceTest {
         verify(albumRepository, times(1)
                 .description("The album should be updated after the track addition"))
                 .save(theAlbum);
+    }
+
+    @Test
+    @DisplayName("Tests if the method setAlbumCover throws a ObjectNotFoundException exception when provided" +
+            " with a non existent album id")
+    public void setAlbumCoverThrowsExceptionWhenAlbumDoesNotExist(){
+        // ----- GIVEN -----
+
+        AlbumService albumServiceSpy = spy(albumService);
+
+        // the repo returns an empty optional for every id
+        doThrow(ObjectNotFoundException.class).when(albumServiceSpy).findById(anyLong());
+
+        // ----- WHEN -----
+
+        assertThrows(ObjectNotFoundException.class, () -> albumServiceSpy.setAlbumCover(1l, null),
+                "Expected albumService.setAlbumCover to throw an exception when provided with " +
+                        "an id from an album that does not exist.");
+    }
+
+    @Test
+    @DisplayName("Tests if the method getAlbumCover throws a ObjectNotFoundException exception when provided" +
+            " with a non existent album id")
+    public void getAlbumCoverThrowsExceptionWhenAlbumDoesNotExist(){
+        // ----- GIVEN -----
+
+        AlbumService albumServiceSpy = spy(albumService);
+
+        // the repo returns an empty optional for every id
+        doThrow(ObjectNotFoundException.class).when(albumServiceSpy).findById(anyLong());
+
+        // ----- WHEN -----
+        assertThrows(ObjectNotFoundException.class, () -> albumServiceSpy.getAlbumCover(1L),
+                "Expected albumService.getAlbumCover to throw an exception when provided with " +
+                        "an id from an album that does not exist.");
+    }
+
+    @Test
+    @DisplayName("Tests if the method getAlbumCover throws a FailedToDownloadException exception when the album" +
+            " does not have a cover art")
+    public void getAlbumCoverThrowsExceptionWhenAlbumDoesNotHaveACoverArt(){
+        // ----- GIVEN -----
+
+        AlbumService albumServiceSpy = spy(albumService);
+
+        // mocking the found album (does not have a cover art)
+        Album foundAlbum = new Album();
+        doReturn(foundAlbum).when(albumServiceSpy).findById(anyLong());
+
+        // ----- WHEN -----
+
+        assertThrows(FailedToDownloadException.class, () -> albumServiceSpy.getAlbumCover(1L), "Expected " +
+                "albumService.getAlbumCover to throw an exception when the searched album does not have a cover");
     }
 }
