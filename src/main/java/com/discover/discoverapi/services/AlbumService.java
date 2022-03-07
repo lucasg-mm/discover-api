@@ -141,6 +141,7 @@ public class AlbumService {
     }
 
     // downloads the cover art image
+    @Transactional
     public byte[] getAlbumCover(long albumId){
         Album foundAlbum = findById(albumId);
         if (foundAlbum.getCoverArtPath() != null && foundAlbum.getCoverArtFileName() != null){

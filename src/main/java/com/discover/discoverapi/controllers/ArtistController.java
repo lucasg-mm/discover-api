@@ -8,6 +8,7 @@ import com.discover.discoverapi.services.ArtistService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -118,5 +119,12 @@ public class ArtistController {
         // remove track from the artist's list of tracks
         artistService.deleteTrackFromArtist(artistId, trackId);
         return ResponseEntity.noContent().build();
+    }
+
+    // ------- '/image' SUBRESOURCE --------
+    @PutMapping("{artistId}/image")
+    public ResponseEntity<Artist> setImage(@PathVariable long artistId, @RequestParam MultipartFile image){
+        artistService.setArtistImage(artistId, image);
+        return ResponseEntity.ok().build();
     }
 }

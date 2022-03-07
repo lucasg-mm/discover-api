@@ -5,12 +5,16 @@ import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.ArtistRepository;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
+import com.discover.discoverapi.services.fileuploaddownload.UploaderDownloader;
+import liquibase.util.file.FilenameUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -18,6 +22,7 @@ public class ArtistService {
     private ArtistRepository artistRepository;
     private AlbumService albumService;
     private TrackService trackService;
+    private UploaderDownloader imageUploaderDownloader;
 
     // find by id
     @Transactional
@@ -141,4 +146,36 @@ public class ArtistService {
         foundArtist.getTracks().remove(foundTrack);
         artistRepository.save(foundArtist);
     }
+
+    // uploads the artist's image
+    public void setArtistImage(long artistId, MultipartFile file){
+        // retrieves the artist
+        Artist foundArtist = findById(artistId);
+
+        String imagePath = foundArtist.getImagePath();
+        String imageName = foundArtist.getImageFileName();
+
+        // checks if artist has a path to an image saved in the database
+        if (imagePath != null && imageName != null ){
+            // if it has, use the same path to upload the new image
+            imageUploaderDownloader.upload(file, imagePath, imageName);
+        }
+        else{
+            // if the data is null, create the image name and path
+            String newImageName = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+            String newImagePath = "artists-images";
+
+            // use it to upload the image
+            imageUploaderDownloader.upload(file, newImagePath, newImageName);
+
+            // saves the new data in the database
+            foundArtist.setImagePath(newImagePath);
+            foundArtist.setImageFileName(newImageName);
+            artistRepository.save(foundArtist);
+        }
+    }
+
+    // downloads the artist's image
+
+
 }

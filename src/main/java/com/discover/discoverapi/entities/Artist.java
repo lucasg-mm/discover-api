@@ -22,9 +22,11 @@ public class Artist {
     @Column(name = "name")
     private String name;
 
+    @JsonIgnore
     @Column(name = "image_path")
     private String imagePath;
 
+    @JsonIgnore
     @Column(name = "image_file_name")
     private String imageFileName;
 

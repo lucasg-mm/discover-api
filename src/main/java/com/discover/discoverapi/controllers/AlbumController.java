@@ -99,8 +99,8 @@ public class AlbumController {
     // ------- '/cover' SUBRESOURCES --------
     // defines an album cover art
     @PutMapping("{albumId}/cover")
-    public ResponseEntity<Album> setAlbumCover(@PathVariable long albumId, @RequestParam MultipartFile image){
-        albumService.setAlbumCover(albumId, image);
+    public ResponseEntity<Album> setAlbumCover(@PathVariable long albumId, @RequestParam MultipartFile coverArt){
+        albumService.setAlbumCover(albumId, coverArt);
         return ResponseEntity.ok().build();
     }
 
