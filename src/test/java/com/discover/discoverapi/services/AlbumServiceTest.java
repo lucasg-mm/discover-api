@@ -369,7 +369,7 @@ public class AlbumServiceTest {
 
         AlbumService albumServiceSpy = spy(albumService);
 
-        // the repo returns an empty optional for every id
+        // findById throws an exception when the album is not found
         doThrow(ObjectNotFoundException.class).when(albumServiceSpy).findById(anyLong());
 
         // ----- WHEN -----

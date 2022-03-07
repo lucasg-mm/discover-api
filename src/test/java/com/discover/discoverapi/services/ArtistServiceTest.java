@@ -4,6 +4,7 @@ import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.ArtistRepository;
+import com.discover.discoverapi.services.exceptions.FailedToDownloadException;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -455,5 +456,55 @@ public class ArtistServiceTest {
         verify(artistRepository, times(1)
                 .description("The artist should be updated after the album addition"))
                 .save(theArtist);
+    }
+
+
+    @Test
+    @DisplayName("Tests if the method setArtistImage throws a ObjectNotFoundException exception when provided" +
+            " with a non existent album id")
+    public void setArtistImageThrowsExceptionWhenAlbumDoesNotExist(){
+        // ----- GIVEN -----
+
+        ArtistService artistServiceSpy = spy(artistService);
+
+        // when the artist is not found, the findById method throws an exception
+        doThrow(ObjectNotFoundException.class).when(artistServiceSpy).findById(anyLong());
+
+        // ----- THEN -----
+
+        assertThrows(ObjectNotFoundException.class, () -> artistServiceSpy.setArtistImage(1L, null));
+    }
+
+    @Test
+    @DisplayName("Tests if the method getArtistImage throws a ObjectNotFoundException exception when provided" +
+            " with a non existent album id")
+    public void getArtistImageThrowsExceptionWhenAlbumDoesNotExist(){
+        // ----- GIVEN -----
+
+        ArtistService artistServiceSpy = spy(artistService);
+
+        // when the artist is not found, the findById method throws an exception
+        doThrow(ObjectNotFoundException.class).when(artistServiceSpy).findById(anyLong());
+
+        // ----- THEN -----
+
+        assertThrows(ObjectNotFoundException.class, () -> artistServiceSpy.getArtistImage(1L));
+    }
+
+    @Test
+    @DisplayName("Tests if the method getArtistImage throws FailedToDownloadException when provided" +
+            " with a non existent album id")
+    public void getArtistImageThrowsExceptionWhenArtistDoesNotHaveImage(){
+        // ----- GIVEN -----
+
+        ArtistService artistServiceSpy = spy(artistService);
+
+        // when the artist is not found, the findById method throws an exception
+        Artist foundArtist = new Artist();
+        doReturn(foundArtist).when(artistServiceSpy).findById(anyLong());
+
+        // ----- THEN -----
+
+        assertThrows(FailedToDownloadException.class, () -> artistServiceSpy.getArtistImage(1L));
     }
 }
