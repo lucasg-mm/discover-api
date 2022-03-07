@@ -1,6 +1,6 @@
 package com.discover.discoverapi.services.fileuploaddownload;
 
-import com.discover.discoverapi.services.exceptions.FailToUploadException;
+import com.discover.discoverapi.services.exceptions.FailedToUploadException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,12 +39,12 @@ public class ImageUploaderDownloader implements UploaderDownloader {
     public void upload(MultipartFile file, String path, String fileName) {
         // check if file is empty
         if (file.isEmpty()) {
-            throw new FailToUploadException("Cannot upload empty file!");
+            throw new FailedToUploadException("Cannot upload empty file!");
         }
 
         // check if file is image
         if (!isFileImage(file)) {
-            throw new FailToUploadException("It's only possible to upload files of type PNG or JPEG.");
+            throw new FailedToUploadException("It's only possible to upload files of type PNG or JPEG.");
         }
 
         // gets file metadata
@@ -54,7 +54,7 @@ public class ImageUploaderDownloader implements UploaderDownloader {
         try {
             awsFileStore.save(path, fileName, file.getInputStream(), imageMetadata);
         } catch (IOException e) {
-            throw new FailToUploadException("Failed to upload the file.");
+            throw new FailedToUploadException("Failed to upload the file.");
         }
     }
 

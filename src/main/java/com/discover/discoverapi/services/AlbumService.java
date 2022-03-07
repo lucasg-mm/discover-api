@@ -3,6 +3,7 @@ package com.discover.discoverapi.services;
 import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.AlbumRepository;
+import com.discover.discoverapi.services.exceptions.FailedToDownloadException;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import com.discover.discoverapi.services.fileuploaddownload.UploaderDownloader;
 import liquibase.util.file.FilenameUtils;
@@ -136,6 +137,17 @@ public class AlbumService {
             foundAlbum.setCoverArtFileName(newFileName);
             foundAlbum.setCoverArtPath(newFilePath);
             albumRepository.save(foundAlbum);
+        }
+    }
+
+    // downloads the cover art image
+    public byte[] getAlbumCover(long albumId){
+        Album foundAlbum = findById(albumId);
+        if (foundAlbum.getCoverArtPath() != null && foundAlbum.getCoverArtFileName() != null){
+            return imageUploaderDownloader.download(foundAlbum.getCoverArtPath(), foundAlbum.getCoverArtFileName());
+        }
+        else{
+            throw new FailedToDownloadException("Album does not have a cover art.");
         }
     }
 }

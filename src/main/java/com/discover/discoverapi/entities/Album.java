@@ -27,9 +27,11 @@ public class Album {
     @Column(name = "release_date")
     private Timestamp releaseDate;
 
+    @JsonIgnore
     @Column(name = "cover_art_path")
     private String coverArtPath;
 
+    @JsonIgnore
     @Column(name = "cover_art_file_name")
     private String coverArtFileName;
 

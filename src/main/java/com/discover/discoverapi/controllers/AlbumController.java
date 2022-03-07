@@ -6,6 +6,7 @@ import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.AlbumService;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -96,9 +97,21 @@ public class AlbumController {
     }
 
     // ------- '/cover' SUBRESOURCES --------
+    // defines an album cover art
     @PutMapping("{albumId}/cover")
     public ResponseEntity<Album> setAlbumCover(@PathVariable long albumId, @RequestParam MultipartFile image){
         albumService.setAlbumCover(albumId, image);
         return ResponseEntity.ok().build();
+    }
+
+    // gets an album cover art
+    @GetMapping("{albumId}/cover")
+    public ResponseEntity<ByteArrayResource> getAlbumCover(@PathVariable long albumId){
+        byte[] imageData = albumService.getAlbumCover(albumId);
+        ByteArrayResource resource = new ByteArrayResource(imageData);
+        return ResponseEntity
+                .ok()
+                .header("Content-type", "image/png")
+                .body(resource);
     }
 }
