@@ -1,12 +1,17 @@
-package com.discover.discoverapi.services.fileupload;
+package com.discover.discoverapi.services.fileuploaddownload;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.util.IOUtils;
 import com.discover.discoverapi.services.exceptions.FailToUploadException;
+import com.discover.discoverapi.services.exceptions.FailedToDownloadException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
@@ -40,6 +45,18 @@ public class AWSFileStore implements FileStore{
         }
         catch(AmazonServiceException e){
             throw new FailToUploadException("Failed to upload the file.");
+        }
+    }
+
+    // download file from Amazon S3
+    public byte[] download(String path, String fileName){
+        try{
+            S3Object imageObject = amazonS3.getObject(BUCKET_NAME + "/" + path, fileName);
+            S3ObjectInputStream imageObjectContent = imageObject.getObjectContent();
+            return IOUtils.toByteArray(imageObjectContent);
+        }
+        catch(AmazonServiceException | IOException e){
+            throw new FailedToDownloadException("Failed to download the image.");
         }
     }
 }

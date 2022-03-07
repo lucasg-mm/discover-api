@@ -22,8 +22,11 @@ public class Artist {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "image_url")
-    private String imageURL;
+    @Column(name = "image_path")
+    private String imagePath;
+
+    @Column(name = "image_file_name")
+    private String imageFileName;
 
     @JsonIgnore
     @ManyToMany
@@ -45,9 +48,10 @@ public class Artist {
     private Set<Track> tracks;
 
     // CONSTRUCTORS
-    public Artist(String name, String imageURL, Set<Album> albums, Set<Genre> genres, Set<Track> tracks) {
+    public Artist(String name, String imagePath, String imageFileName, Set<Album> albums, Set<Genre> genres, Set<Track> tracks) {
         this.name = name;
-        this.imageURL = imageURL;
+        this.imagePath = imagePath;
+        this.imageFileName = imageFileName;
         this.albums = albums;
         this.genres = genres;
         this.tracks = tracks;
@@ -59,7 +63,8 @@ public class Artist {
         return "Artist{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", imageURL='" + imageURL + '\'' +
+                ", imagePath='" + imagePath + '\'' +
+                ", imageFileName='" + imageFileName + '\'' +
                 '}';
     }
 }

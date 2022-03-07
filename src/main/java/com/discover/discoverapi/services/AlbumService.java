@@ -4,7 +4,8 @@ import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.AlbumRepository;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
-import com.discover.discoverapi.services.fileupload.Uploader;
+import com.discover.discoverapi.services.fileuploaddownload.UploaderDownloader;
+import liquibase.util.file.FilenameUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +20,7 @@ import java.util.UUID;
 public class AlbumService {
     private AlbumRepository albumRepository;
     private TrackService trackService;
-    private Uploader imageUploader;
+    private UploaderDownloader imageUploaderDownloader;
 
     // find all
     @Transactional
@@ -43,7 +44,8 @@ public class AlbumService {
         // updates every field
         foundAlbum.setLabel(toUpdate.getLabel());
         foundAlbum.setTitle(toUpdate.getTitle());
-        foundAlbum.setCoverArtUrl(toUpdate.getCoverArtUrl());
+        foundAlbum.setCoverArtPath(toUpdate.getCoverArtPath());
+        foundAlbum.setCoverArtFileName(toUpdate.getCoverArtFileName());
         foundAlbum.setTracks(toUpdate.getTracks());
         foundAlbum.setLength(toUpdate.getLength());
         foundAlbum.setGenres(toUpdate.getGenres());
@@ -111,7 +113,29 @@ public class AlbumService {
     // uploads an image as the cover of an album
     @Transactional
     public void setAlbumCover(long albumId, MultipartFile file) {
-        String fileName = UUID.randomUUID() + file.getOriginalFilename();
-        imageUploader.upload(file, "album-covers", fileName);
+        // retrieves the album
+        Album foundAlbum = findById(albumId);
+
+        // gets the data related to the cover art's location
+        String foundAlbumCoverArtPath = foundAlbum.getCoverArtPath();
+        String foundAlbumCoverArtFileName = foundAlbum.getCoverArtFileName();
+
+        if (foundAlbumCoverArtPath != null && foundAlbumCoverArtFileName != null){
+            // if the data is not null, use it to upload the file (it's idempotent)
+            imageUploaderDownloader.upload(file, foundAlbumCoverArtPath, foundAlbumCoverArtFileName);
+        }
+        else{
+            // if the data is null, create a file name and a path
+            String newFileName = UUID.randomUUID() + "." + FilenameUtils.getExtension(file.getOriginalFilename());
+            String newFilePath = "album-covers";
+
+            // use it to upload the image
+            imageUploaderDownloader.upload(file, newFilePath, newFileName);
+
+            // saves the new data in the database
+            foundAlbum.setCoverArtFileName(newFileName);
+            foundAlbum.setCoverArtPath(newFilePath);
+            albumRepository.save(foundAlbum);
+        }
     }
 }

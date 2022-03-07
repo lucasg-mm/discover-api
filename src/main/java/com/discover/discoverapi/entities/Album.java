@@ -27,8 +27,11 @@ public class Album {
     @Column(name = "release_date")
     private Timestamp releaseDate;
 
-    @Column(name = "cover_art_url")
-    private String coverArtUrl;
+    @Column(name = "cover_art_path")
+    private String coverArtPath;
+
+    @Column(name = "cover_art_file_name")
+    private String coverArtFileName;
 
     @Column(name = "label")
     private String label;
@@ -54,12 +57,12 @@ public class Album {
     @OneToMany(mappedBy = "album")
     private Set<Track> tracks;
 
-    // CONSTRUCTORS
-    public Album(String title, Timestamp releaseDate, String coverArtUrl,
-                 String label, int length, Set<Artist> artists, Set<Genre> genres, Set<Track> tracks) {
+    public Album(String title, Timestamp releaseDate, String coverArtPath, String coverArtFileName, String label,
+                 int length, Set<Artist> artists, Set<Genre> genres, Set<Track> tracks) {
         this.title = title;
         this.releaseDate = releaseDate;
-        this.coverArtUrl = coverArtUrl;
+        this.coverArtPath = coverArtPath;
+        this.coverArtFileName = coverArtFileName;
         this.label = label;
         this.length = length;
         this.artists = artists;
@@ -67,14 +70,14 @@ public class Album {
         this.tracks = tracks;
     }
 
-    // METHODS
     @Override
     public String toString() {
         return "Album{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", releaseDate=" + releaseDate +
-                ", coverArtUrl='" + coverArtUrl + '\'' +
+                ", coverArtPath='" + coverArtPath + '\'' +
+                ", coverArtFileName='" + coverArtFileName + '\'' +
                 ", label='" + label + '\'' +
                 ", length=" + length +
                 '}';

@@ -1,4 +1,4 @@
-package com.discover.discoverapi.services.fileupload;
+package com.discover.discoverapi.services.fileuploaddownload;
 
 import com.discover.discoverapi.services.exceptions.FailToUploadException;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import static org.apache.http.entity.ContentType.IMAGE_PNG;
 
 @AllArgsConstructor
 @Service
-public class ImageUploader implements Uploader {
+public class ImageUploaderDownloader implements UploaderDownloader {
     // use to actually saving the file
     private FileStore awsFileStore;
 
@@ -56,5 +56,10 @@ public class ImageUploader implements Uploader {
         } catch (IOException e) {
             throw new FailToUploadException("Failed to upload the file.");
         }
+    }
+
+    // downloads a file
+    public byte[] download(String path, String fileName){
+        return awsFileStore.download(path, fileName);
     }
 }

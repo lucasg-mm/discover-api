@@ -16,8 +16,9 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
             </column>
             <column name="release_date" type="timestamp">
             </column>
-            <column name="cover_art_url" type="varchar(512)">
-                <constraints unique="true" uniqueConstraintName="cover_art_url_unique"/>
+            <column name="cover_art_path" type="varchar(256)">
+            </column>
+            <column name="cover_art_file_name" type="varchar(256)">
             </column>
             <column name="label" type="varchar(100)"/>
             <column name="length" type="int"/>
@@ -38,8 +39,9 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
             </column>
             <column name="name" type="varchar(100)">
             </column>
-            <column name="image_url" type="varchar(512)">
-                <constraints unique="true" uniqueConstraintName="image_url_unique"/>
+            <column name="image_path" type="varchar(512)">
+            </column>
+            <column name="image_file_name" type="varchar(512)">
             </column>
         </createTable>
         

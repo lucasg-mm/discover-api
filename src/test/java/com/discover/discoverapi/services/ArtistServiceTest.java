@@ -120,17 +120,14 @@ public class ArtistServiceTest {
 
         // properties for the artists that will be created
         final String artistName = "The Notorious B.I.G.";
-        final String artistImageURL = "https://upload.wikimedia.org/wikipedia/pt/5/51/The_Notorious_B.I.G.jpg";
 
         // object passed to the create method
         Artist toCreate = new Artist();
         toCreate.setName(artistName);
-        toCreate.setImageURL(artistImageURL);
 
         // expected created artist
         Artist expectedCreatedArtist = new Artist();
         expectedCreatedArtist.setName(artistName);
-        expectedCreatedArtist.setImageURL(artistImageURL);
 
         // --- WHEN ---
 
@@ -153,22 +150,18 @@ public class ArtistServiceTest {
         // input to the update method
         final long id = 1L;
         final String artistName = "The Notorious B.I.G.";
-        final String artistImageURL = "https://upload.wikimedia.org/wikipedia/pt/5/51/The_Notorious_B.I.G.jpg";
         Artist updateInput = new Artist();
         updateInput.setName(artistName);
-        updateInput.setImageURL(artistImageURL);
 
         // expected output
         Artist expectedArtist = new Artist();
         expectedArtist.setName(artistName);
         expectedArtist.setId(id);
-        expectedArtist.setImageURL(artistImageURL);
 
         // mocking artist before the update
         Artist preUpdateArtist = new Artist();
         preUpdateArtist.setId(id);
         preUpdateArtist.setName("Tyler, the Creator");
-        preUpdateArtist.setImageURL("https://lastfm.freetls.fastly.net/i/u/avatar170s/faa68f71f3b2a48ca89228c2c2aa72d3");
         Optional<Artist> oldArtist = Optional.of(preUpdateArtist);
 
         doReturn(oldArtist).when(artistRepository).findById(1L);

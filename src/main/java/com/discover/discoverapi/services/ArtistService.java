@@ -46,7 +46,8 @@ public class ArtistService {
         Artist retrievedArtist = findById(id);
 
         // updates retrieved artist properties
-        retrievedArtist.setImageURL(toUpdate.getImageURL());
+        retrievedArtist.setImagePath(toUpdate.getImagePath());
+        retrievedArtist.setImageFileName(toUpdate.getImageFileName());
         retrievedArtist.setName(toUpdate.getName());
         retrievedArtist.setGenres(toUpdate.getGenres());
         retrievedArtist.setAlbums(toUpdate.getAlbums());
