@@ -40,17 +40,14 @@ public class GenreService {
         return genreRepository.save(toCreate);
     }
 
-    // update a single genre
+    // update a single genre (just its name)
     @Transactional
     public Genre update(long id, Genre toUpdate){
         // retrieves the genre
         Genre retrievedGenre = findById(id);
 
         // updates retrieved genre's properties
-        retrievedGenre.setArtists(toUpdate.getArtists());
         retrievedGenre.setName(toUpdate.getName());
-        retrievedGenre.setTracks(toUpdate.getTracks());
-        retrievedGenre.setAlbums(toUpdate.getAlbums());
 
         // saves
         return genreRepository.save(retrievedGenre);

@@ -45,13 +45,8 @@ public class AlbumService {
         // updates every field
         foundAlbum.setLabel(toUpdate.getLabel());
         foundAlbum.setTitle(toUpdate.getTitle());
-        foundAlbum.setCoverArtPath(toUpdate.getCoverArtPath());
-        foundAlbum.setCoverArtFileName(toUpdate.getCoverArtFileName());
-        foundAlbum.setTracks(toUpdate.getTracks());
         foundAlbum.setLength(toUpdate.getLength());
-        foundAlbum.setGenres(toUpdate.getGenres());
         foundAlbum.setReleaseDate(toUpdate.getReleaseDate());
-        foundAlbum.setArtists(toUpdate.getArtists());
 
         // saves
         return albumRepository.save(foundAlbum);
@@ -91,7 +86,7 @@ public class AlbumService {
         Track foundTrack = trackService.findById(trackId);
 
         // gets album's tracks
-        foundAlbum.getTracks().add(foundTrack);
+        foundTrack.setAlbum(foundAlbum);
         albumRepository.save(foundAlbum);
 
         return foundTrack;

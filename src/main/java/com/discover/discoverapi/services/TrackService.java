@@ -41,11 +41,7 @@ public class TrackService {
         Track retrievedTrack = findById(id);
 
         // updates its fields
-        retrievedTrack.setArtists(toUpdate.getArtists());
-        retrievedTrack.setGenres(toUpdate.getGenres());
         retrievedTrack.setTitle(toUpdate.getTitle());
-        retrievedTrack.setLyrics(toUpdate.getLyrics());
-        retrievedTrack.setAlbum(toUpdate.getAlbum());
         retrievedTrack.setLength(toUpdate.getLength());
 
         // saves it

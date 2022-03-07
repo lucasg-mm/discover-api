@@ -45,19 +45,14 @@ public class ArtistService {
         return artistRepository.save(toCreate);
     }
 
-    // update an artist
+    // updates an artist (just its name)
     @Transactional
     public Artist update(long id, Artist toUpdate){
         // retrieves the artist with the given id
         Artist retrievedArtist = findById(id);
 
-        // updates retrieved artist properties
-        retrievedArtist.setImagePath(toUpdate.getImagePath());
-        retrievedArtist.setImageFileName(toUpdate.getImageFileName());
+        // updates retrieved artist properties (just the name)
         retrievedArtist.setName(toUpdate.getName());
-        retrievedArtist.setGenres(toUpdate.getGenres());
-        retrievedArtist.setAlbums(toUpdate.getAlbums());
-        retrievedArtist.setTracks(toUpdate.getTracks());
 
         // saves artist
         return artistRepository.save(retrievedArtist);

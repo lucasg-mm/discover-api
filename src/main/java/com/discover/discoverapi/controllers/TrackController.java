@@ -1,8 +1,5 @@
 package com.discover.discoverapi.controllers;
 
-import com.discover.discoverapi.entities.Album;
-import com.discover.discoverapi.entities.Artist;
-import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.TrackService;
 import lombok.AllArgsConstructor;
@@ -12,7 +9,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/tracks")
@@ -45,7 +41,7 @@ public class TrackController {
         URI createdTrackLocation = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand()
+                .buildAndExpand(createdTrack.getId())
                 .toUri();
 
         // returns 201 created status code
