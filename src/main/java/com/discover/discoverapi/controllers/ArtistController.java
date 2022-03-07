@@ -6,6 +6,7 @@ import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.ArtistService;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -122,9 +123,22 @@ public class ArtistController {
     }
 
     // ------- '/image' SUBRESOURCE --------
+
+    // defines an artist's image
     @PutMapping("{artistId}/image")
     public ResponseEntity<Artist> setImage(@PathVariable long artistId, @RequestParam MultipartFile image){
         artistService.setArtistImage(artistId, image);
         return ResponseEntity.ok().build();
+    }
+
+    // gets an artist's image
+    @GetMapping("{artistId}/image")
+    public ResponseEntity<ByteArrayResource> getImage(@PathVariable long artistId){
+        byte[] imageData = artistService.getArtistImage(artistId);
+        ByteArrayResource resource = new ByteArrayResource(imageData);
+        return ResponseEntity
+                .ok()
+                .header("Content-type", "image/png")
+                .body(resource);
     }
 }

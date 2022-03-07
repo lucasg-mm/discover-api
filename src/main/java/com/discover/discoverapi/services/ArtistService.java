@@ -4,6 +4,7 @@ import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.ArtistRepository;
+import com.discover.discoverapi.services.exceptions.FailedToDownloadException;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import com.discover.discoverapi.services.fileuploaddownload.UploaderDownloader;
 import liquibase.util.file.FilenameUtils;
@@ -148,6 +149,7 @@ public class ArtistService {
     }
 
     // uploads the artist's image
+    @Transactional
     public void setArtistImage(long artistId, MultipartFile file){
         // retrieves the artist
         Artist foundArtist = findById(artistId);
@@ -176,6 +178,20 @@ public class ArtistService {
     }
 
     // downloads the artist's image
+    @Transactional
+    public byte[] getArtistImage(long artistId){
+        // gets artist and its image location data
+        Artist foundArtist = findById(artistId);
+        String foundArtistImagePath = foundArtist.getImagePath();
+        String foundArtistImageFileName = foundArtist.getImageFileName();
 
+        // download the image if the location data is not null
+        if (foundArtistImagePath != null && foundArtistImageFileName != null){
+            return imageUploaderDownloader.download(foundArtistImagePath, foundArtistImageFileName);
+        }
+        else{
+            throw new FailedToDownloadException("Artist does not have an image.");
+        }
+    }
 
 }

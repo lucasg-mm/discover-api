@@ -143,9 +143,14 @@ public class AlbumService {
     // downloads the cover art image
     @Transactional
     public byte[] getAlbumCover(long albumId){
+        // gets album and its cover location data
         Album foundAlbum = findById(albumId);
-        if (foundAlbum.getCoverArtPath() != null && foundAlbum.getCoverArtFileName() != null){
-            return imageUploaderDownloader.download(foundAlbum.getCoverArtPath(), foundAlbum.getCoverArtFileName());
+        String foundAlbumCoverArtPath = foundAlbum.getCoverArtPath();
+        String foundAlbumCoverArtFileName = foundAlbum.getCoverArtFileName();
+
+        // download the cover if the location data is not null
+        if (foundAlbumCoverArtPath != null && foundAlbumCoverArtFileName != null){
+            return imageUploaderDownloader.download(foundAlbumCoverArtPath, foundAlbumCoverArtFileName);
         }
         else{
             throw new FailedToDownloadException("Album does not have a cover art.");
