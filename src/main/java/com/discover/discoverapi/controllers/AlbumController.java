@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -115,8 +116,10 @@ public class AlbumController {
 
     // --- '/search' SUBRESOURCES ---
     @GetMapping("/search")
-    public ResponseEntity<Album> findByTitleContaining(@RequestParam String title){
-        System.out.println(title);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Map<String, Object>> findByTitleContaining(@RequestParam String title,
+                                                       @RequestParam(defaultValue = "1") int pageNumber,
+                                                       @RequestParam(defaultValue = "3") int pageSize){
+        Map<String, Object> response = albumService.findByTitleContaining(title, pageNumber, pageSize);
+        return ResponseEntity.ok().body(response);
     }
 }

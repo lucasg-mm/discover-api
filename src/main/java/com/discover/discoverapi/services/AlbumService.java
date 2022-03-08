@@ -8,13 +8,14 @@ import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import com.discover.discoverapi.services.fileuploaddownload.UploaderDownloader;
 import liquibase.util.file.FilenameUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -150,5 +151,25 @@ public class AlbumService {
         else{
             throw new FailedToDownloadException("Album does not have a cover art.");
         }
+    }
+
+    // find albums with a title that contains the 'title' param, and returns it in a
+    // paginated way
+    @Transactional
+    public Map<String, Object> findByTitleContaining(String title, int pageNumber, int pageSize){
+        // declarations and instantiations
+        Map<String, Object> response = new HashMap<>();  // the response that should be sent back to the client
+        Page<Album> pageWithAlbums;  // the page object with the albums
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);  // instantiates the Pageable object
+
+        // retrieves albums in the given page
+        pageWithAlbums = albumRepository.findByTitleContaining(title, pageable);
+
+        // mounts the response and return it
+        response.put("items", pageWithAlbums.getContent());
+        response.put("totalItems", pageWithAlbums.getTotalElements());
+        response.put("totalPages", pageWithAlbums.getTotalPages());
+
+        return response;
     }
 }
