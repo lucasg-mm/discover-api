@@ -25,7 +25,7 @@ public class ImageUploaderDownloader implements UploaderDownloader {
         return supportedMimeTypes.contains(file.getContentType());
     }
 
-    public Map<String, String> getsImageMetadata(MultipartFile file){
+    private Map<String, String> getsImageMetadata(MultipartFile file){
         //get file metadata
         Map<String, String> metadata = new HashMap<>();
         metadata.put("Content-Type", file.getContentType());
@@ -39,7 +39,7 @@ public class ImageUploaderDownloader implements UploaderDownloader {
     public void upload(MultipartFile file, String path, String fileName) {
         // check if file is empty
         if (file.isEmpty()) {
-            throw new FailedToUploadException("Cannot upload empty file!");
+            throw new FailedToUploadException("Cannot upload empty file.");
         }
 
         // check if file is image

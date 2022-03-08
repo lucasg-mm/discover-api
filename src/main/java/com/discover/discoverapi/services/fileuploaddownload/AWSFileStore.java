@@ -1,6 +1,7 @@
 package com.discover.discoverapi.services.fileuploaddownload;
 
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
@@ -22,12 +23,17 @@ public class AWSFileStore implements FileStore{
     private static final String BUCKET_NAME = "discover-api";
 
     // parses the image metadata as a Map to ObjectMetadata
-    private ObjectMetadata createObjectMetadataFromMap(Map<String, String> imageMetadata){
+    private ObjectMetadata createObjectMetadataFromMap(Map<String, String> fileMetadata){
+        // if the file data is null, simply return null
+        if (fileMetadata == null){
+            return null;
+        }
+
         // instantiates the ObjectMetadata
         ObjectMetadata objectMetadata = new ObjectMetadata();
 
         // iterates through maps, adding a new metadata for each iteration
-        for (var entry : imageMetadata.entrySet()){
+        for (var entry : fileMetadata.entrySet()){
             objectMetadata.addUserMetadata(entry.getKey(), entry.getValue());
         }
 
@@ -35,15 +41,15 @@ public class AWSFileStore implements FileStore{
     }
 
     // upload file to Amazon S3
-    public void save(String path, String fileName, InputStream fileToUpload, Map<String, String> imageMetadata){
+    public void save(String path, String fileName, InputStream fileToUpload, Map<String, String> fileMetadata){
         // hold the object metadata
-        ObjectMetadata objectMetadata = createObjectMetadataFromMap(imageMetadata);
+        ObjectMetadata objectMetadata = createObjectMetadataFromMap(fileMetadata);
 
         try{
             // saves the file
             amazonS3.putObject(BUCKET_NAME + "/" + path, fileName, fileToUpload, objectMetadata);
         }
-        catch(AmazonServiceException e){
+        catch(SdkClientException e){
             throw new FailedToUploadException("Failed to upload the file.");
         }
     }
