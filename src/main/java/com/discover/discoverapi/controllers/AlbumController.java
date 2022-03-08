@@ -1,8 +1,6 @@
 package com.discover.discoverapi.controllers;
 
 import com.discover.discoverapi.entities.Album;
-import com.discover.discoverapi.entities.Artist;
-import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.AlbumService;
 import lombok.AllArgsConstructor;
@@ -113,5 +111,12 @@ public class AlbumController {
                 .ok()
                 .header("Content-type", "image/png")
                 .body(resource);
+    }
+
+    // --- '/search' SUBRESOURCES ---
+    @GetMapping("/search")
+    public ResponseEntity<Album> findByTitleContaining(@RequestParam String title){
+        System.out.println(title);
+        return ResponseEntity.ok().build();
     }
 }
