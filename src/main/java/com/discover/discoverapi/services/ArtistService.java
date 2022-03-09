@@ -5,17 +5,19 @@ import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.ArtistRepository;
 import com.discover.discoverapi.services.exceptions.FailedToDownloadException;
+import com.discover.discoverapi.services.exceptions.InvalidInputException;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import com.discover.discoverapi.services.fileuploaddownload.UploaderDownloader;
 import liquibase.util.file.FilenameUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -189,4 +191,36 @@ public class ArtistService {
         }
     }
 
+    // find artists with a title that contains the 'name' param, and returns it in a
+    // paginated way
+    @Transactional
+    public Map<String, Object> findByNameContaining(String name, int pageNumber, int pageSize){
+        // validation
+        if (name == null || name.equals("")){
+            throw new InvalidInputException("Artist's name should not be empty or null.");
+        }
+
+        if (pageNumber <= 0){
+            throw new InvalidInputException("Page number should be greater than zero.");
+        }
+
+        if (pageSize <= 0){
+            throw new InvalidInputException("Page size should be greater than zero.");
+        }
+
+        // declarations and instantiations
+        Map<String, Object> response = new HashMap<>();  // the response that should be sent back to the client
+        Page<Artist> pageWithArtists;  // the page object with the albums
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);  // instantiates the Pageable object
+
+        // retrieves artists in the given page
+        pageWithArtists = artistRepository.findByNameContaining(name, pageable);
+
+        // mounts the response and return it
+        response.put("items", pageWithArtists.getContent());
+        response.put("totalItems", pageWithArtists.getTotalElements());
+        response.put("totalPages", pageWithArtists.getTotalPages());
+
+        return response;
+    }
 }
