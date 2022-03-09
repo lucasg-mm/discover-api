@@ -5,12 +5,18 @@ import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.GenreRepository;
+import com.discover.discoverapi.services.exceptions.InvalidInputException;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -174,5 +180,38 @@ public class GenreService {
         // delete from the genre's artists
         foundGenre.getArtists().remove(foundArtist);
         genreRepository.save(foundGenre);
+    }
+
+    // find genres with a title that contains the 'name' param, and returns it in a
+    // paginated way
+    @Transactional
+    public Map<String, Object> findByNameContaining(String name, int pageNumber, int pageSize){
+        // validation
+        if (name == null || name.equals("")){
+            throw new InvalidInputException("Genre's name should not be empty or null.");
+        }
+
+        if (pageNumber <= 0){
+            throw new InvalidInputException("Page number should be greater than zero.");
+        }
+
+        if (pageSize <= 0){
+            throw new InvalidInputException("Page size should be greater than zero.");
+        }
+
+        // declarations and instantiations
+        Map<String, Object> response = new HashMap<>();  // the response that should be sent back to the client
+        Page<Genre> pageWithGenres;  // the page object with the artists
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);  // instantiates the Pageable object
+
+        // retrieves genres in the given page
+        pageWithGenres = genreRepository.findByNameContaining(name, pageable);
+
+        // mounts the response and return it
+        response.put("items", pageWithGenres.getContent());
+        response.put("totalItems", pageWithGenres.getTotalElements());
+        response.put("totalPages", pageWithGenres.getTotalPages());
+
+        return response;
     }
 }

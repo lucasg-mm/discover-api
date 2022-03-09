@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -145,5 +146,14 @@ public class GenreController {
         // remove track from the genre's list of tracks
         genreService.deleteTrackFromGenre(genreId, trackId);
         return ResponseEntity.noContent().build();
+    }
+
+    // --- '/search' SUBRESOURCES ---
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> findByNameContaining(@RequestParam String name,
+                                                                    @RequestParam(defaultValue = "1") int pageNumber,
+                                                                    @RequestParam(defaultValue = "3") int pageSize){
+        Map<String, Object> response = genreService.findByNameContaining(name, pageNumber, pageSize);
+        return ResponseEntity.ok().body(response);
     }
 }

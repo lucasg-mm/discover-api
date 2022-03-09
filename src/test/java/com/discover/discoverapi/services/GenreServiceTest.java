@@ -5,6 +5,7 @@ import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.GenreRepository;
+import com.discover.discoverapi.services.exceptions.InvalidInputException;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -570,5 +571,46 @@ public class GenreServiceTest {
         verify(genreRepository, times(1)
                 .description("The genre should be updated after the track addition"))
                 .save(theGenre);
+    }
+
+    @Test
+    @DisplayName("Tests if giving incorrect input (empty string, negative page number and size, null values)" +
+            " to findByNameContaining (it should throw InvalidInputException).")
+    public void findByNameContainingThrowsInvalidInputExceptionWhenProvidedWithInvalidInput(){
+        // --- GIVEN ---
+
+        // invalid input
+        final String emptyName = "";
+        final String nullName = null;
+        final int negativePageNumber = -3;
+        final int zeroPageNumber = 0;
+        final int negativePageSize = -3;
+        final int zeroPageSize = 0;
+
+        // valid input
+        final String validName = "Man on the moon";
+        final int validPageNumber = 2;
+        final int validPageSize = 3;
+
+        // --- WHEN THEN ---
+
+        assertThrows(InvalidInputException.class,
+                () -> genreService.findByNameContaining(emptyName, validPageNumber, validPageSize),
+                "Giving an empty name should make the method throw an InvalidInputException.");
+        assertThrows(InvalidInputException.class,
+                () -> genreService.findByNameContaining(nullName, validPageNumber, validPageSize),
+                "Giving a null name should make the method throw an InvalidInputException.");
+        assertThrows(InvalidInputException.class,
+                () -> genreService.findByNameContaining(validName, negativePageNumber, validPageSize),
+                "Giving a negative page number should make the method throw an InvalidInputException.");
+        assertThrows(InvalidInputException.class,
+                () -> genreService.findByNameContaining(validName, zeroPageNumber, validPageSize),
+                "Giving a zero page number should make the method throw an InvalidInputException.");
+        assertThrows(InvalidInputException.class,
+                () -> genreService.findByNameContaining(validName, validPageNumber, negativePageSize),
+                "Giving a negative page size should make the method throw an InvalidInputException.");
+        assertThrows(InvalidInputException.class,
+                () -> genreService.findByNameContaining(validName, validPageNumber, zeroPageSize),
+                "Giving a zero page size should make the method throw an InvalidInputException.");
     }
 }
