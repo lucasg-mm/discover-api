@@ -4,6 +4,7 @@ import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.AlbumRepository;
 import com.discover.discoverapi.services.exceptions.FailedToDownloadException;
+import com.discover.discoverapi.services.exceptions.InvalidInputException;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import com.discover.discoverapi.services.fileuploaddownload.UploaderDownloader;
 import liquibase.util.file.FilenameUtils;
@@ -157,6 +158,19 @@ public class AlbumService {
     // paginated way
     @Transactional
     public Map<String, Object> findByTitleContaining(String title, int pageNumber, int pageSize){
+        // validation
+        if (title == null || title.equals("")){
+            throw new InvalidInputException("Album's title should not be empty or null.");
+        }
+
+        if (pageNumber <= 0){
+            throw new InvalidInputException("Page number should be greater than zero.");
+        }
+
+        if (pageSize <= 0){
+            throw new InvalidInputException("Page size should be greater than zero.");
+        }
+
         // declarations and instantiations
         Map<String, Object> response = new HashMap<>();  // the response that should be sent back to the client
         Page<Album> pageWithAlbums;  // the page object with the albums
