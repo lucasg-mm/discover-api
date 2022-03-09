@@ -9,6 +9,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/tracks")
@@ -66,5 +67,14 @@ public class TrackController {
 
         // no content response
         return ResponseEntity.noContent().build();
+    }
+
+    // --- '/search' SUBRESOURCES ---
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> findByTitleContaining(@RequestParam String title,
+                                                                     @RequestParam(defaultValue = "1") int pageNumber,
+                                                                     @RequestParam(defaultValue = "3") int pageSize){
+        Map<String, Object> response = trackService.findByTitleContaining(title, pageNumber, pageSize);
+        return ResponseEntity.ok().body(response);
     }
 }

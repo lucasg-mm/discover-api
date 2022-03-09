@@ -4,6 +4,7 @@ import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.TrackRepository;
+import com.discover.discoverapi.services.exceptions.InvalidInputException;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -212,5 +213,46 @@ public class TrackServiceTest {
 
         verify(trackRepository, times(1).description("trackRepository.deleteById()" +
                 " should be called once with the right id.")).deleteById(id);
+    }
+
+    @Test
+    @DisplayName("Tests if giving incorrect input (empty string, negative page number and size, null values)" +
+            " to findByTitleContaining (it should throw InvalidInputException).")
+    public void findByTitleContainingThrowsInvalidInputExceptionWhenProvidedWithInvalidInput(){
+        // --- GIVEN ---
+
+        // invalid input
+        final String emptyTitle = "";
+        final String nullTitle = null;
+        final int negativePageNumber = -3;
+        final int zeroPageNumber = 0;
+        final int negativePageSize = -3;
+        final int zeroPageSize = 0;
+
+        // valid input
+        final String validTitle = "Man on the moon";
+        final int validPageNumber = 2;
+        final int validPageSize = 3;
+
+        // --- WHEN THEN ---
+
+        assertThrows(InvalidInputException.class,
+                () -> trackService.findByTitleContaining(emptyTitle, validPageNumber, validPageSize),
+                "Giving an empty title should make the method throw an InvalidInputException.");
+        assertThrows(InvalidInputException.class,
+                () -> trackService.findByTitleContaining(nullTitle, validPageNumber, validPageSize),
+                "Giving a null title should make the method throw an InvalidInputException.");
+        assertThrows(InvalidInputException.class,
+                () -> trackService.findByTitleContaining(validTitle, negativePageNumber, validPageSize),
+                "Giving a negative page number should make the method throw an InvalidInputException.");
+        assertThrows(InvalidInputException.class,
+                () -> trackService.findByTitleContaining(validTitle, zeroPageNumber, validPageSize),
+                "Giving a zero page number should make the method throw an InvalidInputException.");
+        assertThrows(InvalidInputException.class,
+                () -> trackService.findByTitleContaining(validTitle, validPageNumber, negativePageSize),
+                "Giving a negative page size should make the method throw an InvalidInputException.");
+        assertThrows(InvalidInputException.class,
+                () -> trackService.findByTitleContaining(validTitle, validPageNumber, zeroPageSize),
+                "Giving a zero page size should make the method throw an InvalidInputException.");
     }
 }
