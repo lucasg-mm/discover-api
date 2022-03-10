@@ -14,6 +14,7 @@ import java.util.Set;
 @Getter @Setter @NoArgsConstructor
 public class Artist {
     // PROPERTIES
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -36,8 +37,7 @@ public class Artist {
             inverseJoinColumns = @JoinColumn(name = "album_id"))
     private Set<Album> albums;
 
-    @JsonIgnore
-    @Getter(onMethod_=@JsonProperty)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @ManyToMany
     @JoinTable(name = "artists_genres", joinColumns = @JoinColumn(name =  "artist_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
