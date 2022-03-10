@@ -5,6 +5,8 @@ import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.ArtistService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ public class ArtistController {
     private ArtistService artistService;
 
     // get every stored artist
+    @Operation(summary = "Returns all artists.")
     @GetMapping("")
     public ResponseEntity<List<Artist>> findAll(){
         List<Artist> allArtists = artistService.findAll();
@@ -31,6 +34,7 @@ public class ArtistController {
     }
 
     // get a specific artist
+    @Operation(summary = "Returns a specific artist.")
     @GetMapping("/{id}")
     public ResponseEntity<Artist> findById(@PathVariable long id){
         // retrieves the artist and returns it
@@ -39,6 +43,7 @@ public class ArtistController {
     }
 
     // create a single artist
+    @Operation(summary = "Creates an artist.")
     @PostMapping("")
     public ResponseEntity<Artist> createOne(@RequestBody Artist artistToCreate){
         // creates the new artist
@@ -56,6 +61,7 @@ public class ArtistController {
     }
 
     // update a single artist by id
+    @Operation(summary = "Updates a specific artist's name")
     @PutMapping("/{id}")
     public ResponseEntity<Artist> updateById(@PathVariable long id, @RequestBody Artist artistDataToUpdate){
         // updates the artist
@@ -66,6 +72,7 @@ public class ArtistController {
     }
 
     // delete a single artist by id
+    @Operation(summary = "Deletes a specific artist.")
     @DeleteMapping("/{id}")
     public ResponseEntity<Artist> deleteById(@PathVariable long id){
         // deletes the artist
@@ -75,6 +82,7 @@ public class ArtistController {
 
     // ------- '/albums' SUBRESOURCE -------
     // find all the artists' albums
+    @Operation(summary = "Returns all albums from an artist")
     @GetMapping("{artistId}/albums")
     public ResponseEntity<Set<Album>> findAllAlbumsOfArtist(@PathVariable long artistId){
         // find the artist's albums
@@ -83,6 +91,7 @@ public class ArtistController {
     }
 
     // add an album to the artist's album
+    @Operation(summary = "Adds an album to an artist's list of albums.")
     @PutMapping("{artistId}/albums/{albumId}")
     public ResponseEntity<Album> addAlbumToArtist(@PathVariable long artistId, @PathVariable long albumId){
         // add the album to the list of the artist's albums
@@ -91,6 +100,7 @@ public class ArtistController {
     }
 
     // delete an existing album from a given artist
+    @Operation(summary = "Deletes an album from an artist's list of albums.")
     @DeleteMapping("{artistId}/albums/{albumId}")
     public ResponseEntity<Album> removeAlbumFromArtist(@PathVariable long artistId, @PathVariable long albumId){
         // remove album from the artist's list of albums
@@ -100,6 +110,7 @@ public class ArtistController {
 
     // ------- '/tracks' SUBRESOURCE -------
     // find all the artists' tracks
+    @Operation(summary = "Returns all tracks from a artist.")
     @GetMapping("{artistId}/tracks")
     public ResponseEntity<Set<Track>> findAllTracksOfArtist(@PathVariable long artistId){
         // find the artist's tracks
@@ -108,6 +119,7 @@ public class ArtistController {
     }
 
     // add a track to the artist's tracks
+    @Operation(summary = "Adds a track to the artist's list of tracks.")
     @PutMapping("{artistId}/tracks/{trackId}")
     public ResponseEntity<Track> addTrackToArtist(@PathVariable long artistId, @PathVariable long trackId){
         // add the track to the list of the artist's tracks
@@ -116,6 +128,7 @@ public class ArtistController {
     }
 
     // delete an existing track from a given artist
+    @Operation(summary = "Deletes a track from the artist's list of tracks.")
     @DeleteMapping("{artistId}/tracks/{trackId}")
     public ResponseEntity<Track> removeTrackFromArtist(@PathVariable long artistId, @PathVariable long trackId){
         // remove track from the artist's list of tracks
@@ -126,6 +139,7 @@ public class ArtistController {
     // ------- '/image' SUBRESOURCE --------
 
     // defines an artist's image
+    @Operation(summary = "Defines an artist's profile image by multipart/form-data upload.")
     @PutMapping("{artistId}/image")
     public ResponseEntity<Artist> setImage(@PathVariable long artistId, @RequestParam MultipartFile image){
         artistService.setArtistImage(artistId, image);
@@ -133,6 +147,7 @@ public class ArtistController {
     }
 
     // gets an artist's image
+    @Operation(summary = "Gets an artist's profile image.")
     @GetMapping("{artistId}/image")
     public ResponseEntity<ByteArrayResource> getImage(@PathVariable long artistId){
         byte[] imageData = artistService.getArtistImage(artistId);
@@ -144,6 +159,8 @@ public class ArtistController {
     }
 
     // --- '/search' SUBRESOURCES ---
+    @Operation(summary = "Searches for an artist by their name.")
+    @ApiResponse(responseCode = "200", ref ="#/components/responses/artistSearchResponse" )
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> findByNameContaining(@RequestParam String name,
                                                                      @RequestParam(defaultValue = "1") int pageNumber,

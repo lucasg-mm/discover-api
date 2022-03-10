@@ -2,6 +2,8 @@ package com.discover.discoverapi.controllers;
 
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.TrackService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ public class TrackController {
     private TrackService trackService;
 
     // get every stored track
+    @Operation(summary = "Returns all tracks.")
     @GetMapping
     public ResponseEntity<List<Track>> findAll(){
         List<Track> allTracks = trackService.findAll();
@@ -25,6 +28,7 @@ public class TrackController {
     }
 
     // get a specific track by id
+    @Operation(summary = "Returns a specific track.")
     @GetMapping("/{id}")
     public ResponseEntity<Track> findById(@PathVariable long id){
         // retrieves the track and returns it
@@ -33,6 +37,7 @@ public class TrackController {
     }
 
     // create a single track
+    @Operation(summary = "Creates a track.")
     @PostMapping
     public ResponseEntity<Track> createOne(@RequestBody Track trackToCreate){
         // creates the new track
@@ -50,6 +55,7 @@ public class TrackController {
     }
 
     // update a single track by id
+    @Operation(summary = "Updates a specific track's title and length.")
     @PutMapping("/{id}")
     public ResponseEntity<Track> updateById(@PathVariable long id, @RequestBody Track trackDataToUpdate){
         // updates the track
@@ -60,6 +66,7 @@ public class TrackController {
     }
 
     // delete a single track by id
+    @Operation(summary = "Deletes a specific track.")
     @DeleteMapping("/{id}")
     public ResponseEntity<Track> deleteById(@PathVariable long id){
         // delete the track
@@ -70,6 +77,8 @@ public class TrackController {
     }
 
     // --- '/search' SUBRESOURCES ---
+    @Operation(summary = "Searches for a track by its title.")
+    @ApiResponse(responseCode = "200", ref ="#/components/responses/trackSearchResponse" )
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> findByTitleContaining(@RequestParam String title,
                                                                      @RequestParam(defaultValue = "1") int pageNumber,

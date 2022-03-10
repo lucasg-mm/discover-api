@@ -3,6 +3,8 @@ package com.discover.discoverapi.controllers;
 import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.AlbumService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ public class AlbumController {
 
     //------ MAIN RESOURCE -------
     // get every stored album
+    @Operation(summary = "Gets every stored album.")
     @GetMapping("")
     public ResponseEntity<List<Album>> findAll(){
         List<Album> allAlbums = albumService.findAll();
@@ -30,6 +33,7 @@ public class AlbumController {
     }
 
     // get a specific album
+    @Operation(summary = "Gets a specific album.")
     @GetMapping("/{id}")
     public ResponseEntity<Album> findById(@PathVariable long id){
         // retrieves the album
@@ -38,6 +42,7 @@ public class AlbumController {
     }
 
     // create a single album
+    @Operation(summary = "Creates an album.")
     @PostMapping("")
     public ResponseEntity<Album> createOne(@RequestBody Album albumToCreate){
         // persists the new album
@@ -54,6 +59,7 @@ public class AlbumController {
     }
 
     // update a single album
+    @Operation(summary = "Updates a specific album.")
     @PutMapping("/{id}")
     public ResponseEntity<Album> updateById(@PathVariable long id, @RequestBody Album albumDataToUpdate){
         // updates the album
@@ -63,6 +69,7 @@ public class AlbumController {
     }
 
     // delete a single album
+    @Operation(summary = "Deletes a specific album.")
     @DeleteMapping("/{id}")
     public ResponseEntity<Album> deleteById(@PathVariable long id){
         // deletes the album
@@ -72,6 +79,7 @@ public class AlbumController {
 
     // ------ '/tracks' SUBRESOURCE -------
     // find all the tracks from the album
+    @Operation(summary = "Returns every track from an album's list of tracks.")
     @GetMapping("{albumId}/tracks")
     public ResponseEntity<Set<Track>> findAllTracksOfAlbum(@PathVariable long albumId){
         Set<Track> allTracksOfAlbum = albumService.findAllTracksOfAlbum(albumId);
@@ -80,6 +88,7 @@ public class AlbumController {
     }
 
     // add an existing track to the album's tracks
+    @Operation(summary = "Adds a track to an album's list of tracks.")
     @PutMapping("{albumId}/tracks/{trackId}")
     public ResponseEntity<Track> addTrackToAlbum(@PathVariable long albumId, @PathVariable long trackId){
         Track addedTrack = albumService.addTrackToAlbum(albumId, trackId);
@@ -88,6 +97,7 @@ public class AlbumController {
     }
 
     // delete an existing track from a given album
+    @Operation(summary = "Deletes a track from an album's list of tracks.")
     @DeleteMapping("{albumId}/tracks/{trackId}")
     public ResponseEntity<Track> deleteTrackFromAlbum(@PathVariable long albumId, @PathVariable long trackId){
         albumService.deleteTrackFromAlbum(albumId, trackId);
@@ -97,6 +107,7 @@ public class AlbumController {
 
     // ------- '/cover' SUBRESOURCES --------
     // defines an album cover art
+    @Operation(summary = "Defines an album's cover art by multipart/form-data upload.")
     @PutMapping("{albumId}/cover")
     public ResponseEntity<Album> setAlbumCover(@PathVariable long albumId, @RequestParam MultipartFile coverArt){
         albumService.setAlbumCover(albumId, coverArt);
@@ -104,6 +115,7 @@ public class AlbumController {
     }
 
     // gets an album cover art
+    @Operation(summary = "Returns an album's cover art as Content-type: image/png.")
     @GetMapping("{albumId}/cover")
     public ResponseEntity<ByteArrayResource> getAlbumCover(@PathVariable long albumId){
         byte[] imageData = albumService.getAlbumCover(albumId);
@@ -115,6 +127,8 @@ public class AlbumController {
     }
 
     // --- '/search' SUBRESOURCES ---
+    @Operation(summary = "Searches for albums by their titles.")
+    @ApiResponse(responseCode = "200", ref ="#/components/responses/albumSearchResponse" )
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> findByTitleContaining(@RequestParam String title,
                                                        @RequestParam(defaultValue = "1") int pageNumber,

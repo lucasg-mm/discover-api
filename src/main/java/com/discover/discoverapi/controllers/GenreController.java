@@ -5,6 +5,8 @@ import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.GenreService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,7 @@ public class GenreController {
     private GenreService genreService;
 
     // get every stored genre
+    @Operation(summary = "Gets all stored genres.")
     @GetMapping("")
     public ResponseEntity<List<Genre>> findAll(){
         List<Genre> allGenres = genreService.findAll();
@@ -29,6 +32,7 @@ public class GenreController {
     }
 
     // get a specific genre by id
+    @Operation(summary = "Gets a specific Genre")
     @GetMapping("/{id}")
     public ResponseEntity<Genre> findById(@PathVariable long id){
         // retrieves the genre and returns it
@@ -37,6 +41,7 @@ public class GenreController {
     }
 
     // create a single genre
+    @Operation(summary = "Creates a specific Genre")
     @PostMapping("")
     public ResponseEntity<Genre> createOne(@RequestBody Genre genreToCreate){
         // creates the new genre
@@ -54,6 +59,7 @@ public class GenreController {
     }
 
     // update a single genre by id
+    @Operation(summary = "Updates a specific Genre")
     @PutMapping("/{id}")
     public ResponseEntity<Genre> updateById(@PathVariable long id, @RequestBody Genre genreDataToUpdate){
         // updates the genre
@@ -64,6 +70,7 @@ public class GenreController {
     }
 
     // delete a single genre by id
+    @Operation(summary = "Deletes a specific genre.")
     @DeleteMapping("/{id}")
     public ResponseEntity<Genre> deleteById(@PathVariable long id){
         // deletes the genre
@@ -75,6 +82,7 @@ public class GenreController {
 
     // ------- '/albums' SUBRESOURCE -------
     // find all the genres' albums
+    @Operation(summary = "Gets all albums from a genre's list of albums.")
     @GetMapping("{genreId}/albums")
     public ResponseEntity<Set<Album>> findAllAlbumsOfGenre(@PathVariable long genreId){
         // find the genre's albums
@@ -83,6 +91,7 @@ public class GenreController {
     }
 
     // add an album to the genre's album
+    @Operation(summary = "Adds an album to a genre's list of albums.")
     @PutMapping("{genreId}/genres/{albumId}")
     public ResponseEntity<Album> addAlbumToGenre(@PathVariable long genreId, @PathVariable long albumId){
         // add the album to the list of the genre's albums
@@ -91,6 +100,7 @@ public class GenreController {
     }
 
     // delete an existing album from a given genre
+    @Operation(summary = "Deletes an album from a genre's list of albums.")
     @DeleteMapping("{genreId}/genres/{albumId}")
     public ResponseEntity<Album> removeAlbumFromGenre(@PathVariable long genreId, @PathVariable long albumId){
         // remove album from the genre's list of albums
@@ -100,6 +110,7 @@ public class GenreController {
 
     // ------- '/artists' SUBRESOURCE -------
     // find all the genres' artists
+    @Operation(summary = "Gets all artists from a genre's list of artists.")
     @GetMapping("{genreId}/artists")
     public ResponseEntity<Set<Artist>> findAllArtistsOfGenre(@PathVariable long genreId){
         // find the genre's artists
@@ -108,6 +119,7 @@ public class GenreController {
     }
 
     // add an artist to the genre's artist
+    @Operation(summary = "Adds an artist to a genre's list of artists.")
     @PutMapping("{genreId}/artists/{artistId}")
     public ResponseEntity<Artist> addArtistToGenre(@PathVariable long genreId, @PathVariable long artistId){
         // add the artist to the list of the genre's artists
@@ -116,6 +128,7 @@ public class GenreController {
     }
 
     // delete an existing artist from a given genre
+    @Operation(summary = "Deletes an artist from a genre's list of artists.")
     @DeleteMapping("{genreId}/artists/{artistId}")
     public ResponseEntity<Artist> removeArtistFromGenre(@PathVariable long genreId, @PathVariable long artistId){
         // remove artist from the genre's list of artists
@@ -125,6 +138,7 @@ public class GenreController {
 
     // ------- '/tracks' SUBRESOURCE -------
     // find all the genres' tracks
+    @Operation(summary = "Gets all tracks from a genre's list of tracks.")
     @GetMapping("{genreId}/tracks")
     public ResponseEntity<Set<Track>> findAllTracksOfGenre(@PathVariable long genreId){
         // find the genre's tracks
@@ -133,6 +147,7 @@ public class GenreController {
     }
 
     // add a track to the genre's track
+    @Operation(summary = "Adds a track to a genre's list of tracks.")
     @PutMapping("{genreId}/tracks/{trackId}")
     public ResponseEntity<Track> addTrackToGenre(@PathVariable long genreId, @PathVariable long trackId){
         // add the track to the list of the genre's tracks
@@ -141,6 +156,7 @@ public class GenreController {
     }
 
     // delete an existing track from a given genre
+    @Operation(summary = "Deletes a track from a genre's list of tracks.")
     @DeleteMapping("{genreId}/tracks/{trackId}")
     public ResponseEntity<Track> removeTrackFromGenre(@PathVariable long genreId, @PathVariable long trackId){
         // remove track from the genre's list of tracks
@@ -149,6 +165,8 @@ public class GenreController {
     }
 
     // --- '/search' SUBRESOURCES ---
+    @Operation(summary = "Searches for genres by their names.")
+    @ApiResponse(responseCode = "200", ref ="#/components/responses/genreSearchResponse" )
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> findByNameContaining(@RequestParam String name,
                                                                     @RequestParam(defaultValue = "1") int pageNumber,
