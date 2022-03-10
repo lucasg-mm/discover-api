@@ -39,23 +39,26 @@ public class OpenAPIConfig {
         Schema artistSchema = getSchemaFromClass(Artist.class);
         Schema genreSchema = getSchemaFromClass(Genre.class);
 
+        // searched result's response description
+        final String searchedResultsResponseDescription = "The paginated search results.";
+
         return new OpenAPI()
                 .components(new Components()
                         .addResponses("albumSearchResponse", new io.swagger.v3.oas.models.responses
                                 .ApiResponse()
-                                .description("The search results.")
+                                .description(searchedResultsResponseDescription)
                                 .content(getSearchResultContent(albumSchema)))
                         .addResponses("trackSearchResponse", new io.swagger.v3.oas.models.responses
                                 .ApiResponse()
-                                .description("The search results.")
+                                .description(searchedResultsResponseDescription)
                                 .content(getSearchResultContent(trackSchema)))
                         .addResponses("artistSearchResponse", new io.swagger.v3.oas.models.responses
                                 .ApiResponse()
-                                .description("The search results.")
+                                .description(searchedResultsResponseDescription)
                                 .content(getSearchResultContent(artistSchema)))
                         .addResponses("genreSearchResponse", new io.swagger.v3.oas.models.responses
                                 .ApiResponse()
-                                .description("The search results.")
+                                .description(searchedResultsResponseDescription)
                                 .content(getSearchResultContent(genreSchema))));
     }
 }

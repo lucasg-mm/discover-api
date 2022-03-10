@@ -1,21 +1,45 @@
 package com.discover.discoverapi.controllers.exceptions;
 
+import com.discover.discoverapi.services.exceptions.FailedToDownloadException;
+import com.discover.discoverapi.services.exceptions.FailedToUploadException;
+import com.discover.discoverapi.services.exceptions.InvalidInputException;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
-    @ExceptionHandler(ObjectNotFoundException.class)
-    // handling ObjectNotFoundException exceptions
-    public ResponseEntity<StandardError> handleObjectNotFound(ObjectNotFoundException exception){
+    // returns a response with a basic error
+    public ResponseEntity<StandardError> getBasicExceptionResponse(HttpStatus status, RuntimeException exception){
         // creates a new standard error
-        StandardError error = new StandardError(HttpStatus.NOT_FOUND.value(),
+        StandardError error = new StandardError(status.value(),
                 System.currentTimeMillis(), exception.getMessage());
 
         // returns the error with the NOT FOUND status code
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        return ResponseEntity.status(status).body(error);
+    }
+
+    // handle exceptions that cause NOT FOUND
+    @ExceptionHandler(ObjectNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<StandardError> handleNotFound(RuntimeException exception){
+        return getBasicExceptionResponse(HttpStatus.NOT_FOUND, exception);
+    }
+
+    // handle exceptions that cause BAD REQUEST
+    @ExceptionHandler(InvalidInputException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<StandardError> handleBadRequest(RuntimeException exception){
+        return getBasicExceptionResponse(HttpStatus.BAD_REQUEST, exception);
+    }
+
+    // handle exceptions that cause INTERNAL SERVER ERROR
+    @ExceptionHandler({FailedToUploadException.class, FailedToDownloadException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<StandardError> handleInternalServerError(RuntimeException exception){
+        return  getBasicExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception);
     }
 }
