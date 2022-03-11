@@ -31,7 +31,9 @@ public class GenreController {
     // get every stored genre
     @Operation(description = "Gets all stored genres.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200")
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
     })
     @GetMapping(value = "", produces = "application/json")
     public ResponseEntity<List<Genre>> findAll(){
@@ -43,6 +45,8 @@ public class GenreController {
     @Operation(description = "Gets a specific genre.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "404",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
@@ -59,6 +63,8 @@ public class GenreController {
     @Operation(description = "Creates a specific Genre")
     @ApiResponses({
             @ApiResponse(responseCode = "201"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
@@ -82,6 +88,8 @@ public class GenreController {
     @Operation(description = "Updates a specific Genre")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "404",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
@@ -100,6 +108,8 @@ public class GenreController {
     @Operation(description = "Deletes a specific genre.")
     @ApiResponses({
             @ApiResponse(responseCode = "204", content = @Content),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "404",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
@@ -119,6 +129,8 @@ public class GenreController {
     @Operation(description = "Gets all albums from a genre's list of albums.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "404",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
@@ -135,6 +147,8 @@ public class GenreController {
     @Operation(description = "Adds an album to a genre's list of albums.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "404",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
@@ -151,6 +165,8 @@ public class GenreController {
     @Operation(description = "Deletes an album from a genre's list of albums.")
     @ApiResponses({
             @ApiResponse(responseCode = "204", content = @Content),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "404",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
@@ -168,6 +184,8 @@ public class GenreController {
     @Operation(description = "Gets all artists from a genre's list of artists.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "404",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
@@ -184,6 +202,8 @@ public class GenreController {
     @Operation(description = "Adds an artist to a genre's list of artists.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "404",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
@@ -200,6 +220,8 @@ public class GenreController {
     @Operation(description = "Deletes an artist from a genre's list of artists.")
     @ApiResponses({
             @ApiResponse(responseCode = "204", content = @Content),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "404",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
@@ -217,6 +239,8 @@ public class GenreController {
     @Operation(description = "Gets all tracks from a genre's list of tracks.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "404",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
@@ -233,6 +257,8 @@ public class GenreController {
     @Operation(description = "Adds a track to a genre's list of tracks.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "404",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
@@ -249,6 +275,8 @@ public class GenreController {
     @Operation(description = "Deletes a track from a genre's list of tracks.")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "404",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
