@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Schema(description = "Represents a genre.")
@@ -24,6 +25,7 @@ public class Genre {
     private long id;
 
     @Schema(description = "The genre's name.")
+    @NotEmpty(message = "Genre's name shouldn't be empty.")
     @Column(name = "name")
     private String name;
 

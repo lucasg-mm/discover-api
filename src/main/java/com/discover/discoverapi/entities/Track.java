@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Schema(description = "Represents a track.")
@@ -24,15 +28,12 @@ public class Track {
     private long id;
 
     @Schema(description = "The track's title.")
+    @NotEmpty(message = "Track's title shouldn't be empty.")
     @Column(name = "title")
     private String title;
 
-    @Schema(description = "The track's lyrics.")
-    @JsonIgnore
-    @Column(name = "lyrics")
-    private String lyrics;
-
     @Schema(description = "The track's length (in seconds).")
+    @Min(value = 1, message = "A track should be at least one second long.")
     @Column(name = "length")
     private int length;
 
@@ -58,9 +59,8 @@ public class Track {
 
     // CONSTRUCTORS
 
-    public Track(String title, String lyrics, int length, Album album, Set<Genre> genres, Set<Artist> artists) {
+    public Track(String title, int length, Album album, Set<Genre> genres, Set<Artist> artists) {
         this.title = title;
-        this.lyrics = lyrics;
         this.length = length;
         this.album = album;
         this.genres = genres;
@@ -73,7 +73,6 @@ public class Track {
         return "Track{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", lyrics='" + lyrics + '\'' +
                 ", length=" + length +
                 '}';
     }
