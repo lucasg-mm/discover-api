@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import java.util.Set;
 @RestController
 @RequestMapping(value = "/artists")
 @AllArgsConstructor
+@Tag(name = "Artist Controller")
 public class ArtistController {
     private ArtistService artistService;
 
