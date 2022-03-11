@@ -4,6 +4,7 @@ import com.discover.discoverapi.controllers.exceptions.StandardError;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.TrackService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -48,7 +49,8 @@ public class TrackController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Track> findById(@PathVariable long id){
+    public ResponseEntity<Track> findById(
+            @Parameter(description="Id from the track that should be retrieved.") @PathVariable long id){
         // retrieves the track and returns it
         Track foundTrack = trackService.findById(id);
         return ResponseEntity.ok(foundTrack);
@@ -91,7 +93,9 @@ public class TrackController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @PutMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Track> updateById(@PathVariable long id, @RequestBody Track trackDataToUpdate){
+    public ResponseEntity<Track> updateById(
+            @Parameter(description="Id from the track that should be updated") @PathVariable long id,
+            @RequestBody Track trackDataToUpdate){
         // updates the track
         Track updatedTrack = trackService.update(id, trackDataToUpdate);
 
@@ -111,7 +115,8 @@ public class TrackController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @DeleteMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Track> deleteById(@PathVariable long id){
+    public ResponseEntity<Track> deleteById(
+            @Parameter(description="Id from the track that should be deleted.") @PathVariable long id){
         // delete the track
         trackService.deleteById(id);
 
@@ -130,9 +135,10 @@ public class TrackController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping(value = "/search", produces = "application/json")
-    public ResponseEntity<Map<String, Object>> findByTitleContaining(@RequestParam String title,
-                                                                     @RequestParam(defaultValue = "1") int pageNumber,
-                                                                     @RequestParam(defaultValue = "3") int pageSize){
+    public ResponseEntity<Map<String, Object>> findByTitleContaining(
+            @Parameter(description="The track's title that should be searched.") @RequestParam String title,
+            @Parameter(description="The number of the page that should be retrieved (starting with 1).") @RequestParam(defaultValue = "1") int pageNumber,
+            @Parameter(description="Number of items in each page.") @RequestParam(defaultValue = "3") int pageSize){
         Map<String, Object> response = trackService.findByTitleContaining(title, pageNumber, pageSize);
         return ResponseEntity.ok().body(response);
     }
