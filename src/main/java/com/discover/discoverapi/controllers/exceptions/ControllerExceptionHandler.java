@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -24,21 +25,24 @@ public class ControllerExceptionHandler {
 
     // handle exceptions that cause NOT FOUND
     @ExceptionHandler(ObjectNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<StandardError> handleNotFound(RuntimeException exception){
         return getBasicExceptionResponse(HttpStatus.NOT_FOUND, exception);
     }
 
     // handle exceptions that cause BAD REQUEST
-    @ExceptionHandler(InvalidInputException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({
+            InvalidInputException.class,
+            MethodArgumentTypeMismatchException.class
+    })
     public ResponseEntity<StandardError> handleBadRequest(RuntimeException exception){
         return getBasicExceptionResponse(HttpStatus.BAD_REQUEST, exception);
     }
 
     // handle exceptions that cause INTERNAL SERVER ERROR
-    @ExceptionHandler({FailedToUploadException.class, FailedToDownloadException.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler({
+            FailedToUploadException.class,
+            FailedToDownloadException.class
+    })
     public ResponseEntity<StandardError> handleInternalServerError(RuntimeException exception){
         return  getBasicExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception);
     }

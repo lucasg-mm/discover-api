@@ -1,13 +1,18 @@
 package com.discover.discoverapi.controllers;
 
+import com.discover.discoverapi.controllers.exceptions.StandardError;
 import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.GenreService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -24,16 +29,26 @@ public class GenreController {
     private GenreService genreService;
 
     // get every stored genre
-    @Operation(summary = "Gets all stored genres.")
-    @GetMapping("")
+    @Operation(description = "Gets all stored genres.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200")
+    })
+    @GetMapping(value = "", produces = "application/json")
     public ResponseEntity<List<Genre>> findAll(){
         List<Genre> allGenres = genreService.findAll();
         return ResponseEntity.ok(allGenres);
     }
 
     // get a specific genre by id
-    @Operation(summary = "Gets a specific Genre")
-    @GetMapping("/{id}")
+    @Operation(description = "Gets a specific genre.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Genre> findById(@PathVariable long id){
         // retrieves the genre and returns it
         Genre foundGenre = genreService.findById(id);
@@ -41,8 +56,13 @@ public class GenreController {
     }
 
     // create a single genre
-    @Operation(summary = "Creates a specific Genre")
-    @PostMapping("")
+    @Operation(description = "Creates a specific Genre")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201"),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @PostMapping(value = "", produces = "application/json")
     public ResponseEntity<Genre> createOne(@RequestBody Genre genreToCreate){
         // creates the new genre
         Genre createdGenre = genreService.create(genreToCreate);
@@ -59,8 +79,15 @@ public class GenreController {
     }
 
     // update a single genre by id
-    @Operation(summary = "Updates a specific Genre")
-    @PutMapping("/{id}")
+    @Operation(description = "Updates a specific Genre")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @PutMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Genre> updateById(@PathVariable long id, @RequestBody Genre genreDataToUpdate){
         // updates the genre
         Genre updatedGenre = genreService.update(id, genreDataToUpdate);
@@ -70,8 +97,15 @@ public class GenreController {
     }
 
     // delete a single genre by id
-    @Operation(summary = "Deletes a specific genre.")
-    @DeleteMapping("/{id}")
+    @Operation(description = "Deletes a specific genre.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", content = @Content),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Genre> deleteById(@PathVariable long id){
         // deletes the genre
         genreService.deleteById(id);
@@ -82,8 +116,15 @@ public class GenreController {
 
     // ------- '/albums' SUBRESOURCE -------
     // find all the genres' albums
-    @Operation(summary = "Gets all albums from a genre's list of albums.")
-    @GetMapping("{genreId}/albums")
+    @Operation(description = "Gets all albums from a genre's list of albums.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping(value = "{genreId}/albums", produces = "application/json")
     public ResponseEntity<Set<Album>> findAllAlbumsOfGenre(@PathVariable long genreId){
         // find the genre's albums
         Set<Album> foundAlbums = genreService.findAllAlbumsOfGenre(genreId);
@@ -91,8 +132,15 @@ public class GenreController {
     }
 
     // add an album to the genre's album
-    @Operation(summary = "Adds an album to a genre's list of albums.")
-    @PutMapping("{genreId}/genres/{albumId}")
+    @Operation(description = "Adds an album to a genre's list of albums.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @PutMapping(value = "{genreId}/genres/{albumId}", produces = "application/json")
     public ResponseEntity<Album> addAlbumToGenre(@PathVariable long genreId, @PathVariable long albumId){
         // add the album to the list of the genre's albums
         Album addedAlbum = genreService.addAlbumToGenre(genreId, albumId);
@@ -100,8 +148,15 @@ public class GenreController {
     }
 
     // delete an existing album from a given genre
-    @Operation(summary = "Deletes an album from a genre's list of albums.")
-    @DeleteMapping("{genreId}/genres/{albumId}")
+    @Operation(description = "Deletes an album from a genre's list of albums.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", content = @Content),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @DeleteMapping(value = "{genreId}/genres/{albumId}", produces = "application/json")
     public ResponseEntity<Album> removeAlbumFromGenre(@PathVariable long genreId, @PathVariable long albumId){
         // remove album from the genre's list of albums
         genreService.deleteAlbumFromGenre(genreId, albumId);
@@ -110,8 +165,15 @@ public class GenreController {
 
     // ------- '/artists' SUBRESOURCE -------
     // find all the genres' artists
-    @Operation(summary = "Gets all artists from a genre's list of artists.")
-    @GetMapping("{genreId}/artists")
+    @Operation(description = "Gets all artists from a genre's list of artists.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping(value = "{genreId}/artists", produces = "application/json")
     public ResponseEntity<Set<Artist>> findAllArtistsOfGenre(@PathVariable long genreId){
         // find the genre's artists
         Set<Artist> foundArtists = genreService.findAllArtistsOfGenre(genreId);
@@ -119,8 +181,15 @@ public class GenreController {
     }
 
     // add an artist to the genre's artist
-    @Operation(summary = "Adds an artist to a genre's list of artists.")
-    @PutMapping("{genreId}/artists/{artistId}")
+    @Operation(description = "Adds an artist to a genre's list of artists.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @PutMapping(value = "{genreId}/artists/{artistId}", produces = "application/json")
     public ResponseEntity<Artist> addArtistToGenre(@PathVariable long genreId, @PathVariable long artistId){
         // add the artist to the list of the genre's artists
         Artist addedArtist = genreService.addArtistToGenre(genreId, artistId);
@@ -128,8 +197,15 @@ public class GenreController {
     }
 
     // delete an existing artist from a given genre
-    @Operation(summary = "Deletes an artist from a genre's list of artists.")
-    @DeleteMapping("{genreId}/artists/{artistId}")
+    @Operation(description = "Deletes an artist from a genre's list of artists.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", content = @Content),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @DeleteMapping(value = "{genreId}/artists/{artistId}", produces = "application/json")
     public ResponseEntity<Artist> removeArtistFromGenre(@PathVariable long genreId, @PathVariable long artistId){
         // remove artist from the genre's list of artists
         genreService.deleteArtistFromGenre(genreId, artistId);
@@ -138,8 +214,15 @@ public class GenreController {
 
     // ------- '/tracks' SUBRESOURCE -------
     // find all the genres' tracks
-    @Operation(summary = "Gets all tracks from a genre's list of tracks.")
-    @GetMapping("{genreId}/tracks")
+    @Operation(description = "Gets all tracks from a genre's list of tracks.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping(value = "{genreId}/tracks", produces = "application/json")
     public ResponseEntity<Set<Track>> findAllTracksOfGenre(@PathVariable long genreId){
         // find the genre's tracks
         Set<Track> foundTracks = genreService.findAllTracksOfGenre(genreId);
@@ -147,8 +230,15 @@ public class GenreController {
     }
 
     // add a track to the genre's track
-    @Operation(summary = "Adds a track to a genre's list of tracks.")
-    @PutMapping("{genreId}/tracks/{trackId}")
+    @Operation(description = "Adds a track to a genre's list of tracks.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @PutMapping(value = "{genreId}/tracks/{trackId}", produces = "application/json")
     public ResponseEntity<Track> addTrackToGenre(@PathVariable long genreId, @PathVariable long trackId){
         // add the track to the list of the genre's tracks
         Track addedTrack = genreService.addTrackToGenre(genreId, trackId);
@@ -156,8 +246,15 @@ public class GenreController {
     }
 
     // delete an existing track from a given genre
-    @Operation(summary = "Deletes a track from a genre's list of tracks.")
-    @DeleteMapping("{genreId}/tracks/{trackId}")
+    @Operation(description = "Deletes a track from a genre's list of tracks.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @DeleteMapping(value = "{genreId}/tracks/{trackId}", produces = "application/json")
     public ResponseEntity<Track> removeTrackFromGenre(@PathVariable long genreId, @PathVariable long trackId){
         // remove track from the genre's list of tracks
         genreService.deleteTrackFromGenre(genreId, trackId);
@@ -165,9 +262,16 @@ public class GenreController {
     }
 
     // --- '/search' SUBRESOURCES ---
-    @Operation(summary = "Searches for genres by their names.")
+    @Operation(description = "Searches for genres by their names.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
     @ApiResponse(responseCode = "200", ref ="#/components/responses/genreSearchResponse" )
-    @GetMapping("/search")
+    @GetMapping(value = "/search", produces = "application/json")
     public ResponseEntity<Map<String, Object>> findByNameContaining(@RequestParam String name,
                                                                     @RequestParam(defaultValue = "1") int pageNumber,
                                                                     @RequestParam(defaultValue = "3") int pageSize){
