@@ -5,6 +5,7 @@ import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.AlbumService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -53,7 +54,8 @@ public class AlbumController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Album> findById(@PathVariable long id){
+    public ResponseEntity<Album> findById(
+            @Parameter(description="Id of the album to be retrieved.") @PathVariable long id){
         // retrieves the album
         Album foundAlbum = albumService.findById(id);
         return ResponseEntity.ok().body(foundAlbum);
@@ -95,7 +97,9 @@ public class AlbumController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @PutMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Album> updateById(@PathVariable long id, @RequestBody Album albumDataToUpdate){
+    public ResponseEntity<Album> updateById(
+            @Parameter(description="Id of the album to be updated.") @PathVariable long id,
+            @RequestBody Album albumDataToUpdate){
         // updates the album
         Album updatedAlbum = albumService.update(id,albumDataToUpdate);
 
@@ -114,7 +118,8 @@ public class AlbumController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @DeleteMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Album> deleteById(@PathVariable long id){
+    public ResponseEntity<Album> deleteById(
+            @Parameter(description="Id of the album to be deleted.") @PathVariable long id){
         // deletes the album
         albumService.deleteById(id);
         return ResponseEntity.noContent().build();
@@ -133,7 +138,8 @@ public class AlbumController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping(value = "{albumId}/tracks", produces = "application/json")
-    public ResponseEntity<Set<Track>> findAllTracksOfAlbum(@PathVariable long albumId){
+    public ResponseEntity<Set<Track>> findAllTracksOfAlbum(
+            @Parameter(description="Id of the album the tracks should be from.") @PathVariable long albumId){
         Set<Track> allTracksOfAlbum = albumService.findAllTracksOfAlbum(albumId);
 
         return ResponseEntity.ok(allTracksOfAlbum);
@@ -151,7 +157,9 @@ public class AlbumController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @PutMapping(value = "{albumId}/tracks/{trackId}", produces = "application/json")
-    public ResponseEntity<Track> addTrackToAlbum(@PathVariable long albumId, @PathVariable long trackId){
+    public ResponseEntity<Track> addTrackToAlbum(
+            @Parameter(description="Id of the album the track should be from.") @PathVariable long albumId,
+            @Parameter(description="Id of the track that should be added") @PathVariable long trackId){
         Track addedTrack = albumService.addTrackToAlbum(albumId, trackId);
 
         return ResponseEntity.ok(addedTrack);
@@ -169,7 +177,9 @@ public class AlbumController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @DeleteMapping(value = "{albumId}/tracks/{trackId}", produces = "application/json")
-    public ResponseEntity<Track> deleteTrackFromAlbum(@PathVariable long albumId, @PathVariable long trackId){
+    public ResponseEntity<Track> deleteTrackFromAlbum(
+            @Parameter(description="Id of the album the track is from.") @PathVariable long albumId,
+            @Parameter(description="Id of the track that should be removed from the album.") @PathVariable long trackId){
         albumService.deleteTrackFromAlbum(albumId, trackId);
 
         return ResponseEntity.noContent().build();
@@ -188,7 +198,9 @@ public class AlbumController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @PutMapping(value = "{albumId}/cover", produces = "application/json")
-    public ResponseEntity<Album> setAlbumCover(@PathVariable long albumId, @RequestParam MultipartFile coverArt){
+    public ResponseEntity<Album> setAlbumCover(
+            @Parameter(description="Id of the album that the image is being uploaded to.") @PathVariable long albumId,
+            @RequestParam MultipartFile coverArt){
         albumService.setAlbumCover(albumId, coverArt);
         return ResponseEntity.ok().build();
     }
@@ -208,7 +220,8 @@ public class AlbumController {
                             schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping(value = "{albumId}/cover", produces = "image/png")
-    public ResponseEntity<ByteArrayResource> getAlbumCover(@PathVariable long albumId){
+    public ResponseEntity<ByteArrayResource> getAlbumCover(
+            @Parameter(description="Id of the album that the cover is from.") @PathVariable long albumId){
         byte[] imageData = albumService.getAlbumCover(albumId);
         ByteArrayResource resource = new ByteArrayResource(imageData);
         return ResponseEntity
@@ -228,9 +241,10 @@ public class AlbumController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping(value = "/search", produces = "application/json")
-    public ResponseEntity<Map<String, Object>> findByTitleContaining(@RequestParam String title,
-                                                       @RequestParam(defaultValue = "1") int pageNumber,
-                                                       @RequestParam(defaultValue = "3") int pageSize){
+    public ResponseEntity<Map<String, Object>> findByTitleContaining(
+            @Parameter(description="The album's title that should be searched.") @RequestParam String title,
+            @Parameter(description="The number of the page that should be retrieved (starting with 1).") @RequestParam(defaultValue = "1") int pageNumber,
+            @Parameter(description="Number of items in each page.") @RequestParam(defaultValue = "3") int pageSize){
         Map<String, Object> response = albumService.findByTitleContaining(title, pageNumber, pageSize);
         return ResponseEntity.ok().body(response);
     }
