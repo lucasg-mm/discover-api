@@ -179,7 +179,7 @@ public class AlbumController {
     @DeleteMapping(value = "{albumId}/tracks/{trackId}", produces = "application/json")
     public ResponseEntity<Track> deleteTrackFromAlbum(
             @Parameter(description="Id of the album the track is from.") @PathVariable long albumId,
-            @Parameter(description="Id of the track that should be removed from the album.") @PathVariable long trackId){
+            @Parameter(description="Id of the track that should be removed from the album's list of tracks.") @PathVariable long trackId){
         albumService.deleteTrackFromAlbum(albumId, trackId);
 
         return ResponseEntity.noContent().build();

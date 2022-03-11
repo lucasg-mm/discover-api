@@ -6,6 +6,7 @@ import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.ArtistService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -53,7 +54,8 @@ public class ArtistController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Artist> findById(@PathVariable long id){
+    public ResponseEntity<Artist> findById(
+            @Parameter(description="Id of the artist to be retrieved.") @PathVariable long id){
         // retrieves the artist and returns it
         Artist foundArtist = artistService.findById(id);
         return ResponseEntity.ok(foundArtist);
@@ -96,7 +98,9 @@ public class ArtistController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @PutMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Artist> updateById(@PathVariable long id, @RequestBody Artist artistDataToUpdate){
+    public ResponseEntity<Artist> updateById(
+            @Parameter(description="Id of the artist to be updated.") @PathVariable long id,
+            @RequestBody Artist artistDataToUpdate){
         // updates the artist
         Artist updatedArtist = artistService.update(id, artistDataToUpdate);
 
@@ -116,7 +120,8 @@ public class ArtistController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @DeleteMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Artist> deleteById(@PathVariable long id){
+    public ResponseEntity<Artist> deleteById(
+            @Parameter(description="id of the artist to be deleted.") @PathVariable long id){
         // deletes the artist
         artistService.deleteById(id);
         return ResponseEntity.noContent().build();
@@ -135,7 +140,8 @@ public class ArtistController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping(value = "{artistId}/albums", produces = "application/json")
-    public ResponseEntity<Set<Album>> findAllAlbumsOfArtist(@PathVariable long artistId){
+    public ResponseEntity<Set<Album>> findAllAlbumsOfArtist(
+            @Parameter(description="Id of the artist that the albums should be from.") @PathVariable long artistId){
         // find the artist's albums
         Set<Album> foundAlbums = artistService.findAllAlbumsOfArtist(artistId);
         return ResponseEntity.ok(foundAlbums);
@@ -153,7 +159,9 @@ public class ArtistController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @PutMapping(value = "{artistId}/albums/{albumId}", produces = "application/json")
-    public ResponseEntity<Album> addAlbumToArtist(@PathVariable long artistId, @PathVariable long albumId){
+    public ResponseEntity<Album> addAlbumToArtist(
+            @Parameter(description="Id of the artist to which the album will be added.") @PathVariable long artistId,
+            @Parameter(description="Id of the album to be added.") @PathVariable long albumId){
         // add the album to the list of the artist's albums
         Album addedAlbum = artistService.addAlbumToArtist(artistId, albumId);
         return ResponseEntity.ok(addedAlbum);
@@ -171,7 +179,9 @@ public class ArtistController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @DeleteMapping(value = "{artistId}/albums/{albumId}", produces = "application/json")
-    public ResponseEntity<Album> removeAlbumFromArtist(@PathVariable long artistId, @PathVariable long albumId){
+    public ResponseEntity<Album> removeAlbumFromArtist(
+            @Parameter(description="Id of the artist from which the album will be removed.") @PathVariable long artistId,
+            @Parameter(description="Id of the album to be removed from the artist's list of albums.") @PathVariable long albumId){
         // remove album from the artist's list of albums
         artistService.deleteAlbumFromArtist(artistId, albumId);
         return ResponseEntity.noContent().build();
@@ -190,7 +200,8 @@ public class ArtistController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping(value = "{artistId}/tracks", produces = "application/json")
-    public ResponseEntity<Set<Track>> findAllTracksOfArtist(@PathVariable long artistId){
+    public ResponseEntity<Set<Track>> findAllTracksOfArtist(
+            @Parameter(description="Id of the artist that the tracks should be from.") @PathVariable long artistId){
         // find the artist's tracks
         Set<Track> foundTracks = artistService.findAllTracksOfArtist(artistId);
         return ResponseEntity.ok(foundTracks);
@@ -208,7 +219,9 @@ public class ArtistController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @PutMapping(value = "{artistId}/tracks/{trackId}", produces = "application/json")
-    public ResponseEntity<Track> addTrackToArtist(@PathVariable long artistId, @PathVariable long trackId){
+    public ResponseEntity<Track> addTrackToArtist(
+            @Parameter(description="Id of the artist to which the album will be added.") @PathVariable long artistId,
+            @Parameter(description="Id of the track to be added.") @PathVariable long trackId){
         // add the track to the list of the artist's tracks
         Track addedTrack = artistService.addTrackToArtist(artistId, trackId);
         return ResponseEntity.ok(addedTrack);
@@ -226,7 +239,9 @@ public class ArtistController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @DeleteMapping(value = "{artistId}/tracks/{trackId}", produces = "application/json")
-    public ResponseEntity<Track> removeTrackFromArtist(@PathVariable long artistId, @PathVariable long trackId){
+    public ResponseEntity<Track> removeTrackFromArtist(
+            @Parameter(description="Id of the artist from which the track should be removed") @PathVariable long artistId,
+            @Parameter(description="Id of the track to be removed from the artist's list of tracks") @PathVariable long trackId){
         // remove track from the artist's list of tracks
         artistService.deleteTrackFromArtist(artistId, trackId);
         return ResponseEntity.noContent().build();
@@ -246,7 +261,9 @@ public class ArtistController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @PutMapping(value = "{artistId}/image", produces = "application/json")
-    public ResponseEntity<Artist> setImage(@PathVariable long artistId, @RequestParam MultipartFile image){
+    public ResponseEntity<Artist> setImage(
+            @Parameter(description="Id of the artist that the image will be uploaded to.") @PathVariable long artistId,
+            @RequestParam MultipartFile image){
         artistService.setArtistImage(artistId, image);
         return ResponseEntity.ok().build();
     }
@@ -266,7 +283,8 @@ public class ArtistController {
                             schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping(value = "{artistId}/image", produces = "image/png")
-    public ResponseEntity<ByteArrayResource> getImage(@PathVariable long artistId){
+    public ResponseEntity<ByteArrayResource> getImage(
+            @Parameter(description="Id of the artist that the retrieved image should be of.") @PathVariable long artistId){
         byte[] imageData = artistService.getArtistImage(artistId);
         ByteArrayResource resource = new ByteArrayResource(imageData);
         return ResponseEntity
@@ -286,9 +304,10 @@ public class ArtistController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping(value = "/search", produces = "application/json")
-    public ResponseEntity<Map<String, Object>> findByNameContaining(@RequestParam String name,
-                                                                     @RequestParam(defaultValue = "1") int pageNumber,
-                                                                     @RequestParam(defaultValue = "3") int pageSize){
+    public ResponseEntity<Map<String, Object>> findByNameContaining(
+            @Parameter(description="The artist's name that should be searched for.") @RequestParam String name,
+            @Parameter(description="The number of the page that should be retrieved (starting with 1).") @RequestParam(defaultValue = "1") int pageNumber,
+            @Parameter(description="Number of items in each page.") int pageSize){
         Map<String, Object> response = artistService.findByNameContaining(name, pageNumber, pageSize);
         return ResponseEntity.ok().body(response);
     }
