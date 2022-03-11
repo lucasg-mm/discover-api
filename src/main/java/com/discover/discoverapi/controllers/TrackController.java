@@ -24,20 +24,20 @@ public class TrackController {
     private TrackService trackService;
 
     // get every stored track
+    @Operation(description = "Returns all tracks.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "500",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
     })
-    @Operation(summary = "Returns all tracks.")
-    @GetMapping
+    @GetMapping(produces = "application/json")
     public ResponseEntity<List<Track>> findAll(){
         List<Track> allTracks = trackService.findAll();
         return ResponseEntity.ok(allTracks);
     }
 
     // get a specific track by id
-    @Operation(summary = "Returns a specific track.")
+    @Operation(description = "Returns a specific track.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "500",
@@ -47,7 +47,7 @@ public class TrackController {
             @ApiResponse(responseCode = "400",
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Track> findById(@PathVariable long id){
         // retrieves the track and returns it
         Track foundTrack = trackService.findById(id);
@@ -55,7 +55,7 @@ public class TrackController {
     }
 
     // create a single track
-    @Operation(summary = "Creates a track.")
+    @Operation(description = "Creates a track.")
     @ApiResponses({
             @ApiResponse(responseCode = "201"),
             @ApiResponse(responseCode = "500",
@@ -63,7 +63,7 @@ public class TrackController {
             @ApiResponse(responseCode = "400",
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
-    @PostMapping
+    @PostMapping(produces = "application/json")
     public ResponseEntity<Track> createOne(@RequestBody Track trackToCreate){
         // creates the new track
         Track createdTrack = trackService.create(trackToCreate);
@@ -80,7 +80,7 @@ public class TrackController {
     }
 
     // update a single track by id
-    @Operation(summary = "Updates a specific track's title and length.")
+    @Operation(description = "Updates a specific track's title and length.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "500",
@@ -90,7 +90,7 @@ public class TrackController {
             @ApiResponse(responseCode = "400",
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Track> updateById(@PathVariable long id, @RequestBody Track trackDataToUpdate){
         // updates the track
         Track updatedTrack = trackService.update(id, trackDataToUpdate);
@@ -100,7 +100,7 @@ public class TrackController {
     }
 
     // delete a single track by id
-    @Operation(summary = "Deletes a specific track.")
+    @Operation(description = "Deletes a specific track.")
     @ApiResponses({
             @ApiResponse(responseCode = "204", content = @Content),
             @ApiResponse(responseCode = "500",
@@ -110,7 +110,7 @@ public class TrackController {
             @ApiResponse(responseCode = "400",
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Track> deleteById(@PathVariable long id){
         // delete the track
         trackService.deleteById(id);
@@ -120,7 +120,7 @@ public class TrackController {
     }
 
     // --- '/search' SUBRESOURCES ---
-    @Operation(summary = "Searches for a track by its title.")
+    @Operation(description = "Searches for a track by its title.")
     @ApiResponses({
             @ApiResponse(responseCode = "500",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
@@ -128,7 +128,7 @@ public class TrackController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @ApiResponse(responseCode = "200", ref ="#/components/responses/trackSearchResponse" )
-    @GetMapping("/search")
+    @GetMapping(value = "/search", produces = "application/json")
     public ResponseEntity<Map<String, Object>> findByTitleContaining(@RequestParam String title,
                                                                      @RequestParam(defaultValue = "1") int pageNumber,
                                                                      @RequestParam(defaultValue = "3") int pageSize){
