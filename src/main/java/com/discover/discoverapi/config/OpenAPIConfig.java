@@ -9,6 +9,7 @@ import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.core.converter.ResolvedSchema;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +44,13 @@ public class OpenAPIConfig {
         final String searchedResultsResponseDescription = "The paginated search results.";
 
         return new OpenAPI()
+                .info(
+                        new Info()
+                                .title("Discover API")
+                                .description("A Spring Boot REST API to create, read, update and delete albums," +
+                                        " tracks, artists and musical genres.")
+                                .version("1.0.0")
+                )
                 .components(new Components()
                         .addResponses("albumSearchResponse", new io.swagger.v3.oas.models.responses
                                 .ApiResponse()
