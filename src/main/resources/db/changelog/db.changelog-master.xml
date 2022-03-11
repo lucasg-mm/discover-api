@@ -14,7 +14,7 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
             <column name="title" type="varchar(100)">
                 <constraints nullable="false" notNullConstraintName="title_not_null"/>
             </column>
-            <column name="release_date" type="timestamp">
+            <column name="release_date" type="date">
             </column>
             <column name="cover_art_path" type="varchar(256)">
             </column>
@@ -53,7 +53,6 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
                 <constraints foreignKeyName="album_id_fk_tracks" references="albums(id)"/>
             </column>
             <column name="title" type="varchar(100)"/>
-            <column name="lyrics" type="text"/>
             <column name="length" type="int"/>
         </createTable>
         
