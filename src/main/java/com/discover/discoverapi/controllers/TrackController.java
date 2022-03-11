@@ -1,9 +1,13 @@
 package com.discover.discoverapi.controllers;
 
+import com.discover.discoverapi.controllers.exceptions.StandardError;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.TrackService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +24,11 @@ public class TrackController {
     private TrackService trackService;
 
     // get every stored track
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+    })
     @Operation(summary = "Returns all tracks.")
     @GetMapping
     public ResponseEntity<List<Track>> findAll(){
@@ -29,6 +38,15 @@ public class TrackController {
 
     // get a specific track by id
     @Operation(summary = "Returns a specific track.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
     @GetMapping("/{id}")
     public ResponseEntity<Track> findById(@PathVariable long id){
         // retrieves the track and returns it
@@ -38,6 +56,13 @@ public class TrackController {
 
     // create a single track
     @Operation(summary = "Creates a track.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
     @PostMapping
     public ResponseEntity<Track> createOne(@RequestBody Track trackToCreate){
         // creates the new track
@@ -56,6 +81,15 @@ public class TrackController {
 
     // update a single track by id
     @Operation(summary = "Updates a specific track's title and length.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
     @PutMapping("/{id}")
     public ResponseEntity<Track> updateById(@PathVariable long id, @RequestBody Track trackDataToUpdate){
         // updates the track
@@ -67,6 +101,15 @@ public class TrackController {
 
     // delete a single track by id
     @Operation(summary = "Deletes a specific track.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", content = @Content),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Track> deleteById(@PathVariable long id){
         // delete the track
@@ -78,6 +121,12 @@ public class TrackController {
 
     // --- '/search' SUBRESOURCES ---
     @Operation(summary = "Searches for a track by its title.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
     @ApiResponse(responseCode = "200", ref ="#/components/responses/trackSearchResponse" )
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> findByTitleContaining(@RequestParam String title,
