@@ -1,12 +1,15 @@
 package com.discover.discoverapi.controllers;
 
+import com.discover.discoverapi.controllers.exceptions.StandardError;
 import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Artist;
-import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.ArtistService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +30,12 @@ public class ArtistController {
 
     // get every stored artist
     @Operation(summary = "Returns all artists.")
-    @GetMapping("")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping(value = "", produces = "application/json")
     public ResponseEntity<List<Artist>> findAll(){
         List<Artist> allArtists = artistService.findAll();
         return ResponseEntity.ok().body(allArtists);
@@ -35,7 +43,16 @@ public class ArtistController {
 
     // get a specific artist
     @Operation(summary = "Returns a specific artist.")
-    @GetMapping("/{id}")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Artist> findById(@PathVariable long id){
         // retrieves the artist and returns it
         Artist foundArtist = artistService.findById(id);
@@ -44,7 +61,14 @@ public class ArtistController {
 
     // create a single artist
     @Operation(summary = "Creates an artist.")
-    @PostMapping("")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @PostMapping(value = "", produces = "application/json")
     public ResponseEntity<Artist> createOne(@RequestBody Artist artistToCreate){
         // creates the new artist
         Artist createdArtist = artistService.create(artistToCreate);
@@ -62,7 +86,16 @@ public class ArtistController {
 
     // update a single artist by id
     @Operation(summary = "Updates a specific artist's name")
-    @PutMapping("/{id}")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @PutMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Artist> updateById(@PathVariable long id, @RequestBody Artist artistDataToUpdate){
         // updates the artist
         Artist updatedArtist = artistService.update(id, artistDataToUpdate);
@@ -73,7 +106,16 @@ public class ArtistController {
 
     // delete a single artist by id
     @Operation(summary = "Deletes a specific artist.")
-    @DeleteMapping("/{id}")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", content = @Content),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Artist> deleteById(@PathVariable long id){
         // deletes the artist
         artistService.deleteById(id);
@@ -83,7 +125,16 @@ public class ArtistController {
     // ------- '/albums' SUBRESOURCE -------
     // find all the artists' albums
     @Operation(summary = "Returns all albums from an artist")
-    @GetMapping("{artistId}/albums")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping(value = "{artistId}/albums", produces = "application/json")
     public ResponseEntity<Set<Album>> findAllAlbumsOfArtist(@PathVariable long artistId){
         // find the artist's albums
         Set<Album> foundAlbums = artistService.findAllAlbumsOfArtist(artistId);
@@ -92,7 +143,16 @@ public class ArtistController {
 
     // add an album to the artist's album
     @Operation(summary = "Adds an album to an artist's list of albums.")
-    @PutMapping("{artistId}/albums/{albumId}")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @PutMapping(value = "{artistId}/albums/{albumId}", produces = "application/json")
     public ResponseEntity<Album> addAlbumToArtist(@PathVariable long artistId, @PathVariable long albumId){
         // add the album to the list of the artist's albums
         Album addedAlbum = artistService.addAlbumToArtist(artistId, albumId);
@@ -101,7 +161,16 @@ public class ArtistController {
 
     // delete an existing album from a given artist
     @Operation(summary = "Deletes an album from an artist's list of albums.")
-    @DeleteMapping("{artistId}/albums/{albumId}")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", content = @Content),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @DeleteMapping(value = "{artistId}/albums/{albumId}", produces = "application/json")
     public ResponseEntity<Album> removeAlbumFromArtist(@PathVariable long artistId, @PathVariable long albumId){
         // remove album from the artist's list of albums
         artistService.deleteAlbumFromArtist(artistId, albumId);
@@ -111,7 +180,16 @@ public class ArtistController {
     // ------- '/tracks' SUBRESOURCE -------
     // find all the artists' tracks
     @Operation(summary = "Returns all tracks from a artist.")
-    @GetMapping("{artistId}/tracks")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping(value = "{artistId}/tracks", produces = "application/json")
     public ResponseEntity<Set<Track>> findAllTracksOfArtist(@PathVariable long artistId){
         // find the artist's tracks
         Set<Track> foundTracks = artistService.findAllTracksOfArtist(artistId);
@@ -120,7 +198,16 @@ public class ArtistController {
 
     // add a track to the artist's tracks
     @Operation(summary = "Adds a track to the artist's list of tracks.")
-    @PutMapping("{artistId}/tracks/{trackId}")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @PutMapping(value = "{artistId}/tracks/{trackId}", produces = "application/json")
     public ResponseEntity<Track> addTrackToArtist(@PathVariable long artistId, @PathVariable long trackId){
         // add the track to the list of the artist's tracks
         Track addedTrack = artistService.addTrackToArtist(artistId, trackId);
@@ -129,7 +216,16 @@ public class ArtistController {
 
     // delete an existing track from a given artist
     @Operation(summary = "Deletes a track from the artist's list of tracks.")
-    @DeleteMapping("{artistId}/tracks/{trackId}")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", content = @Content),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @DeleteMapping(value = "{artistId}/tracks/{trackId}", produces = "application/json")
     public ResponseEntity<Track> removeTrackFromArtist(@PathVariable long artistId, @PathVariable long trackId){
         // remove track from the artist's list of tracks
         artistService.deleteTrackFromArtist(artistId, trackId);
@@ -140,7 +236,16 @@ public class ArtistController {
 
     // defines an artist's image
     @Operation(summary = "Defines an artist's profile image by multipart/form-data upload.")
-    @PutMapping("{artistId}/image")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @PutMapping(value = "{artistId}/image", produces = "application/json")
     public ResponseEntity<Artist> setImage(@PathVariable long artistId, @RequestParam MultipartFile image){
         artistService.setArtistImage(artistId, image);
         return ResponseEntity.ok().build();
@@ -148,7 +253,19 @@ public class ArtistController {
 
     // gets an artist's image
     @Operation(summary = "Gets an artist's profile image.")
-    @GetMapping("{artistId}/image")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping(value = "{artistId}/image", produces = "image/png")
     public ResponseEntity<ByteArrayResource> getImage(@PathVariable long artistId){
         byte[] imageData = artistService.getArtistImage(artistId);
         ByteArrayResource resource = new ByteArrayResource(imageData);
@@ -160,8 +277,15 @@ public class ArtistController {
 
     // --- '/search' SUBRESOURCES ---
     @Operation(summary = "Searches for an artist by their name.")
-    @ApiResponse(responseCode = "200", ref ="#/components/responses/artistSearchResponse" )
-    @GetMapping("/search")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",
+                    ref ="#/components/responses/artistSearchResponse"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping(value = "/search", produces = "application/json")
     public ResponseEntity<Map<String, Object>> findByNameContaining(@RequestParam String name,
                                                                      @RequestParam(defaultValue = "1") int pageNumber,
                                                                      @RequestParam(defaultValue = "3") int pageSize){

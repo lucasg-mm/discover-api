@@ -122,12 +122,13 @@ public class TrackController {
     // --- '/search' SUBRESOURCES ---
     @Operation(description = "Searches for a track by its title.")
     @ApiResponses({
+            @ApiResponse(responseCode = "200",
+                    ref ="#/components/responses/trackSearchResponse"),
             @ApiResponse(responseCode = "500",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
-    @ApiResponse(responseCode = "200", ref ="#/components/responses/trackSearchResponse" )
     @GetMapping(value = "/search", produces = "application/json")
     public ResponseEntity<Map<String, Object>> findByTitleContaining(@RequestParam String title,
                                                                      @RequestParam(defaultValue = "1") int pageNumber,

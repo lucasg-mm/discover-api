@@ -273,7 +273,7 @@ public class GenreController {
     // delete an existing track from a given genre
     @Operation(description = "Deletes a track from a genre's list of tracks.")
     @ApiResponses({
-            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "204", content = @Content),
             @ApiResponse(responseCode = "500",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "404",
@@ -291,12 +291,13 @@ public class GenreController {
     // --- '/search' SUBRESOURCES ---
     @Operation(description = "Searches for genres by their names.")
     @ApiResponses({
+            @ApiResponse(responseCode = "200",
+                    ref ="#/components/responses/genreSearchResponse"),
             @ApiResponse(responseCode = "500",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
-    @ApiResponse(responseCode = "200", ref ="#/components/responses/genreSearchResponse" )
     @GetMapping(value = "/search", produces = "application/json")
     public ResponseEntity<Map<String, Object>> findByNameContaining(@RequestParam String name,
                                                                     @RequestParam(defaultValue = "1") int pageNumber,
