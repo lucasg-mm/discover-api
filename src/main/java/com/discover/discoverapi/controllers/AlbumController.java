@@ -1,10 +1,14 @@
 package com.discover.discoverapi.controllers;
 
+import com.discover.discoverapi.controllers.exceptions.StandardError;
 import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.services.AlbumService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
@@ -25,16 +29,30 @@ public class AlbumController {
 
     //------ MAIN RESOURCE -------
     // get every stored album
-    @Operation(summary = "Gets every stored album.")
-    @GetMapping("")
+    @Operation(description = "Gets every stored album.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping(value = "", produces = "application/json")
     public ResponseEntity<List<Album>> findAll(){
         List<Album> allAlbums = albumService.findAll();
         return ResponseEntity.ok().body(allAlbums);
     }
 
     // get a specific album
-    @Operation(summary = "Gets a specific album.")
-    @GetMapping("/{id}")
+    @Operation(description = "Gets a specific album.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Album> findById(@PathVariable long id){
         // retrieves the album
         Album foundAlbum = albumService.findById(id);
@@ -42,8 +60,15 @@ public class AlbumController {
     }
 
     // create a single album
-    @Operation(summary = "Creates an album.")
-    @PostMapping("")
+    @Operation(description = "Creates an album.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @PostMapping(value = "", produces = "application/json")
     public ResponseEntity<Album> createOne(@RequestBody Album albumToCreate){
         // persists the new album
         Album createdAlbum = albumService.create(albumToCreate);
@@ -59,8 +84,17 @@ public class AlbumController {
     }
 
     // update a single album
-    @Operation(summary = "Updates a specific album.")
-    @PutMapping("/{id}")
+    @Operation(description = "Updates a specific album.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @PutMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Album> updateById(@PathVariable long id, @RequestBody Album albumDataToUpdate){
         // updates the album
         Album updatedAlbum = albumService.update(id,albumDataToUpdate);
@@ -69,8 +103,17 @@ public class AlbumController {
     }
 
     // delete a single album
-    @Operation(summary = "Deletes a specific album.")
-    @DeleteMapping("/{id}")
+    @Operation(description = "Deletes a specific album.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", content = @Content),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Album> deleteById(@PathVariable long id){
         // deletes the album
         albumService.deleteById(id);
@@ -79,8 +122,17 @@ public class AlbumController {
 
     // ------ '/tracks' SUBRESOURCE -------
     // find all the tracks from the album
-    @Operation(summary = "Returns every track from an album's list of tracks.")
-    @GetMapping("{albumId}/tracks")
+    @Operation(description = "Returns every track from an album's list of tracks.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping(value = "{albumId}/tracks", produces = "application/json")
     public ResponseEntity<Set<Track>> findAllTracksOfAlbum(@PathVariable long albumId){
         Set<Track> allTracksOfAlbum = albumService.findAllTracksOfAlbum(albumId);
 
@@ -88,8 +140,17 @@ public class AlbumController {
     }
 
     // add an existing track to the album's tracks
-    @Operation(summary = "Adds a track to an album's list of tracks.")
-    @PutMapping("{albumId}/tracks/{trackId}")
+    @Operation(description = "Adds a track to an album's list of tracks.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @PutMapping(value = "{albumId}/tracks/{trackId}", produces = "application/json")
     public ResponseEntity<Track> addTrackToAlbum(@PathVariable long albumId, @PathVariable long trackId){
         Track addedTrack = albumService.addTrackToAlbum(albumId, trackId);
 
@@ -97,8 +158,17 @@ public class AlbumController {
     }
 
     // delete an existing track from a given album
-    @Operation(summary = "Deletes a track from an album's list of tracks.")
-    @DeleteMapping("{albumId}/tracks/{trackId}")
+    @Operation(description = "Deletes a track from an album's list of tracks.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", content = @Content),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @DeleteMapping(value = "{albumId}/tracks/{trackId}", produces = "application/json")
     public ResponseEntity<Track> deleteTrackFromAlbum(@PathVariable long albumId, @PathVariable long trackId){
         albumService.deleteTrackFromAlbum(albumId, trackId);
 
@@ -107,16 +177,37 @@ public class AlbumController {
 
     // ------- '/cover' SUBRESOURCES --------
     // defines an album cover art
-    @Operation(summary = "Defines an album's cover art by multipart/form-data upload.")
-    @PutMapping("{albumId}/cover")
+    @Operation(description = "Defines an album's cover art by multipart/form-data upload.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @PutMapping(value = "{albumId}/cover", produces = "application/json")
     public ResponseEntity<Album> setAlbumCover(@PathVariable long albumId, @RequestParam MultipartFile coverArt){
         albumService.setAlbumCover(albumId, coverArt);
         return ResponseEntity.ok().build();
     }
 
     // gets an album cover art
-    @Operation(summary = "Returns an album's cover art as Content-type: image/png.")
-    @GetMapping("{albumId}/cover")
+    @Operation(description = "Returns an album's cover art as Content-type: image/png.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "404",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping(value = "{albumId}/cover", produces = "image/png")
     public ResponseEntity<ByteArrayResource> getAlbumCover(@PathVariable long albumId){
         byte[] imageData = albumService.getAlbumCover(albumId);
         ByteArrayResource resource = new ByteArrayResource(imageData);
@@ -127,9 +218,16 @@ public class AlbumController {
     }
 
     // --- '/search' SUBRESOURCES ---
-    @Operation(summary = "Searches for albums by their titles.")
-    @ApiResponse(responseCode = "200", ref ="#/components/responses/albumSearchResponse" )
-    @GetMapping("/search")
+    @Operation(description = "Searches for albums by their titles.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",
+                    ref ="#/components/responses/albumSearchResponse" ),
+            @ApiResponse(responseCode = "500",
+                    content = @Content(schema = @Schema(implementation = StandardError.class))),
+            @ApiResponse(responseCode = "400",
+                    content = @Content(schema = @Schema(implementation = StandardError.class)))
+    })
+    @GetMapping(value = "/search", produces = "application/json")
     public ResponseEntity<Map<String, Object>> findByTitleContaining(@RequestParam String title,
                                                        @RequestParam(defaultValue = "1") int pageNumber,
                                                        @RequestParam(defaultValue = "3") int pageSize){

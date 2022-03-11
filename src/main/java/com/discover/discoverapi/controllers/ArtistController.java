@@ -29,7 +29,7 @@ public class ArtistController {
     private ArtistService artistService;
 
     // get every stored artist
-    @Operation(summary = "Returns all artists.")
+    @Operation(description = "Returns all artists.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "500",
@@ -42,7 +42,7 @@ public class ArtistController {
     }
 
     // get a specific artist
-    @Operation(summary = "Returns a specific artist.")
+    @Operation(description = "Returns a specific artist.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "500",
@@ -60,7 +60,7 @@ public class ArtistController {
     }
 
     // create a single artist
-    @Operation(summary = "Creates an artist.")
+    @Operation(description = "Creates an artist.")
     @ApiResponses({
             @ApiResponse(responseCode = "201"),
             @ApiResponse(responseCode = "500",
@@ -85,7 +85,7 @@ public class ArtistController {
     }
 
     // update a single artist by id
-    @Operation(summary = "Updates a specific artist's name")
+    @Operation(description = "Updates a specific artist's name")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "500",
@@ -105,7 +105,7 @@ public class ArtistController {
     }
 
     // delete a single artist by id
-    @Operation(summary = "Deletes a specific artist.")
+    @Operation(description = "Deletes a specific artist.")
     @ApiResponses({
             @ApiResponse(responseCode = "204", content = @Content),
             @ApiResponse(responseCode = "500",
@@ -124,7 +124,7 @@ public class ArtistController {
 
     // ------- '/albums' SUBRESOURCE -------
     // find all the artists' albums
-    @Operation(summary = "Returns all albums from an artist")
+    @Operation(description = "Returns all albums from an artist")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "500",
@@ -142,7 +142,7 @@ public class ArtistController {
     }
 
     // add an album to the artist's album
-    @Operation(summary = "Adds an album to an artist's list of albums.")
+    @Operation(description = "Adds an album to an artist's list of albums.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "500",
@@ -160,7 +160,7 @@ public class ArtistController {
     }
 
     // delete an existing album from a given artist
-    @Operation(summary = "Deletes an album from an artist's list of albums.")
+    @Operation(description = "Deletes an album from an artist's list of albums.")
     @ApiResponses({
             @ApiResponse(responseCode = "204", content = @Content),
             @ApiResponse(responseCode = "500",
@@ -179,7 +179,7 @@ public class ArtistController {
 
     // ------- '/tracks' SUBRESOURCE -------
     // find all the artists' tracks
-    @Operation(summary = "Returns all tracks from a artist.")
+    @Operation(description = "Returns all tracks from a artist.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "500",
@@ -197,7 +197,7 @@ public class ArtistController {
     }
 
     // add a track to the artist's tracks
-    @Operation(summary = "Adds a track to the artist's list of tracks.")
+    @Operation(description = "Adds a track to the artist's list of tracks.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "500",
@@ -215,7 +215,7 @@ public class ArtistController {
     }
 
     // delete an existing track from a given artist
-    @Operation(summary = "Deletes a track from the artist's list of tracks.")
+    @Operation(description = "Deletes a track from the artist's list of tracks.")
     @ApiResponses({
             @ApiResponse(responseCode = "204", content = @Content),
             @ApiResponse(responseCode = "500",
@@ -235,7 +235,7 @@ public class ArtistController {
     // ------- '/image' SUBRESOURCE --------
 
     // defines an artist's image
-    @Operation(summary = "Defines an artist's profile image by multipart/form-data upload.")
+    @Operation(description = "Defines an artist's profile image by multipart/form-data upload.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "500",
@@ -252,7 +252,7 @@ public class ArtistController {
     }
 
     // gets an artist's image
-    @Operation(summary = "Gets an artist's profile image.")
+    @Operation(description = "Gets an artist's profile image.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "500",
@@ -276,7 +276,7 @@ public class ArtistController {
     }
 
     // --- '/search' SUBRESOURCES ---
-    @Operation(summary = "Searches for an artist by their name.")
+    @Operation(description = "Searches for an artist by their name.")
     @ApiResponses({
             @ApiResponse(responseCode = "200",
                     ref ="#/components/responses/artistSearchResponse"),
