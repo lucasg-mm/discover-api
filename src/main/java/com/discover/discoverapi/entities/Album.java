@@ -11,6 +11,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -29,11 +30,12 @@ public class Album {
     private long id;
 
     @Schema(description = "The album's title.")
-    @NotEmpty(message = "Album's title shouldn't be empty.")
+    @NotEmpty(message = "The album's title should be specified.")
     @Column(name = "title")
     private String title;
 
     @Schema(description = "The album's release date (dd/MM/yyyy format).")
+    @NotNull
     @Column(name = "release_date")
     private LocalDate releaseDate;
 
@@ -52,6 +54,7 @@ public class Album {
     private String label;
 
     @Schema(description = "The album's length (in seconds).")
+    @NotNull(message = "The album's length should be specified.")
     @Min(value = 1, message = "An album should be at least one second long.")
     @Column(name = "length")
     private int length;

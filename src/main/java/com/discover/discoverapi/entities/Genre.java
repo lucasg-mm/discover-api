@@ -24,7 +24,7 @@ public class Genre {
     @Column(name = "id")
     private long id;
 
-    @Schema(description = "The genre's name.")
+    @Schema(description = "The genre's unique name.")
     @NotEmpty(message = "Genre's name shouldn't be empty.")
     @Column(name = "name")
     private String name;

@@ -24,7 +24,7 @@ public class Artist {
     @Column(name = "id")
     private long id;
 
-    @Schema(description = "The artist's name.")
+    @Schema(description = "The artist's unique name.")
     @NotEmpty(message = "Artist's name shouldn't be empty.")
     @Column(name = "name")
     private String name;

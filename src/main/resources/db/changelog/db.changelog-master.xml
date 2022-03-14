@@ -12,16 +12,19 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
                 <constraints primaryKey="true" primaryKeyName="id_pk"/>
             </column>
             <column name="title" type="varchar(100)">
-                <constraints nullable="false" notNullConstraintName="title_not_null"/>
+                <constraints nullable="false" notNullConstraintName="album_title_not_null"/>
             </column>
             <column name="release_date" type="date">
+                <constraints nullable="false" notNullConstraintName="album_release_date_not_null"/>
             </column>
             <column name="cover_art_path" type="varchar(256)">
             </column>
             <column name="cover_art_file_name" type="varchar(256)">
             </column>
             <column name="label" type="varchar(100)"/>
-            <column name="length" type="int"/>
+            <column name="length" type="int">
+                <constraints nullable="false" notNullConstraintName="album_length_not_null"/>
+            </column>
         </createTable>
 
         <createTable tableName="genres">
@@ -29,7 +32,7 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
                 <constraints primaryKey="true" primaryKeyName="id_pk"/>
             </column>
             <column name="name" type="varchar(100)">
-                <constraints unique="true" uniqueConstraintName="name_unique"/>
+                <constraints unique="true" uniqueConstraintName="genre_name_unique"/>
             </column>
         </createTable>
 
@@ -38,6 +41,8 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
                 <constraints primaryKey="true" primaryKeyName="id_pk"/>
             </column>
             <column name="name" type="varchar(100)">
+                <constraints unique="true" uniqueConstraintName="artist_name_unique"
+                             nullable="false" notNullConstraintName="artist_name_not_null"/>
             </column>
             <column name="image_path" type="varchar(512)">
             </column>
@@ -52,8 +57,12 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
             <column name="album_id" type="bigint">
                 <constraints foreignKeyName="album_id_fk_tracks" references="albums(id)"/>
             </column>
-            <column name="title" type="varchar(100)"/>
-            <column name="length" type="int"/>
+            <column name="title" type="varchar(100)">
+                <constraints nullable="false" notNullConstraintName="track_title_not_null"/>
+            </column>
+            <column name="length" type="int">
+                <constraints nullable="false" notNullConstraintName="track_length_not_null"/>
+            </column>
         </createTable>
         
         <createTable tableName="tracks_genres">
@@ -115,6 +124,25 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
                 <constraints foreignKeyName="track_id_fk_artists_tracks" references="tracks(id)"/>
             </column>
         </createTable>
+
+        <!-- add check constraints -->
+        <sql>
+            ALTER TABLE albums ADD CONSTRAINT album_title_not_empty CHECK (LENGTH(title) > 0);
+            ALTER TABLE albums ADD CONSTRAINT album_length_range_constraint CHECK (length > 0);
+        </sql>
+
+        <sql>
+            ALTER TABLE tracks ADD CONSTRAINT track_title_not_empty CHECK (LENGTH(title) > 0);
+            ALTER TABLE tracks ADD CONSTRAINT track_length_range_constraint CHECK (length > 0);
+        </sql>
+
+        <sql>
+            ALTER TABLE artists ADD CONSTRAINT artist_name_not_empty CHECK (LENGTH(name) > 0);
+        </sql>
+
+        <sql>
+            ALTER TABLE genres ADD CONSTRAINT genre_name_not_empty CHECK (LENGTH(name) > 0);
+        </sql>
     </changeSet>
 
 </databaseChangeLog>

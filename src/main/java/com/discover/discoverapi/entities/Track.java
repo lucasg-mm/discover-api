@@ -11,7 +11,6 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Schema(description = "Represents a track.")
@@ -28,12 +27,13 @@ public class Track {
     private long id;
 
     @Schema(description = "The track's title.")
-    @NotEmpty(message = "Track's title shouldn't be empty.")
+    @NotEmpty(message = "Track's title should be specified.")
     @Column(name = "title")
     private String title;
 
     @Schema(description = "The track's length (in seconds).")
     @Min(value = 1, message = "A track should be at least one second long.")
+    @NotNull(message = "The album's track should be specified.")
     @Column(name = "length")
     private int length;
 
