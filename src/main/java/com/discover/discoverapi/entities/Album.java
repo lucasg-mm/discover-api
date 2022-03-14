@@ -1,17 +1,17 @@
 package com.discover.discoverapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Schema(description = "Represents an album.")
@@ -33,10 +33,9 @@ public class Album {
     @Column(name = "title")
     private String title;
 
-    @Schema(description = "The album's release date (dd/mm/yyyy format).")
+    @Schema(description = "The album's release date (dd/MM/yyyy format).")
     @Column(name = "release_date")
-    @DateTimeFormat(pattern="dd/MM/yyyy")
-    private Date releaseDate;
+    private LocalDate releaseDate;
 
     @Schema(description = "The album's cover art path.")
     @JsonIgnore
@@ -76,7 +75,7 @@ public class Album {
     @OneToMany(mappedBy = "album")
     private Set<Track> tracks;
 
-    public Album(String title, Date releaseDate, String coverArtPath, String coverArtFileName, String label,
+    public Album(String title, LocalDate releaseDate, String coverArtPath, String coverArtFileName, String label,
                  int length, Set<Artist> artists, Set<Genre> genres, Set<Track> tracks) {
         this.title = title;
         this.releaseDate = releaseDate;
