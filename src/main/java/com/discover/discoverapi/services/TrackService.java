@@ -1,9 +1,7 @@
 package com.discover.discoverapi.services;
 
-import com.discover.discoverapi.entities.Album;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.TrackRepository;
-import com.discover.discoverapi.services.exceptions.InvalidInputException;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

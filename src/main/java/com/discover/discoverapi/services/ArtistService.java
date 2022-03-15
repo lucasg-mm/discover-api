@@ -5,7 +5,6 @@ import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.ArtistRepository;
 import com.discover.discoverapi.services.exceptions.FailedToDownloadException;
-import com.discover.discoverapi.services.exceptions.InvalidInputException;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import com.discover.discoverapi.services.fileuploaddownload.UploaderDownloader;
 import liquibase.util.file.FilenameUtils;

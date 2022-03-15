@@ -1,10 +1,7 @@
 package com.discover.discoverapi.services;
 
-import com.discover.discoverapi.entities.Artist;
-import com.discover.discoverapi.entities.Genre;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.TrackRepository;
-import com.discover.discoverapi.services.exceptions.InvalidInputException;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +10,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.executable.ExecutableValidator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
@@ -33,6 +36,11 @@ public class TrackServiceTest {
     public void setUp(){
         MockitoAnnotations.openMocks(this);
     }
+
+    private ExecutableValidator executableValidator = Validation
+            .buildDefaultValidatorFactory()
+            .getValidator()
+            .forExecutables();
 
     @Test
     @DisplayName("Tests the retrieval of a track with an id we already know exists.")
@@ -217,42 +225,40 @@ public class TrackServiceTest {
 
     @Test
     @DisplayName("Tests if giving incorrect input (empty string, negative page number and size, null values)" +
-            " to findByTitleContaining (it should throw InvalidInputException).")
-    public void findByTitleContainingThrowsInvalidInputExceptionWhenProvidedWithInvalidInput(){
+            " to findByTitleContaining (it should throw ConstraintViolationException).")
+    public void findByTitleContainingThrowsConstraintViolationExceptionWhenProvidedWithInvalidInput() throws NoSuchMethodException {
         // --- GIVEN ---
 
         // invalid input
         final String emptyTitle = "";
-        final String nullTitle = null;
         final int negativePageNumber = -3;
         final int zeroPageNumber = 0;
         final int negativePageSize = -3;
         final int zeroPageSize = 0;
 
-        // valid input
-        final String validTitle = "Man on the moon";
-        final int validPageNumber = 2;
-        final int validPageSize = 3;
 
         // --- WHEN THEN ---
 
-        assertThrows(InvalidInputException.class,
-                () -> trackService.findByTitleContaining(emptyTitle, validPageNumber, validPageSize),
-                "Giving an empty title should make the method throw an InvalidInputException.");
-        assertThrows(InvalidInputException.class,
-                () -> trackService.findByTitleContaining(nullTitle, validPageNumber, validPageSize),
-                "Giving a null title should make the method throw an InvalidInputException.");
-        assertThrows(InvalidInputException.class,
-                () -> trackService.findByTitleContaining(validTitle, negativePageNumber, validPageSize),
-                "Giving a negative page number should make the method throw an InvalidInputException.");
-        assertThrows(InvalidInputException.class,
-                () -> trackService.findByTitleContaining(validTitle, zeroPageNumber, validPageSize),
-                "Giving a zero page number should make the method throw an InvalidInputException.");
-        assertThrows(InvalidInputException.class,
-                () -> trackService.findByTitleContaining(validTitle, validPageNumber, negativePageSize),
-                "Giving a negative page size should make the method throw an InvalidInputException.");
-        assertThrows(InvalidInputException.class,
-                () -> trackService.findByTitleContaining(validTitle, validPageNumber, zeroPageSize),
-                "Giving a zero page size should make the method throw an InvalidInputException.");
+        Set<ConstraintViolation<Object>> result;
+
+        // executes validation inside the method's parameters (javax annotation)
+        result = executableValidator.validateParameters(
+                trackService,
+                trackService.getClass().getMethod("findByTitleContaining", String.class, int.class, int.class),
+                new Object[]{emptyTitle, negativePageNumber, negativePageSize});
+
+
+        assertEquals(3, result.size(), "Empty title, negative page number and negative page size should " +
+                "result in 3 constraint violations.");
+
+        // executes validation inside the method's parameters (javax annotation)
+        result = executableValidator.validateParameters(
+                trackService,
+                trackService.getClass().getMethod("findByTitleContaining", String.class, int.class, int.class),
+                new Object[]{emptyTitle, zeroPageNumber, zeroPageSize});
+
+
+        assertEquals(3, result.size(), "Empty title, zero page number and zero page size should " +
+                "result in 3 constraint violations.");
     }
 }

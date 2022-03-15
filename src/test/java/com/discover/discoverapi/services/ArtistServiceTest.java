@@ -5,7 +5,6 @@ import com.discover.discoverapi.entities.Artist;
 import com.discover.discoverapi.entities.Track;
 import com.discover.discoverapi.repositories.ArtistRepository;
 import com.discover.discoverapi.services.exceptions.FailedToDownloadException;
-import com.discover.discoverapi.services.exceptions.InvalidInputException;
 import com.discover.discoverapi.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.executable.ExecutableValidator;
 import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+
 
 public class ArtistServiceTest {
     @InjectMocks
@@ -35,6 +38,11 @@ public class ArtistServiceTest {
 
     @Mock
     private AlbumService albumService;
+
+    private ExecutableValidator executableValidator = Validation
+            .buildDefaultValidatorFactory()
+            .getValidator()
+            .forExecutables();
 
     @BeforeEach
     public void setUp() {
@@ -511,42 +519,39 @@ public class ArtistServiceTest {
 
     @Test
     @DisplayName("Tests if giving incorrect input (empty string, negative page number and size, null values)" +
-            " to findByNameContaining (it should throw InvalidInputException).")
-    public void findByNameContainingThrowsInvalidInputExceptionWhenProvidedWithInvalidInput(){
+            " to findByNameContaining (it should throw ConstraintViolationException).")
+    public void findByNameContainingThrowsConstraintViolationExceptionWhenProvidedWithInvalidInput() throws NoSuchMethodException {
         // --- GIVEN ---
 
         // invalid input
         final String emptyName = "";
-        final String nullName = null;
         final int negativePageNumber = -3;
         final int zeroPageNumber = 0;
         final int negativePageSize = -3;
         final int zeroPageSize = 0;
 
-        // valid input
-        final String validName = "Man on the moon";
-        final int validPageNumber = 2;
-        final int validPageSize = 3;
-
         // --- WHEN THEN ---
 
-        assertThrows(InvalidInputException.class,
-                () -> artistService.findByNameContaining(emptyName, validPageNumber, validPageSize),
-                "Giving an empty name should make the method throw an InvalidInputException.");
-        assertThrows(InvalidInputException.class,
-                () -> artistService.findByNameContaining(nullName, validPageNumber, validPageSize),
-                "Giving a null name should make the method throw an InvalidInputException.");
-        assertThrows(InvalidInputException.class,
-                () -> artistService.findByNameContaining(validName, negativePageNumber, validPageSize),
-                "Giving a negative page number should make the method throw an InvalidInputException.");
-        assertThrows(InvalidInputException.class,
-                () -> artistService.findByNameContaining(validName, zeroPageNumber, validPageSize),
-                "Giving a zero page number should make the method throw an InvalidInputException.");
-        assertThrows(InvalidInputException.class,
-                () -> artistService.findByNameContaining(validName, validPageNumber, negativePageSize),
-                "Giving a negative page size should make the method throw an InvalidInputException.");
-        assertThrows(InvalidInputException.class,
-                () -> artistService.findByNameContaining(validName, validPageNumber, zeroPageSize),
-                "Giving a zero page size should make the method throw an InvalidInputException.");
+        Set<ConstraintViolation<Object>> result;
+
+        // executes validation inside the method's parameters (javax annotation)
+        result = executableValidator.validateParameters(
+                artistService,
+                artistService.getClass().getMethod("findByNameContaining", String.class, int.class, int.class),
+                new Object[]{emptyName, negativePageNumber, negativePageSize});
+
+
+        assertEquals(3, result.size(), "Empty name, negative page number and negative page size should " +
+                "result in 3 constraint violations.");
+
+        // executes validation inside the method's parameters (javax annotation)
+        result = executableValidator.validateParameters(
+                artistService,
+                artistService.getClass().getMethod("findByNameContaining", String.class, int.class, int.class),
+                new Object[]{emptyName, zeroPageNumber, zeroPageSize});
+
+
+        assertEquals(3, result.size(), "Empty name, zero page number and zero page size should " +
+                "result in 3 constraint violations.");
     }
 }
