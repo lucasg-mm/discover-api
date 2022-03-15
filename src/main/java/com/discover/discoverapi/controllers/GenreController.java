@@ -161,7 +161,7 @@ public class GenreController {
             @ApiResponse(responseCode = "400",
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
-    @PutMapping(value = "{genreId}/genres/{albumId}", produces = "application/json")
+    @PutMapping(value = "{genreId}/albums/{albumId}", produces = "application/json")
     public ResponseEntity<Album> addAlbumToGenre(
             @Parameter(description="Id of the genre that the album should be added to.") @PathVariable long genreId,
             @Parameter(description="Id of the album to be added to the genre's list of albums.") @PathVariable long albumId){
