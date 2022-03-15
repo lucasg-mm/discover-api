@@ -74,7 +74,7 @@ public class ArtistController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @PostMapping(value = "", produces = "application/json")
-    public ResponseEntity<Artist> createOne(@Valid @RequestBody Artist artistToCreate){
+    public ResponseEntity<Artist> createOne(@RequestBody Artist artistToCreate){
         // creates the new artist
         Artist createdArtist = artistService.create(artistToCreate);
 

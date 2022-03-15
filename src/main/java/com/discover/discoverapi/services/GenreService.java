@@ -12,13 +12,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Validated
 @Service
 @AllArgsConstructor
 public class GenreService {
@@ -185,19 +189,10 @@ public class GenreService {
     // find genres with a title that contains the 'name' param, and returns it in a
     // paginated way
     @Transactional
-    public Map<String, Object> findByNameContaining(String name, int pageNumber, int pageSize){
-        // validation
-        if (name == null || name.equals("")){
-            throw new InvalidInputException("Genre's name should not be empty or null.");
-        }
-
-        if (pageNumber <= 0){
-            throw new InvalidInputException("Page number should be greater than zero.");
-        }
-
-        if (pageSize <= 0){
-            throw new InvalidInputException("Page size should be greater than zero.");
-        }
+    public Map<String, Object> findByNameContaining(
+            @NotEmpty(message = "'name' parameter shouldn't be empty.") String name,
+            @Min(value = 1, message = "'pageNumber' parameter should be greater or equal to 1.") int pageNumber,
+            @Min(value = 3, message = "'pageSize' parameter should be greater or equal to 3.") int pageSize){
 
         // declarations and instantiations
         Map<String, Object> response = new HashMap<>();  // the response that should be sent back to the client

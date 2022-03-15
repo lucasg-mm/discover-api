@@ -10,11 +10,24 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Path;
 import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
+    // returns an error response without a custom error message and field errors
+    public ResponseEntity<StandardError> getExceptionResponse(HttpStatus statusCode, Exception exception){
+        // creates a new standard error
+        StandardError error = new StandardError(statusCode.value(), exception.getMessage(),
+                ExceptionUtils.getStackTrace(exception));
+
+        // returns the error with the appropriate status code
+        return ResponseEntity.status(statusCode).body(error);
+    }
+
     // returns an error response with a custom error message (with field errors)
     public ResponseEntity<StandardError> getExceptionResponse(HttpStatus statusCode, String errorMessage,
                                                               Map<String, String> fieldErrors, Exception exception){
@@ -40,21 +53,7 @@ public class ControllerExceptionHandler {
     // handle custom exception thrown when an object (a track, artist, album or genre) was not found
     @ExceptionHandler(ObjectNotFoundException.class)
     public ResponseEntity<StandardError> handleObjectNotFoundException(ObjectNotFoundException exception){
-        return getExceptionResponse(HttpStatus.NOT_FOUND, exception.getMessage(), null, exception);
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public  ResponseEntity<StandardError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
-        Map<String, String> fieldErrors = new HashMap<>();
-
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName =  ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            fieldErrors.put(fieldName, errorMessage);
-        });
-
-        return getExceptionResponse(HttpStatus.BAD_REQUEST, "Validation on some field(s) failed.",
-                fieldErrors, ex);
+        return getExceptionResponse(HttpStatus.NOT_FOUND, exception.getMessage(), exception);
     }
 
     // handle exception thrown when a method receives a wrong parameter
@@ -75,41 +74,30 @@ public class ControllerExceptionHandler {
         return getExceptionResponse(HttpStatus.BAD_REQUEST, message, ex);
     }
 
+    // handle exception thrown when there are javax constraint violations
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<StandardError> handleConstraintViolationException(ConstraintViolationException ex){
+        final String message = "Validation on some fields failed";
+        final HashMap<String, String> fieldErrors = new HashMap<>();
 
-//    // handle custom exception thrown
-//    @ExceptionHandler(InvalidInputException.class)
-//    public ResponseEntity<StandardError> handleInvalidInputException(InvalidInputException exception){
-//        return getExceptionResponse(HttpStatus.BAD_REQUEST, exception);
-//    }
-//
-//
-//    // handle exception thrown when
-//    @ExceptionHandler(HttpMessageNotReadableException.class)
-//    public ResponseEntity<StandardError> handleHttpMessageNotReadableException(){
-//
-//    }
-//
-//    // handle exception thrown when
-//    @ExceptionHandler(ConstraintViolationException.class)
-//    public ResponseEntity<StandardError> handleConstraintViolationException(){
-//
-//    }
-//
-//    // handle exception thrown when
-//    @ExceptionHandler(DataIntegrityViolationException.class)
-//    public ResponseEntity<StandardError> handleDataIntegrityViolationException(){
-//
-//    }
-//
-//    // handle custom exceptions thrown
-//    @ExceptionHandler(FailedToUploadException.class)
-//    public ResponseEntity<StandardError> handleFailedToUploadException(){
-//
-//    }
-//
-//    // handle custom exceptions thrown
-//    @ExceptionHandler(FailedToDownloadException.class)
-//    public ResponseEntity<StandardError> handleFailedToDownloadException(){
-//
-//    }
+        // gets all constraint failures (field name and its failure message)
+        for (ConstraintViolation violation : ex.getConstraintViolations()){
+            String fieldMessage = violation.getMessage();
+            String fieldName = "";
+            for (Path.Node node: violation.getPropertyPath()){
+                fieldName = node.getName();
+            }
+            fieldErrors.put(fieldName, fieldMessage);
+        }
+
+
+        return getExceptionResponse(HttpStatus.BAD_REQUEST, message, fieldErrors, ex);
+    }
+
+
+    // fallback handler method
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<StandardError> fallbackHandler(Exception ex){
+        return getExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex);
+    }
 }

@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -39,7 +40,7 @@ public class AlbumController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping(value = "", produces = "application/json")
-    public ResponseEntity<List<Album>> findAll(){
+    public ResponseEntity<List<Album>> findAll() {
         List<Album> allAlbums = albumService.findAll();
         return ResponseEntity.ok().body(allAlbums);
     }
@@ -57,7 +58,7 @@ public class AlbumController {
     })
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Album> findById(
-            @Parameter(description="Id of the album to be retrieved.") @PathVariable long id){
+            @Parameter(description = "Id of the album to be retrieved.") @PathVariable long id) {
         // retrieves the album
         Album foundAlbum = albumService.findById(id);
         return ResponseEntity.ok().body(foundAlbum);
@@ -73,7 +74,7 @@ public class AlbumController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @PostMapping(value = "", produces = "application/json")
-    public ResponseEntity<Album> createOne(@RequestBody Album albumToCreate){
+    public ResponseEntity<Album> createOne(@RequestBody Album albumToCreate) {
         // persists the new album
         Album createdAlbum = albumService.create(albumToCreate);
 
@@ -100,10 +101,10 @@ public class AlbumController {
     })
     @PutMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Album> updateById(
-            @Parameter(description="Id of the album to be updated.") @PathVariable long id,
-            @RequestBody Album albumDataToUpdate){
+            @Parameter(description = "Id of the album to be updated.") @PathVariable long id,
+            @RequestBody Album albumDataToUpdate) {
         // updates the album
-        Album updatedAlbum = albumService.update(id,albumDataToUpdate);
+        Album updatedAlbum = albumService.update(id, albumDataToUpdate);
 
         return ResponseEntity.ok().body(updatedAlbum);
     }
@@ -121,7 +122,7 @@ public class AlbumController {
     })
     @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Album> deleteById(
-            @Parameter(description="Id of the album to be deleted.") @PathVariable long id){
+            @Parameter(description = "Id of the album to be deleted.") @PathVariable long id) {
         // deletes the album
         albumService.deleteById(id);
         return ResponseEntity.noContent().build();
@@ -141,7 +142,7 @@ public class AlbumController {
     })
     @GetMapping(value = "{albumId}/tracks", produces = "application/json")
     public ResponseEntity<Set<Track>> findAllTracksOfAlbum(
-            @Parameter(description="Id of the album the tracks should be from.") @PathVariable long albumId){
+            @Parameter(description = "Id of the album the tracks should be from.") @PathVariable long albumId) {
         Set<Track> allTracksOfAlbum = albumService.findAllTracksOfAlbum(albumId);
 
         return ResponseEntity.ok(allTracksOfAlbum);
@@ -160,8 +161,8 @@ public class AlbumController {
     })
     @PutMapping(value = "{albumId}/tracks/{trackId}", produces = "application/json")
     public ResponseEntity<Track> addTrackToAlbum(
-            @Parameter(description="Id of the album the track should be from.") @PathVariable long albumId,
-            @Parameter(description="Id of the track that should be added") @PathVariable long trackId){
+            @Parameter(description = "Id of the album the track should be from.") @PathVariable long albumId,
+            @Parameter(description = "Id of the track that should be added") @PathVariable long trackId) {
         Track addedTrack = albumService.addTrackToAlbum(albumId, trackId);
 
         return ResponseEntity.ok(addedTrack);
@@ -180,8 +181,8 @@ public class AlbumController {
     })
     @DeleteMapping(value = "{albumId}/tracks/{trackId}", produces = "application/json")
     public ResponseEntity<Track> deleteTrackFromAlbum(
-            @Parameter(description="Id of the album the track is from.") @PathVariable long albumId,
-            @Parameter(description="Id of the track that should be removed from the album's list of tracks.") @PathVariable long trackId){
+            @Parameter(description = "Id of the album the track is from.") @PathVariable long albumId,
+            @Parameter(description = "Id of the track that should be removed from the album's list of tracks.") @PathVariable long trackId) {
         albumService.deleteTrackFromAlbum(albumId, trackId);
 
         return ResponseEntity.noContent().build();
@@ -201,8 +202,8 @@ public class AlbumController {
     })
     @PutMapping(value = "{albumId}/cover", produces = "application/json")
     public ResponseEntity<Album> setAlbumCover(
-            @Parameter(description="Id of the album that the image is being uploaded to.") @PathVariable long albumId,
-            @RequestParam MultipartFile coverArt){
+            @Parameter(description = "Id of the album that the image is being uploaded to.") @PathVariable long albumId,
+            @RequestParam MultipartFile coverArt) {
         albumService.setAlbumCover(albumId, coverArt);
         return ResponseEntity.ok().build();
     }
@@ -223,7 +224,7 @@ public class AlbumController {
     })
     @GetMapping(value = "{albumId}/cover", produces = "image/png")
     public ResponseEntity<ByteArrayResource> getAlbumCover(
-            @Parameter(description="Id of the album that the cover is from.") @PathVariable long albumId){
+            @Parameter(description = "Id of the album that the cover is from.") @PathVariable long albumId) {
         byte[] imageData = albumService.getAlbumCover(albumId);
         ByteArrayResource resource = new ByteArrayResource(imageData);
         return ResponseEntity
@@ -236,7 +237,7 @@ public class AlbumController {
     @Operation(description = "Searches for albums by their titles.")
     @ApiResponses({
             @ApiResponse(responseCode = "200",
-                    ref ="#/components/responses/albumSearchResponse" ),
+                    ref = "#/components/responses/albumSearchResponse"),
             @ApiResponse(responseCode = "500",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",
@@ -244,9 +245,12 @@ public class AlbumController {
     })
     @GetMapping(value = "/search", produces = "application/json")
     public ResponseEntity<Map<String, Object>> findByTitleContaining(
-            @Parameter(description="The album's title that should be searched.") @RequestParam String title,
-            @Parameter(description="The number of the page that should be retrieved (starting with 1).") @RequestParam(defaultValue = "1") int pageNumber,
-            @Parameter(description="Number of items in each page.") @RequestParam(defaultValue = "3") int pageSize){
+            @Parameter(description = "The album's title that should be searched.")
+            @RequestParam String title,
+            @Parameter(description = "The number of the page that should be retrieved (starting with 1).")
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @Parameter(description = "Number of items in each page.")
+            @RequestParam(defaultValue = "3") int pageSize) {
         Map<String, Object> response = albumService.findByTitleContaining(title, pageNumber, pageSize);
         return ResponseEntity.ok().body(response);
     }
