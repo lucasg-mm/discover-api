@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +74,7 @@ public class ArtistController {
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @PostMapping(value = "", produces = "application/json")
-    public ResponseEntity<Artist> createOne(@RequestBody Artist artistToCreate){
+    public ResponseEntity<Artist> createOne(@Valid @RequestBody Artist artistToCreate){
         // creates the new artist
         Artist createdArtist = artistService.create(artistToCreate);
 
