@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping(value = "/albums")
 @AllArgsConstructor
