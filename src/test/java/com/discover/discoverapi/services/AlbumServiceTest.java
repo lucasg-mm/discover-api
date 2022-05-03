@@ -107,15 +107,19 @@ public class AlbumServiceTest {
         // sets up a list composed by the previous two albums
         List<Album> existingAlbums = new ArrayList<>(List.of(album1, album2));
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("items", existingAlbums);
+        response.put("totalItems", 2);
+        response.put("totalPages", 1);
+
         doReturn(existingAlbums).when(albumRepository).findAll();
 
         // --- WHEN ---
 
-        List<Album> foundAlbums = albumService.findAll();
+        Map<String, Object> foundAlbums = albumService.findAll(1, 3);
 
         // --- THEN ---
-
-        assertIterableEquals(existingAlbums, foundAlbums,
+        assertEquals(response, foundAlbums,
                 "Expected the function albumService.findAll() to return all the existing albums, but it didn't.");
     }
 

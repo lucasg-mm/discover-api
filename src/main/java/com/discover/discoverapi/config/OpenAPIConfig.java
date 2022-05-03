@@ -24,7 +24,7 @@ public class OpenAPIConfig {
         return resolvedSchema.schema;
     }
 
-    private Content getSearchResultContent(Schema schemaTypeInItems){
+    private Content getPaginatedResultContent(Schema schemaTypeInItems){
         return new Content().addMediaType(MediaType.APPLICATION_JSON_VALUE,
                 new io.swagger.v3.oas.models.media.MediaType().schema(new MapSchema()
                         .addProperties("items", new ArraySchema().items(schemaTypeInItems))
@@ -52,21 +52,21 @@ public class OpenAPIConfig {
                                 .version("1.0.0")
                 )
                 .components(new Components()
-                        .addResponses("albumSearchResponse", new io.swagger.v3.oas.models.responses
+                        .addResponses("albumPaginatedResponse", new io.swagger.v3.oas.models.responses
                                 .ApiResponse()
                                 .description(searchedResultsResponseDescription)
-                                .content(getSearchResultContent(albumSchema)))
+                                .content(getPaginatedResultContent(albumSchema)))
                         .addResponses("trackSearchResponse", new io.swagger.v3.oas.models.responses
                                 .ApiResponse()
                                 .description(searchedResultsResponseDescription)
-                                .content(getSearchResultContent(trackSchema)))
+                                .content(getPaginatedResultContent(trackSchema)))
                         .addResponses("artistSearchResponse", new io.swagger.v3.oas.models.responses
                                 .ApiResponse()
                                 .description(searchedResultsResponseDescription)
-                                .content(getSearchResultContent(artistSchema)))
+                                .content(getPaginatedResultContent(artistSchema)))
                         .addResponses("genreSearchResponse", new io.swagger.v3.oas.models.responses
                                 .ApiResponse()
                                 .description(searchedResultsResponseDescription)
-                                .content(getSearchResultContent(genreSchema))));
+                                .content(getPaginatedResultContent(genreSchema))));
     }
 }

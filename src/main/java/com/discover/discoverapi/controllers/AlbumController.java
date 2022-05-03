@@ -32,17 +32,23 @@ public class AlbumController {
     private AlbumService albumService;
 
     //------ MAIN RESOURCE -------
-    // get every stored album
-    @Operation(description = "Gets every stored album.")
+    // get every stored album (paginated)
+    @Operation(description = "Gets every stored album in a paginated way.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "200",
+                    ref = "#/components/responses/albumPaginatedResponse"),
             @ApiResponse(responseCode = "500",
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping(value = "", produces = "application/json")
-    public ResponseEntity<List<Album>> findAll() {
-        List<Album> allAlbums = albumService.findAll();
-        return ResponseEntity.ok().body(allAlbums);
+    public ResponseEntity<Map<String, Object>> findAll(
+            @Parameter(description = "The number of the page that should be retrieved (starting with 1).")
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @Parameter(description = "Number of items in each page.")
+            @RequestParam(defaultValue = "3") int pageSize
+    ) {
+        Map<String, Object> paginatedAlbums = albumService.findAll(pageNumber, pageSize);
+        return ResponseEntity.ok().body(paginatedAlbums);
     }
 
     // get a specific album
@@ -237,7 +243,7 @@ public class AlbumController {
     @Operation(description = "Searches for albums by their titles.")
     @ApiResponses({
             @ApiResponse(responseCode = "200",
-                    ref = "#/components/responses/albumSearchResponse"),
+                    ref = "#/components/responses/albumPaginatedResponse"),
             @ApiResponse(responseCode = "500",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
             @ApiResponse(responseCode = "400",

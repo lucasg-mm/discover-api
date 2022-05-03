@@ -30,8 +30,24 @@ public class AlbumService {
 
     // find all
     @Transactional
-    public List<Album> findAll() {
-        return albumRepository.findAll();
+    public Map<String, Object> findAll(
+            @Min(value = 1, message = "'pageNumber' parameter should be greater or equal to 1.") int pageNumber,
+            @Min(value = 3, message = "'pageSize' parameter should be greater or equal to 3.") int pageSize) {
+
+        // declarations and instantiations
+        Map<String, Object> response = new HashMap<>();  // the response that should be sent back to the user...
+        Page<Album> pageWithAlbums;  // the page object with the albums
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);  // instantiates the Pageable object
+
+        // retrieve albums in the given page
+        pageWithAlbums = albumRepository.findAll(pageable);
+
+        // mounts the response and returns it
+        response.put("items", pageWithAlbums.getContent());
+        response.put("totalItems", pageWithAlbums.getTotalElements());
+        response.put("totalPages", pageWithAlbums.getTotalPages());
+
+        return response;
     }
 
     // find by id
@@ -173,7 +189,7 @@ public class AlbumService {
         // retrieves albums in the given page
         pageWithAlbums = albumRepository.findByTitleContaining(title, pageable);
 
-        // mounts the response and return it
+        // mounts the response and returns it
         response.put("items", pageWithAlbums.getContent());
         response.put("totalItems", pageWithAlbums.getTotalElements());
         response.put("totalPages", pageWithAlbums.getTotalPages());
