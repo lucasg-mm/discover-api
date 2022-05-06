@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.format.DateTimeFormatter;
 
-// configuration for global date format (dd/MM/yyyy)
+// configuration for global date format (yyyy-MM-dd)
 @Configuration
 public class DateConfig {
     // the global date format
-    private static final String dateFormat = "dd/MM/yyyy";
+    private static final String dateFormat = "yyyy-MM-dd";
 
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {

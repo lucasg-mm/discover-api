@@ -34,7 +34,7 @@ public class Album {
     @Column(name = "title")
     private String title;
 
-    @Schema(type="string", description = "The album's release date (dd/MM/yyyy format).", example = "26/08/1999")
+    @Schema(type="string", description = "The album's release date (yyyy-MM-dd format).", example = "1999-08-26")
     @NotNull
     @Column(name = "release_date")
     private LocalDate releaseDate;
