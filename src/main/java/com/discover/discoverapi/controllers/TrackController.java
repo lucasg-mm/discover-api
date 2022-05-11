@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 
 @CrossOrigin("*")
@@ -27,17 +26,24 @@ import java.util.Map;
 public class TrackController {
     private TrackService trackService;
 
-    // get every stored track
-    @Operation(description = "Returns all tracks.")
+    //------ MAIN RESOURCE -------
+    // get every stored track (paginated)
+    @Operation(description = "Gets every stored track in a paginated way.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "200",
+                    ref = "#/components/responses/trackPaginatedResponse"),
             @ApiResponse(responseCode = "500",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
     })
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<Track>> findAll(){
-        List<Track> allTracks = trackService.findAll();
-        return ResponseEntity.ok(allTracks);
+    public ResponseEntity<Map<String, Object>> findAll(
+            @Parameter(description = "The number of the page that should be retrieved (starting with 1).")
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @Parameter(description = "Number of items in each page.")
+            @RequestParam(defaultValue = "3") int pageSize
+    ){
+        Map<String, Object> paginatedTracks = trackService.findAll(pageNumber, pageSize);
+        return ResponseEntity.ok().body(paginatedTracks);
     }
 
     // get a specific track by id

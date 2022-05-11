@@ -13,10 +13,7 @@ import org.mockito.MockitoAnnotations;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.executable.ExecutableValidator;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.samePropertyValuesAs;
@@ -101,15 +98,19 @@ public class TrackServiceTest {
         // sets up a list composed of the previous two tracks
         List<Track> existingTracks = new ArrayList<>(List.of(track1, track2));
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("items", existingTracks);
+        response.put("totalItems", 2);
+        response.put("totalPages", 1);
+
         doReturn(existingTracks).when(trackRepository).findAll();
 
         // --- WHEN ---
 
-        List<Track> foundTracks = trackService.findAll();
+        Map<String, Object> foundTracks = trackService.findAll(1, 3);
 
         // --- THEN ---
-
-        assertIterableEquals(existingTracks, foundTracks,
+        assertEquals(response, foundTracks,
                 "Expected the function trackService.findAll() to return all the existing tracks, but it didn't.");
     }
 

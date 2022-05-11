@@ -52,6 +52,10 @@ public class OpenAPIConfig {
                                 .version("1.0.0")
                 )
                 .components(new Components()
+                        .addResponses("trackPaginatedResponse", new io.swagger.v3.oas.models.responses
+                                .ApiResponse()
+                                .description("The paginated tracks.")
+                                .content(getPaginatedResultContent(trackSchema)))
                         .addResponses("albumPaginatedResponse", new io.swagger.v3.oas.models.responses
                                 .ApiResponse()
                                 .description(searchedResultsResponseDescription)

@@ -30,10 +30,25 @@ public class TrackService {
                 .orElseThrow(() -> new ObjectNotFoundException("Track of id " + id + " not found."));
     }
 
-    // find every single stored track
+    // find every single stored track (paginated)
     @Transactional
-    public List<Track> findAll(){
-        return trackRepository.findAll();
+    public Map<String, Object> findAll(
+            @Min(value = 1, message = "'pageNumber' parameter should be greater or equal to 1.") int pageNumber,
+            @Min(value = 3, message = "'pageSize' parameter should be greater or equal to 3.") int pageSize){
+
+        // declarations and instantiations
+        Map<String, Object> response = new HashMap<>();  // the response that should be sent back to the user...
+        Page<Track> pageWithTracks;  // the page object with the albums
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);  // instantiates the Pageable object
+
+        pageWithTracks = trackRepository.findAll(pageable);
+
+        // mounts the response and returns it
+        response.put("items", pageWithTracks.getContent());
+        response.put("totalItems", pageWithTracks.getTotalElements());
+        response.put("totalPages", pageWithTracks.getTotalPages());
+
+        return response;
     }
 
     // create a single track
