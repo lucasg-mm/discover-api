@@ -124,6 +124,9 @@ public class AlbumService {
 
         // delete from the album's tracks
         foundAlbum.getTracks().remove(foundTrack);
+        foundTrack.setAlbum(null);
+
+        System.out.println(foundAlbum.getTracks());
         albumRepository.save(foundAlbum);
     }
 
