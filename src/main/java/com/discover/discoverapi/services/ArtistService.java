@@ -39,8 +39,24 @@ public class ArtistService {
 
     // find all artists
     @Transactional
-    public List<Artist> findAll(){
-        return artistRepository.findAll();
+    public Map<String, Object> findAll(
+            @Min(value = 1, message = "'pageNumber' parameter should be greater or equal to 1.") int pageNumber,
+            @Min(value = 3, message = "'pageSize' parameter should be greater or equal to 3.") int pageSize){
+
+        // declarations and instantiations
+        Map<String, Object> response = new HashMap<>();  // the response that should be sent back to the user...
+        Page<Artist> pageWithArtists;  // the page object with the artists
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);  // instantiates the Pageable object
+
+        // retrieve artists in the given page
+        pageWithArtists = artistRepository.findAll(pageable);
+
+        // mounts the response and returns it
+        response.put("items", pageWithArtists.getContent());
+        response.put("totalItems", pageWithArtists.getTotalElements());
+        response.put("totalPages", pageWithArtists.getTotalPages());
+
+        return response;
     }
 
     // create an artist

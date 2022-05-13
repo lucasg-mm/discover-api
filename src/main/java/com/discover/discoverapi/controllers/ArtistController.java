@@ -33,16 +33,22 @@ public class ArtistController {
     private ArtistService artistService;
 
     // get every stored artist
-    @Operation(description = "Returns all artists.")
+    @Operation(description = "Gets all artists in a paginated way.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "200",
+                    ref = "#/components/responses/artistPaginatedResponse"),
             @ApiResponse(responseCode = "500",
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
     @GetMapping(value = "", produces = "application/json")
-    public ResponseEntity<List<Artist>> findAll(){
-        List<Artist> allArtists = artistService.findAll();
-        return ResponseEntity.ok().body(allArtists);
+    public ResponseEntity<Map<String, Object>> findAll(
+            @Parameter(description = "The number of the page that should be retrieved (starting with 1).")
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @Parameter(description = "Number of items in each page.")
+            @RequestParam(defaultValue = "3") int pageSize
+    ){
+        Map<String, Object> paginatedArtists = artistService.findAll(pageNumber, pageSize);
+        return ResponseEntity.ok().body(paginatedArtists);
     }
 
     // get a specific artist

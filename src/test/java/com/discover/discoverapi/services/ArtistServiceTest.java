@@ -108,15 +108,19 @@ public class ArtistServiceTest {
         // sets up a list composed by the previous two artists
         List<Artist> existingArtists = new ArrayList<>(List.of(artist1, artist2));
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("items", existingArtists);
+        response.put("totalItems", 2);
+        response.put("totalPages", 1);
+
         doReturn(existingArtists).when(artistRepository).findAll();
 
         // --- WHEN ---
 
-        List<Artist> foundArtists = artistService.findAll();
+        Map<String, Object> foundArtists = artistService.findAll(1, 3);
 
         // --- THEN ---
-
-        assertIterableEquals(existingArtists, foundArtists,
+        assertEquals(response, foundArtists,
                 "Expected the function artistService.findAll() to return all the existing artists, but it didn't.");
     }
 
