@@ -110,15 +110,19 @@ public class GenreServiceTest {
         // sets up a list composed of the previous two genres
         List<Genre> existingGenres = new ArrayList<>(List.of(genre1, genre2));
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("items", existingGenres);
+        response.put("totalItems", 2);
+        response.put("totalPages", 1);
+
         doReturn(existingGenres).when(genreRepository).findAll();
 
         // --- WHEN ---
 
-        List<Genre> foundGenres = genreService.findAll();
+        Map<String, Object> foundGenres = genreService.findAll(1, 3);
 
         // --- THEN ---
-
-        assertIterableEquals(existingGenres, foundGenres,
+        assertEquals(response, foundGenres,
                 "Expected the function genreService.findAll() to return all the existing genres, but it didn't.");
     }
 

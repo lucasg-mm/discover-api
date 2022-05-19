@@ -36,10 +36,25 @@ public class GenreService {
         return genreRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Genre of id " + id + " not found."));
     }
 
-    // find every single genre
+    // find every single stored genre (paginated)
     @Transactional
-    public List<Genre> findAll(){
-        return genreRepository.findAll();
+    public Map<String, Object> findAll(
+            @Min(value = 1, message = "'pageNumber' parameter should be greater or equal to 1.") int pageNumber,
+            @Min(value = 3, message = "'pageSize' parameter should be greater or equal to 3.") int pageSize){
+
+        // declarations and instantiations
+        Map<String, Object> response = new HashMap<>();  // the response that should be sent back to the user...
+        Page<Genre> pageWithGenres;  // the page object with the genres
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);  // instantiates the Pageable object
+
+        pageWithGenres = genreRepository.findAll(pageable);
+
+        // mounts the response and returns it
+        response.put("items", pageWithGenres.getContent());
+        response.put("totalItems", pageWithGenres.getTotalElements());
+        response.put("totalPages", pageWithGenres.getTotalPages());
+
+        return response;
     }
 
     // create a single genre

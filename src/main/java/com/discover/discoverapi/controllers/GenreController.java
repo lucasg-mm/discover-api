@@ -32,16 +32,22 @@ public class GenreController {
     private GenreService genreService;
 
     // get every stored genre
-    @Operation(description = "Gets all stored genres.")
+    @Operation(description = "Gets all stored genres (paginated).")
     @ApiResponses({
-            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "200",
+                    ref = "#/components/responses/genrePaginatedResponse"),
             @ApiResponse(responseCode = "500",
                     content = @Content(schema = @Schema(implementation = StandardError.class))),
     })
     @GetMapping(value = "", produces = "application/json")
-    public ResponseEntity<List<Genre>> findAll(){
-        List<Genre> allGenres = genreService.findAll();
-        return ResponseEntity.ok(allGenres);
+    public ResponseEntity<Map<String, Object>> findAll(
+            @Parameter(description = "The number of the page that should be retrieved (starting with 1).")
+            @RequestParam(defaultValue = "1") int pageNumber,
+            @Parameter(description = "Number of items in each page.")
+            @RequestParam(defaultValue = "3") int pageSize
+    ){
+        Map<String, Object> paginatedGenres = genreService.findAll(pageNumber, pageSize);
+        return ResponseEntity.ok(paginatedGenres);
     }
 
     // get a specific genre by id
