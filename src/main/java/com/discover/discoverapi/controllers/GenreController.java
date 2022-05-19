@@ -188,7 +188,7 @@ public class GenreController {
             @ApiResponse(responseCode = "400",
                     content = @Content(schema = @Schema(implementation = StandardError.class)))
     })
-    @DeleteMapping(value = "{genreId}/genres/{albumId}", produces = "application/json")
+    @DeleteMapping(value = "{genreId}/albums/{albumId}", produces = "application/json")
     public ResponseEntity<Album> removeAlbumFromGenre(
             @Parameter(description="Id of the genre that the album should be removed from.") @PathVariable long genreId,
             @Parameter(description="Id of the album to be removed from the genre's list of albums.") @PathVariable long albumId){
