@@ -126,7 +126,6 @@ public class AlbumService {
         foundAlbum.getTracks().remove(foundTrack);
         foundTrack.setAlbum(null);
 
-        System.out.println(foundAlbum.getTracks());
         albumRepository.save(foundAlbum);
     }
 
