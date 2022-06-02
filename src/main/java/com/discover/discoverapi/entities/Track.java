@@ -38,7 +38,7 @@ public class Track {
     private int length;
 
     @Schema(description = "The album the track is from.")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @ManyToOne
     @JoinColumn(name = "album_id")
     private Album album;
