@@ -6,48 +6,43 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Schema(description = "Represents a genre.")
-@Entity
-@Table(name = "genres")
+@Node(labels = {"Genre"})
 @Getter @Setter @NoArgsConstructor
 public class Genre {
     // PROPERTIES
     @Schema(description = "The genre's unique identifier.")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @GeneratedValue
     private long id;
 
     @Schema(description = "The genre's unique name.")
     @NotEmpty(message = "Genre's name shouldn't be empty.")
-    @Column(name = "name")
     private String name;
 
     @Schema(description = "The albums classified with the genre.")
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(name = "albums_genres", joinColumns = @JoinColumn(name = "genre_id"),
-            inverseJoinColumns = @JoinColumn(name = "album_id"))
+    @Relationship(type = "REPRESENTED_BY", direction = Relationship.Direction.OUTGOING)
     private Set<Album> albums;
 
     @Schema(description = "The artists classified with the genre.")
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(name = "artists_genres", joinColumns = @JoinColumn(name="genre_id"),
-            inverseJoinColumns = @JoinColumn(name="artist_id"))
+    @Relationship(type = "REPRESENTED_BY", direction = Relationship.Direction.OUTGOING)
     private Set<Artist> artists;
 
     @Schema(description = "The tracks classified with the genre.")
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(name = "tracks_genres", joinColumns = @JoinColumn(name = "genre_id"),
-            inverseJoinColumns = @JoinColumn(name = "track_id"))
+    @Relationship(type = "REPRESENTED_BY", direction = Relationship.Direction.OUTGOING)
     private Set<Track> tracks;
 
     // CONSTRUCTORS

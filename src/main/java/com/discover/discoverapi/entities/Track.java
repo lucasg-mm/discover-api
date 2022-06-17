@@ -1,11 +1,14 @@
 package com.discover.discoverapi.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -13,48 +16,40 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
+
+@Node(labels = {"Track"})
 @Schema(description = "Represents a track.")
-@Entity
-@Table(name = "tracks")
 @Getter @Setter @NoArgsConstructor
 public class Track {
     // PROPERTIES
     @Schema(description = "The track's unique identifier.")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @GeneratedValue
     private long id;
 
     @Schema(description = "The track's title.")
     @NotEmpty(message = "Track's title should be specified.")
-    @Column(name = "title")
     private String title;
 
     @Schema(description = "The track's length (in seconds).")
     @Min(value = 1, message = "A track should be at least one second long.")
     @NotNull(message = "The album's track should be specified.")
-    @Column(name = "length")
     private int length;
 
     @Schema(description = "The album the track is from.")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @ManyToOne
-    @JoinColumn(name = "album_id")
+    @Relationship(type = "BELONGS_TO", direction = Relationship.Direction.OUTGOING)
     private Album album;
 
     @Schema(description = "The genres the track is classified with.")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @ManyToMany
-    @JoinTable(name = "tracks_genres", joinColumns = @JoinColumn(name = "track_id"),
-            inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    @Relationship(type = "CLASSIFIED_AS", direction = Relationship.Direction.OUTGOING)
     private Set<Genre> genres;
 
     @Schema(description = "The track's artists.")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @ManyToMany
-    @JoinTable(name = "artists_tracks", joinColumns = @JoinColumn(name = "track_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id"))
+    @Relationship(type = "RECORDED_BY", direction = Relationship.Direction.OUTGOING)
     private Set<Artist> artists;
 
     // CONSTRUCTORS

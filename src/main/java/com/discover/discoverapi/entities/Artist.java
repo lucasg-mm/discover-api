@@ -6,58 +6,51 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Schema(description = "Represents an artist.")
-@Entity
-@Table(name = "artists")
+@Node(labels = {"Artist"})
 @Getter @Setter @NoArgsConstructor
 public class Artist {
     // PROPERTIES
     @Schema(description = "The artist's unique identifier.")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @GeneratedValue
     private long id;
 
     @Schema(description = "The artist's unique name.")
     @NotEmpty(message = "Artist's name shouldn't be empty.")
-    @Column(name = "name")
     private String name;
 
     @Schema(description = "Where the artist's image is located.")
     @JsonIgnore
-    @Column(name = "image_path")
     private String imagePath;
 
     @Schema(description = "The name of the artist's image file.")
     @JsonIgnore
-    @Column(name = "image_file_name")
     private String imageFileName;
 
     @Schema(description = "The artist's albums.")
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(name = "artists_albums", joinColumns = @JoinColumn(name = "artist_id"),
-            inverseJoinColumns = @JoinColumn(name = "album_id"))
+    @Relationship(type = "RECORDS", direction = Relationship.Direction.OUTGOING)
     private Set<Album> albums;
 
     @Schema(description = "The genres the artist is classified with.")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @ManyToMany
-    @JoinTable(name = "artists_genres", joinColumns = @JoinColumn(name =  "artist_id"),
-            inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    @Relationship(type = "CLASSIFIED_AS", direction = Relationship.Direction.OUTGOING)
     private Set<Genre> genres;
 
     @Schema(description = "The artist's tracks.")
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(name = "artists_tracks", joinColumns = @JoinColumn(name = "artist_id"),
-            inverseJoinColumns = @JoinColumn(name = "track_id"))
+    @Relationship(type = "RECORDS", direction =  Relationship.Direction.OUTGOING)
     private Set<Track> tracks;
 
     // CONSTRUCTORS
