@@ -78,7 +78,6 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-neo4j</artifactId>
-            <version>6.3.0</version>
         </dependency>
     </dependencies>
 
