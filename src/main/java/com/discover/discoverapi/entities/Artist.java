@@ -40,12 +40,12 @@ public class Artist {
 
     @Schema(description = "The artist's albums.")
     @JsonIgnore
-    @Relationship(type = "RECORDS", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "RECORDED_BY", direction = Relationship.Direction.INCOMING)
     private Set<Album> albums;
 
     @Schema(description = "The genres the artist is classified with.")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Relationship(type = "CLASSIFIED_AS", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "REPRESENTED_BY", direction = Relationship.Direction.INCOMING)
     private Set<Genre> genres;
 
     @Schema(description = "The artist's tracks.")

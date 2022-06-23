@@ -39,17 +39,17 @@ public class Track {
 
     @Schema(description = "The album the track is from.")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Relationship(type = "BELONGS_TO", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "CONTAINS", direction = Relationship.Direction.INCOMING)
     private Album album;
 
     @Schema(description = "The genres the track is classified with.")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Relationship(type = "CLASSIFIED_AS", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "REPRESENTED_BY", direction = Relationship.Direction.INCOMING)
     private Set<Genre> genres;
 
     @Schema(description = "The track's artists.")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Relationship(type = "RECORDED_BY", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "RECORDS", direction =  Relationship.Direction.INCOMING)
     private Set<Artist> artists;
 
     // CONSTRUCTORS

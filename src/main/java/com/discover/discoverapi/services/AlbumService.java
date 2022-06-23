@@ -107,7 +107,7 @@ public class AlbumService {
         Track foundTrack = trackService.findById(trackId);
 
         // gets album's tracks
-        foundTrack.setAlbum(foundAlbum);
+        foundAlbum.getTracks().add(foundTrack);
         albumRepository.save(foundAlbum);
 
         return foundTrack;
@@ -116,17 +116,19 @@ public class AlbumService {
     // delete a track from the list of tracks from an album
     @Transactional
     public void deleteTrackFromAlbum(long albumId, long trackId) {
-        // finds the album by id
-        Album foundAlbum = findById(albumId);
+//        // finds the album by id
+//        Album foundAlbum = findById(albumId);
+//
+//        // finds the track by id
+//        Track foundTrack = trackService.findById(trackId);
+//
+//        // delete from the album's tracks
+//        foundAlbum.getTracks().remove(foundTrack);
+//        foundTrack.setAlbum(null);
+//
+//        albumRepository.save(foundAlbum);
 
-        // finds the track by id
-        Track foundTrack = trackService.findById(trackId);
-
-        // delete from the album's tracks
-        foundAlbum.getTracks().remove(foundTrack);
-        foundTrack.setAlbum(null);
-
-        albumRepository.save(foundAlbum);
+        albumRepository.removeTrack(albumId, trackId);
     }
 
     // uploads an image as the cover of an album

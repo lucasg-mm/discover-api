@@ -60,7 +60,7 @@ public class Album {
 
     @Schema(description = "The genres the album is classified with.")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Relationship(type = "CLASSIFIED_AS", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "REPRESENTED_BY", direction = Relationship.Direction.INCOMING)
     private Set<Genre> genres;
 
     @Schema(description = "The album's tracks.")
