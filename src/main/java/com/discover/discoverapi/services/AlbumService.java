@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.util.*;
@@ -29,7 +28,6 @@ public class AlbumService {
     private UploaderDownloader imageUploaderDownloader;
 
     // find all
-    @Transactional
     public Map<String, Object> findAll(
             @Min(value = 1, message = "'pageNumber' parameter should be greater or equal to 1.") int pageNumber,
             @Min(value = 3, message = "'pageSize' parameter should be greater or equal to 3.") int pageSize) {
@@ -51,14 +49,12 @@ public class AlbumService {
     }
 
     // find by id
-    @Transactional
     public Album findById(long id) {
         return albumRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Album of id " + id + " not found."));
     }
 
     // update by id
-    @Transactional
     public Album update(long id, Album toUpdate) {
         // finds the album to be updated
         Album foundAlbum = findById(id);
@@ -74,14 +70,12 @@ public class AlbumService {
     }
 
     // create
-    @Transactional
     public Album create(Album album) {
-        album.setId(0);  // shouldn't be null?
+        album.setId(null);  // shouldn't be null?
         return albumRepository.save(album);
     }
 
     // delete by id
-    @Transactional
     public void deleteById(long id) {
         if (albumRepository.existsById(id)) {
             albumRepository.deleteById(id);
@@ -91,48 +85,23 @@ public class AlbumService {
     }
 
     // find all the album's tracks
-    @Transactional
     public Set<Track> findAllTracksOfAlbum(long albumId) {
         Album foundAlbum = findById(albumId);
         return foundAlbum.getTracks();
     }
 
     // add track to an album's list of tracks
-    @Transactional
     public Track addTrackToAlbum(long albumId, long trackId) {
-        // finds the album by id
-        Album foundAlbum = findById(albumId);
-
-        // finds the track by id
-        Track foundTrack = trackService.findById(trackId);
-
-        // gets album's tracks
-        foundAlbum.getTracks().add(foundTrack);
-        albumRepository.save(foundAlbum);
-
-        return foundTrack;
+        albumRepository.addTrack(albumId, trackId);
+        return trackService.findById(trackId);
     }
 
     // delete a track from the list of tracks from an album
-    @Transactional
     public void deleteTrackFromAlbum(long albumId, long trackId) {
-//        // finds the album by id
-//        Album foundAlbum = findById(albumId);
-//
-//        // finds the track by id
-//        Track foundTrack = trackService.findById(trackId);
-//
-//        // delete from the album's tracks
-//        foundAlbum.getTracks().remove(foundTrack);
-//        foundTrack.setAlbum(null);
-//
-//        albumRepository.save(foundAlbum);
-
         albumRepository.removeTrack(albumId, trackId);
     }
 
     // uploads an image as the cover of an album
-    @Transactional
     public void setAlbumCover(long albumId, MultipartFile file) {
         // retrieves the album
         Album foundAlbum = findById(albumId);
@@ -161,7 +130,6 @@ public class AlbumService {
     }
 
     // downloads the cover art image
-    @Transactional
     public byte[] getAlbumCover(long albumId){
         // gets album and its cover location data
         Album foundAlbum = findById(albumId);
@@ -179,7 +147,6 @@ public class AlbumService {
 
     // find albums with a title that contains the 'title' param, and returns it in a
     // paginated way
-    @Transactional
     public Map<String, Object> findByTitleContaining(
             @NotEmpty(message = "'title' parameter shouldn't be empty.") String title,
             @Min(value = 1, message = "'pageNumber' parameter should be greater or equal to 1.") int pageNumber,
@@ -191,7 +158,7 @@ public class AlbumService {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);  // instantiates the Pageable object
 
         // retrieves albums in the given page
-        pageWithAlbums = albumRepository.findByTitleContaining(title, pageable);
+        pageWithAlbums = albumRepository.findByTitleContainingIgnoreCase(title, pageable);
 
         // mounts the response and returns it
         response.put("items", pageWithAlbums.getContent());

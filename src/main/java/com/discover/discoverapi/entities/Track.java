@@ -10,14 +10,13 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 
-@Node(labels = {"Track"})
+@Node
 @Schema(description = "Represents a track.")
 @Getter @Setter @NoArgsConstructor
 public class Track {
@@ -26,7 +25,7 @@ public class Track {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
     @Schema(description = "The track's title.")
     @NotEmpty(message = "Track's title should be specified.")

@@ -10,6 +10,7 @@ import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
+import org.springframework.data.neo4j.repository.query.Query;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Schema(description = "Represents an album.")
-@Node(labels = {"Album"})
+@Node
 @Getter @Setter @NoArgsConstructor
 public class Album {
 
@@ -27,7 +28,7 @@ public class Album {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
     @Schema(description = "The album's title.")
     @NotEmpty(message = "The album's title should be specified.")

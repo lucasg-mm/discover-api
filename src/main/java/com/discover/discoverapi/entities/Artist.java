@@ -11,12 +11,11 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Schema(description = "Represents an artist.")
-@Node(labels = {"Artist"})
+@Node
 @Getter @Setter @NoArgsConstructor
 public class Artist {
     // PROPERTIES
@@ -24,7 +23,7 @@ public class Artist {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 
     @Schema(description = "The artist's unique name.")
     @NotEmpty(message = "Artist's name shouldn't be empty.")

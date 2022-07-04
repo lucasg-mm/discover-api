@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.util.*;
@@ -31,14 +30,12 @@ public class ArtistService {
     private UploaderDownloader imageUploaderDownloader;
 
     // find by id
-    @Transactional
     public Artist findById(long id){
         return artistRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Artist of id " + id + " not found."));
     }
 
     // find all artists
-    @Transactional
     public Map<String, Object> findAll(
             @Min(value = 1, message = "'pageNumber' parameter should be greater or equal to 1.") int pageNumber,
             @Min(value = 3, message = "'pageSize' parameter should be greater or equal to 3.") int pageSize){
@@ -60,14 +57,12 @@ public class ArtistService {
     }
 
     // create an artist
-    @Transactional
     public Artist create(Artist toCreate){
-        toCreate.setId(0);
+        toCreate.setId(null);
         return artistRepository.save(toCreate);
     }
 
     // updates an artist (just its name)
-    @Transactional
     public Artist update(long id, Artist toUpdate){
         // retrieves the artist with the given id
         Artist retrievedArtist = findById(id);
@@ -80,7 +75,6 @@ public class ArtistService {
     }
 
     // delete an artist by id
-    @Transactional
     public void deleteById(long id){
         if (artistRepository.existsById(id)){
             artistRepository.deleteById(id);
@@ -91,14 +85,12 @@ public class ArtistService {
     }
 
     // find all the albums from an artist
-    @Transactional
     public Set<Album> findAllAlbumsOfArtist(long artistId){
         Artist foundArtist = findById(artistId);
         return foundArtist.getAlbums();
     }
 
     // add album to the artist's list of albums
-    @Transactional
     public Album addAlbumToArtist(long artistId, long albumId){
         // finds the artist by id
         Artist foundArtist = findById(artistId);
@@ -114,7 +106,6 @@ public class ArtistService {
     }
 
     // delete an album from the list of albums from an artist
-    @Transactional
     public void deleteAlbumFromArtist(long artistId, long albumId){
         // finds the artist by id
         Artist foundArtist = findById(artistId);
@@ -128,14 +119,12 @@ public class ArtistService {
     }
 
     // find all the tracks from an artist
-    @Transactional
     public Set<Track> findAllTracksOfArtist(long artistId){
         Artist foundArtist = findById(artistId);
         return foundArtist.getTracks();
     }
 
     // add track to the artist's list of tracks
-    @Transactional
     public Track addTrackToArtist(long artistId, long trackId){
         // finds the artist by id
         Artist foundArtist = findById(artistId);
@@ -151,7 +140,6 @@ public class ArtistService {
     }
 
     // delete a track from the list of tracks from an artist
-    @Transactional
     public void deleteTrackFromArtist(long artistId, long trackId){
         // finds the artist by id
         Artist foundArtist = findById(artistId);
@@ -165,7 +153,6 @@ public class ArtistService {
     }
 
     // uploads the artist's image
-    @Transactional
     public void setArtistImage(long artistId, MultipartFile file){
         // retrieves the artist
         Artist foundArtist = findById(artistId);
@@ -194,7 +181,6 @@ public class ArtistService {
     }
 
     // downloads the artist's image
-    @Transactional
     public byte[] getArtistImage(long artistId){
         // gets artist and its image location data
         Artist foundArtist = findById(artistId);
@@ -212,7 +198,6 @@ public class ArtistService {
 
     // find artists with a title that contains the 'name' param, and returns it in a
     // paginated way
-    @Transactional
     public Map<String, Object> findByNameContaining(
             @NotEmpty(message = "'name' parameter shouldn't be empty.") String name,
             @Min(value = 1, message = "'pageNumber' parameter should be greater or equal to 1.") int pageNumber,

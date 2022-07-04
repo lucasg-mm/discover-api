@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.transaction.Transactional;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.util.HashMap;
@@ -30,13 +29,11 @@ public class GenreService {
     private ArtistService artistService;
 
     // find a genre by id
-    @Transactional
     public Genre findById(long id){
         return genreRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Genre of id " + id + " not found."));
     }
 
     // find every single stored genre (paginated)
-    @Transactional
     public Map<String, Object> findAll(
             @Min(value = 1, message = "'pageNumber' parameter should be greater or equal to 1.") int pageNumber,
             @Min(value = 3, message = "'pageSize' parameter should be greater or equal to 3.") int pageSize){
@@ -57,14 +54,12 @@ public class GenreService {
     }
 
     // create a single genre
-    @Transactional
     public Genre create(Genre toCreate){
-        toCreate.setId(0);
+        toCreate.setId(null);
         return genreRepository.save(toCreate);
     }
 
     // update a single genre (just its name)
-    @Transactional
     public Genre update(long id, Genre toUpdate){
         // retrieves the genre
         Genre retrievedGenre = findById(id);
@@ -77,7 +72,6 @@ public class GenreService {
     }
 
     // deletes a single genre
-    @Transactional
     public void deleteById(long id){
         if (genreRepository.existsById(id)){
             genreRepository.deleteById(id);
@@ -89,14 +83,12 @@ public class GenreService {
     }
 
     // find all the albums from a genre
-    @Transactional
     public Set<Album> findAllAlbumsOfGenre(long genreId){
         Genre foundGenre = findById(genreId);
         return foundGenre.getAlbums();
     }
 
     // add album to the genre's list of albums
-    @Transactional
     public Album addAlbumToGenre(long genreId, long albumId){
         // finds the genre by id
         Genre foundGenre = findById(genreId);
@@ -112,7 +104,6 @@ public class GenreService {
     }
 
     // delete an album from the list of albums from a genre
-    @Transactional
     public void deleteAlbumFromGenre(long genreId, long albumId){
         // finds the genre by id
         Genre foundGenre = findById(genreId);
@@ -126,14 +117,12 @@ public class GenreService {
     }
 
     // find all the tracks from a genre
-    @Transactional
     public Set<Track> findAllTracksOfGenre(long genreId){
         Genre foundGenre = findById(genreId);
         return foundGenre.getTracks();
     }
 
     // add track to the genre's list of tracks
-    @Transactional
     public Track addTrackToGenre(long genreId, long trackId){
         // finds the genre by id
         Genre foundGenre = findById(genreId);
@@ -149,7 +138,6 @@ public class GenreService {
     }
 
     // delete a track from the list of tracks from a genre
-    @Transactional
     public void deleteTrackFromGenre(long genreId, long trackId){
         // finds the genre by id
         Genre foundGenre = findById(genreId);
@@ -163,14 +151,12 @@ public class GenreService {
     }
 
     // find all the main artists that from a genre
-    @Transactional
     public Set<Artist> findAllArtistsOfGenre(long genreId){
         Genre foundGenre = findById(genreId);
         return foundGenre.getArtists();
     }
 
     // add artist to the genre's list of artists
-    @Transactional
     public Artist addArtistToGenre(long genreId, long artistId){
         // finds the genre by id
         Genre foundGenre = findById(genreId);
@@ -186,7 +172,6 @@ public class GenreService {
     }
 
     // delete an artist from the genre's list of artists
-    @Transactional
     public void deleteArtistFromGenre(long genreId, long artistId){
         // finds the genre by id
         Genre foundGenre = findById(genreId);
@@ -201,7 +186,6 @@ public class GenreService {
 
     // find genres with a title that contains the 'name' param, and returns it in a
     // paginated way
-    @Transactional
     public Map<String, Object> findByNameContaining(
             @NotEmpty(message = "'name' parameter shouldn't be empty.") String name,
             @Min(value = 1, message = "'pageNumber' parameter should be greater or equal to 1.") int pageNumber,

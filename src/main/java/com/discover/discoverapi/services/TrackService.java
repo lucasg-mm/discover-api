@@ -10,11 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.transaction.Transactional;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Validated
@@ -24,14 +22,12 @@ public class TrackService {
     private TrackRepository trackRepository;
 
     // find a single track by its id
-    @Transactional
     public Track findById(long id){
         return trackRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Track of id " + id + " not found."));
     }
 
     // find every single stored track (paginated)
-    @Transactional
     public Map<String, Object> findAll(
             @Min(value = 1, message = "'pageNumber' parameter should be greater or equal to 1.") int pageNumber,
             @Min(value = 3, message = "'pageSize' parameter should be greater or equal to 3.") int pageSize){
@@ -52,14 +48,12 @@ public class TrackService {
     }
 
     // create a single track
-    @Transactional
     public Track create(Track toCreate){
-        toCreate.setId(0);
+        toCreate.setId(null);
         return trackRepository.save(toCreate);
     }
 
     // update a single track by id
-    @Transactional
     public Track update(long id, Track toUpdate){
         // retrieves the track
         Track retrievedTrack = findById(id);
@@ -73,7 +67,6 @@ public class TrackService {
     }
 
     // delete a single track by its id
-    @Transactional
     public void deleteById(long id){
         if (trackRepository.existsById(id)){
             trackRepository.deleteById(id);
@@ -85,7 +78,6 @@ public class TrackService {
 
     // find tracks with a title that contains the 'title' param, and returns it in a
     // paginated way
-    @Transactional
     public Map<String, Object> findByTitleContaining(
             @NotEmpty(message = "'title' parameter shouldn't be empty.") String title,
             @Min(value = 1, message = "'pageNumber' parameter should be greater or equal to 1.") int pageNumber,
