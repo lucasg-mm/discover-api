@@ -90,30 +90,13 @@ public class GenreService {
 
     // add album to the genre's list of albums
     public Album addAlbumToGenre(long genreId, long albumId){
-        // finds the genre by id
-        Genre foundGenre = findById(genreId);
-
-        // finds the album by id
-        Album foundAlbum = albumService.findById(albumId);
-
-        // add the album to the list
-        foundGenre.getAlbums().add(foundAlbum);
-        genreRepository.save(foundGenre);
-
-        return foundAlbum;
+        genreRepository.addAlbum(genreId, albumId);
+        return albumService.findById(albumId);
     }
 
     // delete an album from the list of albums from a genre
     public void deleteAlbumFromGenre(long genreId, long albumId){
-        // finds the genre by id
-        Genre foundGenre = findById(genreId);
-
-        // finds the album by id
-        Album foundAlbum = albumService.findById(albumId);
-
-        // delete from the genre's albums
-        foundGenre.getAlbums().remove(foundAlbum);
-        genreRepository.save(foundGenre);
+        genreRepository.deleteAlbum(genreId, albumId);
     }
 
     // find all the tracks from a genre
@@ -124,30 +107,13 @@ public class GenreService {
 
     // add track to the genre's list of tracks
     public Track addTrackToGenre(long genreId, long trackId){
-        // finds the genre by id
-        Genre foundGenre = findById(genreId);
-
-        // finds the track by id
-        Track foundTrack = trackService.findById(trackId);
-
-        // add the track to the list
-        foundGenre.getTracks().add(foundTrack);
-        genreRepository.save(foundGenre);
-
-        return foundTrack;
+        genreRepository.addTrack(genreId, trackId);
+        return trackService.findById(trackId);
     }
 
     // delete a track from the list of tracks from a genre
     public void deleteTrackFromGenre(long genreId, long trackId){
-        // finds the genre by id
-        Genre foundGenre = findById(genreId);
-
-        // finds the track by id
-        Track foundTrack = trackService.findById(trackId);
-
-        // delete from the genre's tracks
-        foundGenre.getTracks().remove(foundTrack);
-        genreRepository.save(foundGenre);
+        genreRepository.deleteTrack(genreId, trackId);
     }
 
     // find all the main artists that from a genre
@@ -158,30 +124,13 @@ public class GenreService {
 
     // add artist to the genre's list of artists
     public Artist addArtistToGenre(long genreId, long artistId){
-        // finds the genre by id
-        Genre foundGenre = findById(genreId);
-
-        // finds the artist by id
-        Artist foundArtist = artistService.findById(artistId);
-
-        // gets genre's artists
-        foundGenre.getArtists().add(foundArtist);
-        genreRepository.save(foundGenre);
-
-        return foundArtist;
+        genreRepository.addArtist(genreId, artistId);
+        return artistService.findById(artistId);
     }
 
     // delete an artist from the genre's list of artists
     public void deleteArtistFromGenre(long genreId, long artistId){
-        // finds the genre by id
-        Genre foundGenre = findById(genreId);
-
-        // finds the artist by id
-        Artist foundArtist = artistService.findById(artistId);
-
-        // delete from the genre's artists
-        foundGenre.getArtists().remove(foundArtist);
-        genreRepository.save(foundGenre);
+        genreRepository.deleteArtist(genreId, artistId);
     }
 
     // find genres with a title that contains the 'name' param, and returns it in a
