@@ -197,7 +197,7 @@ public class GenreService {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);  // instantiates the Pageable object
 
         // retrieves genres in the given page
-        pageWithGenres = genreRepository.findByNameContaining(name, pageable);
+        pageWithGenres = genreRepository.findByNameContainingIgnoreCase(name, pageable);
 
         // mounts the response and return it
         response.put("items", pageWithGenres.getContent());

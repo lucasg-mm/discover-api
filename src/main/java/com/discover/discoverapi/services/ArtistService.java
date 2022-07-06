@@ -92,30 +92,13 @@ public class ArtistService {
 
     // add album to the artist's list of albums
     public Album addAlbumToArtist(long artistId, long albumId){
-        // finds the artist by id
-        Artist foundArtist = findById(artistId);
-
-        // finds the album by id
-        Album foundAlbum = albumService.findById(albumId);
-
-        // add the album to the list
-        foundArtist.getAlbums().add(foundAlbum);
-        artistRepository.save(foundArtist);
-
-        return foundAlbum;
+        artistRepository.addAlbum(artistId, albumId);
+        return albumService.findById(albumId);
     }
 
     // delete an album from the list of albums from an artist
     public void deleteAlbumFromArtist(long artistId, long albumId){
-        // finds the artist by id
-        Artist foundArtist = findById(artistId);
-
-        // finds the album by id
-        Album foundAlbum = albumService.findById(albumId);
-
-        // delete from the artist's albums
-        foundArtist.getAlbums().remove(foundAlbum);
-        artistRepository.save(foundArtist);
+        artistRepository.deleteAlbum(artistId, albumId);
     }
 
     // find all the tracks from an artist
@@ -126,30 +109,13 @@ public class ArtistService {
 
     // add track to the artist's list of tracks
     public Track addTrackToArtist(long artistId, long trackId){
-        // finds the artist by id
-        Artist foundArtist = findById(artistId);
-
-        // finds the track by id
-        Track foundTrack = trackService.findById(trackId);
-
-        // add the track to the list
-        foundArtist.getTracks().add(foundTrack);
-        artistRepository.save(foundArtist);
-
-        return foundTrack;
+        artistRepository.addTrack(artistId, trackId);
+        return trackService.findById(trackId);
     }
 
     // delete a track from the list of tracks from an artist
     public void deleteTrackFromArtist(long artistId, long trackId){
-        // finds the artist by id
-        Artist foundArtist = findById(artistId);
-
-        // finds the track by id
-        Track foundTrack = trackService.findById(trackId);
-
-        // delete from the artist's tracks
-        foundArtist.getTracks().remove(foundTrack);
-        artistRepository.save(foundArtist);
+        artistRepository.deleteTrack(artistId, trackId);
     }
 
     // uploads the artist's image
@@ -209,7 +175,7 @@ public class ArtistService {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);  // instantiates the Pageable object
 
         // retrieves artists in the given page
-        pageWithArtists = artistRepository.findByNameContaining(name, pageable);
+        pageWithArtists = artistRepository.findByNameContainingIgnoreCase(name, pageable);
 
         // mounts the response and return it
         response.put("items", pageWithArtists.getContent());

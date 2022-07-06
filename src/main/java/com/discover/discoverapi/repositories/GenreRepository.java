@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GenreRepository extends Neo4jRepository<Genre, Long> {
-    Page<Genre> findByNameContaining(String name, Pageable pageable);
+    Page<Genre> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }

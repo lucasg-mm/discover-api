@@ -89,7 +89,7 @@ public class TrackService {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);  // instantiates the Pageable object
 
         // retrieve tracks in the given page
-        pageWithTracks = trackRepository.findByTitleContaining(title, pageable);
+        pageWithTracks = trackRepository.findByTitleContainingIgnoreCase(title, pageable);
 
         // mounts the response and return it
         response.put("items", pageWithTracks.getContent());

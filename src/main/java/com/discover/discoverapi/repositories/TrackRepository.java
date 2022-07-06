@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TrackRepository extends Neo4jRepository<Track, Long> {
-    Page<Track> findByTitleContaining(String title, Pageable pageable);
+    Page<Track> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 }
