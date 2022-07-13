@@ -15,9 +15,9 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Schema(description = "Represents an artist.")
-@Node
+@Node(labels = {"Artist"})
 @Getter @Setter @NoArgsConstructor
-public class Artist {
+public class Artist{
     // PROPERTIES
     @Schema(description = "The artist's unique identifier.")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
