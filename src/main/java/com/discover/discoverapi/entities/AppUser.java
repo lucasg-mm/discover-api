@@ -30,10 +30,14 @@ public class AppUser {
     @NotEmpty(message = "The user's password shouldn't be empty")
     private String password;
 
+    @Schema(description = "The user's role in the app, for authorization purposes")
+    private String role;
+
     // CONSTRUCTORS
-    public AppUser(String username, String password) {
+    public AppUser(String username, String password, String role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
     // METHODS
@@ -43,6 +47,7 @@ public class AppUser {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 }
