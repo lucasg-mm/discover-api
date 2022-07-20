@@ -26,12 +26,12 @@ public class SecurityAppUser implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return appUser.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return appUser.getUsername();
     }
 
     @Override
