@@ -1,48 +1,43 @@
 package com.discover.discoverapi.config;
 
-import com.discover.discoverapi.entities.AppUser;
-import com.discover.discoverapi.repositories.AppUserRepository;
+import com.discover.discoverapi.services.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
 public class UsernamePwdAuthenticationProvider implements AuthenticationProvider {
-
     @Autowired
-    private AppUserRepository appUserRepository;
+    private AppUserService appUserService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // contains the authentication logic
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        // gets the username and password that the user provided
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-        List<AppUser> appUser = appUserRepository.findByUsername(username);
 
-        if (appUser.size() > 0) {
-            if (passwordEncoder.matches(password, appUser.get(0).getPassword())){
-                List<GrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(new SimpleGrantedAuthority(appUser.get(0).getRole()));
-                return new UsernamePasswordAuthenticationToken(username, password, authorities);
-            }
+        // gets the user with the provided username
+        UserDetails user = appUserService.loadUserByUsername(username);
+
+        // if the passwords match...
+        if (passwordEncoder.matches(password, user.getPassword())){
+            // return the auth token
+            return new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
         }
         else{
-            throw new BadCredentialsException("No user registered with this details!");
+            // if they don't match, there is a problem!
+            throw new BadCredentialsException("Incorrect password!");
         }
-        return authentication;
     }
 
     @Override
