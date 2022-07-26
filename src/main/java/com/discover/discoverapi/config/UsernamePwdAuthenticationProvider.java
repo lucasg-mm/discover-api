@@ -24,7 +24,6 @@ public class UsernamePwdAuthenticationProvider implements AuthenticationProvider
     private AppUserRepository appUserRepository;
 
     @Autowired
-    @Lazy
     private PasswordEncoder passwordEncoder;
 
     @Override
