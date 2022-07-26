@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
-@CrossOrigin
+@CrossOrigin("*")
 @RestController
 @AllArgsConstructor
-@Tag(name = "User controller. These endpoints are meant to be used in login situations.")
+@Tag(name = "User controller. These endpoints are meant to be used in login and logout situations.")
 public class UserController {
     @Operation(description = "Gets the logged user. It's used for login.")
     @RequestMapping("/user")
