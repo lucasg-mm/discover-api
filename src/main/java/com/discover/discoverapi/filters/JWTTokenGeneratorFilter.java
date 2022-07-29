@@ -36,12 +36,15 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter {
             SecretKey key = Keys.hmacShaKeyFor(SecurityConstants.JWT_KEY.getBytes(StandardCharsets.UTF_8));
 
             // builds the jwt token
-            String jwt = Jwts.builder().setIssuer("Discover").setSubject("JWT Token")
+            String jwt = Jwts.builder()
+                    .setIssuer("Discover")
+                    .setSubject("JWT Token")
                     .claim("username", authentication.getName())
                     .claim("authorities", populateAuthorities(authentication.getAuthorities()))
                     .setIssuedAt(new Date())
                     .setExpiration(new Date((new Date()).getTime() + 300000000))
-                    .signWith(key).compact();
+                    .signWith(key)
+                    .compact();
 
             // sends the token in the response token
             response.setHeader(SecurityConstants.JWT_HEADER, jwt);

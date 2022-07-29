@@ -49,7 +49,6 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                 // gets the authorities from the claim set
                 String authorities = (String) claims.get("authorities");
 
-
                 Authentication auth = new UsernamePasswordAuthenticationToken(username,null,
                         AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
                 SecurityContextHolder.getContext().setAuthentication(auth);
