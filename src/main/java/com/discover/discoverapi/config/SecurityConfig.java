@@ -4,6 +4,7 @@ import com.discover.discoverapi.filters.JWTTokenGeneratorFilter;
 import com.discover.discoverapi.filters.JWTTokenValidatorFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -45,10 +46,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // protects every request
         http.authorizeRequests()
-                .anyRequest()
-                .authenticated()
+                .antMatchers(HttpMethod.DELETE, "/albums/**").hasRole("admin")
+                .antMatchers(HttpMethod.PUT, "/albums/**").hasRole("admin")
+                .antMatchers(HttpMethod.POST, "/albums").hasRole("admin")
+                .antMatchers(HttpMethod.DELETE, "/tracks/**").hasRole("admin")
+                .antMatchers(HttpMethod.PUT, "/tracks/**").hasRole("admin")
+                .antMatchers(HttpMethod.POST, "/tracks").hasRole("admin")
+                .antMatchers(HttpMethod.DELETE, "/artists/**").hasRole("admin")
+                .antMatchers(HttpMethod.PUT, "/artists/**").hasRole("admin")
+                .antMatchers(HttpMethod.POST, "/artists").hasRole("admin")
+                .antMatchers(HttpMethod.DELETE, "/genres/**").hasRole("admin")
+                .antMatchers(HttpMethod.PUT, "/genres/**").hasRole("admin")
+                .antMatchers(HttpMethod.POST, "/genres").hasRole("admin")
                 .and()
-                .httpBasic();
+                .formLogin();
     }
 
     @Bean
