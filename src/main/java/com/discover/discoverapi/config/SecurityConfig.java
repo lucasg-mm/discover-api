@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -21,6 +22,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // gets custom authentication entry point
+        AuthenticationEntryPoint entryPoint = new CustomAuthenticationEntryPoint();
+
         // configuration to use stateless authentication
         http = http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
 
@@ -59,7 +63,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/genres/**").hasRole("admin")
                 .antMatchers(HttpMethod.POST, "/genres").hasRole("admin")
                 .and()
-                .formLogin();
+                .httpBasic()
+                .authenticationEntryPoint(entryPoint);
     }
 
     @Bean
