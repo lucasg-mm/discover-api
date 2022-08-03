@@ -38,17 +38,18 @@ public class AppUserService implements UserDetailsService {
 
     // registers a normal user
     // (doesn't have admin privileges)
-    public void registerNormalUser(String username, String password){
+    public AppUser registerNormalUser(String username, String password){
         if (!checkIfUserExists(username)) { // if the user doesn't exist, registers him
             String hashedPassword = passwordEncoder.encode(password);
             AppUser newUser = new AppUser(username, hashedPassword, "NORMAL");
-            appUserRepository.save(newUser);
+            return appUserRepository.save(newUser);
         }
         else{ // if the user exist, throws exception
             throw new UserAlreadyExistsException("A user with this username already exists!");
         }
     }
 
+    // checks if a user already exists in the database
     public boolean checkIfUserExists(String username){
         try {
             loadUserByUsername(username);
