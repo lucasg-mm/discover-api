@@ -3,10 +3,12 @@ package com.discover.discoverapi.services;
 import com.discover.discoverapi.entities.AppUser;
 import com.discover.discoverapi.entities.SecurityAppUser;
 import com.discover.discoverapi.repositories.AppUserRepository;
+import com.discover.discoverapi.services.exceptions.UserAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +17,9 @@ import java.util.List;
 public class AppUserService implements UserDetailsService {
     @Autowired
     private AppUserRepository appUserRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     // gets a user by its username
     @Override
@@ -29,5 +34,28 @@ public class AppUserService implements UserDetailsService {
 
         // returns the user as UserDetails implementation
         return new SecurityAppUser(foundAppUsers.get(0));
+    }
+
+    // registers a normal user
+    // (doesn't have admin privileges)
+    public void registerNormalUser(String username, String password){
+        if (!checkIfUserExists(username)) { // if the user doesn't exist, registers him
+            String hashedPassword = passwordEncoder.encode(password);
+            AppUser newUser = new AppUser(username, hashedPassword, "NORMAL");
+            appUserRepository.save(newUser);
+        }
+        else{ // if the user exist, throws exception
+            throw new UserAlreadyExistsException("A user with this username already exists!");
+        }
+    }
+
+    public boolean checkIfUserExists(String username){
+        try {
+            loadUserByUsername(username);
+            return true;
+        }
+        catch (UsernameNotFoundException e){
+            return false;
+        }
     }
 }
