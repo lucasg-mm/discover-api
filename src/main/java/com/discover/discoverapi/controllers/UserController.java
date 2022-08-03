@@ -7,9 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Map;
@@ -23,14 +21,14 @@ public class UserController {
     AppUserService userService;
 
     @Operation(description = "Gets the logged user. It's used for login.")
-    @RequestMapping("/user")
+    @GetMapping("/user")
     public Principal getUser(Principal user){
         return user;
     }
 
     @Operation(description = "Registers a new user.")
-    @RequestMapping("/register")
-    public ResponseEntity<AppUser> registerUser(Map<String, String> newUser){
+    @PostMapping("/register")
+    public ResponseEntity<AppUser> registerUser(@RequestBody Map<String, String> newUser){
         AppUser registeredUser = userService.registerNormalUser(newUser.get("username"), newUser.get("password"));
         return ResponseEntity.ok(registeredUser);
     }
