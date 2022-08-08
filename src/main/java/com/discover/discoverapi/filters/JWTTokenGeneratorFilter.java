@@ -24,7 +24,7 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter {
     // this filter should be applied to every endpoint, except the '/user' one
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return !request.getServletPath().equals("/user");
+        return !request.getServletPath().equals("/login");
     }
 
     @Override

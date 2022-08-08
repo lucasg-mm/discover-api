@@ -23,7 +23,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
     // validation should not happen when reaching the 'user' route
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getServletPath().equals("/user");
+        return request.getServletPath().equals("/login");
     }
 
     @Override
