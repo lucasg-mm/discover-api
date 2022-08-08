@@ -1,7 +1,7 @@
 package com.discover.discoverapi.controllers;
 
 import com.discover.discoverapi.entities.AppUser;
-import com.discover.discoverapi.services.AppUserService;
+import com.discover.discoverapi.services.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.Map;
 @Tag(name = "Authentication controller. These endpoints are meant to be used in login situations.")
 public class AuthController {
     @Autowired
-    AppUserService userService;
+    AuthService userService;
 
     @Operation(description = "Gets the logged user. It's used for login.")
     @GetMapping("/login")

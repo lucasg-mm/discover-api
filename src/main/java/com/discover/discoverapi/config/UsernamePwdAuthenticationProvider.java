@@ -1,6 +1,6 @@
 package com.discover.discoverapi.config;
 
-import com.discover.discoverapi.services.AppUserService;
+import com.discover.discoverapi.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UsernamePwdAuthenticationProvider implements AuthenticationProvider {
     @Autowired
-    private AppUserService appUserService;
+    private AuthService appUserService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
