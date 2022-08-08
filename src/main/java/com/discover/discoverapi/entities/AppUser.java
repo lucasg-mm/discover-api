@@ -63,6 +63,17 @@ public class AppUser {
         this.role = role;
     }
 
+    public AppUser(String username, String password, String role, Set<Album> likedAlbums, Set<Track> likedTracks,
+                   Set<Genre> likedGenres, Set<Artist> likedArtists) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.likedAlbums = likedAlbums;
+        this.likedTracks = likedTracks;
+        this.likedGenres = likedGenres;
+        this.likedArtists = likedArtists;
+    }
+
     // METHODS
     @Override
     public String toString() {

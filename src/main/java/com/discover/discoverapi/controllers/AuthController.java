@@ -15,13 +15,13 @@ import java.util.Map;
 @CrossOrigin("*")
 @RestController
 @AllArgsConstructor
-@Tag(name = "User controller. These endpoints are meant to be used in login and logout situations.")
-public class UserController {
+@Tag(name = "Authentication controller. These endpoints are meant to be used in login situations.")
+public class AuthController {
     @Autowired
     AppUserService userService;
 
     @Operation(description = "Gets the logged user. It's used for login.")
-    @GetMapping("/user")
+    @GetMapping("/login")
     public Principal getUser(Principal user){
         return user;
     }
