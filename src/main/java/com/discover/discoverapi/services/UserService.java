@@ -16,6 +16,9 @@ public class UserService {
     @Autowired
     private AppUserRepository appUserRepository;
 
+    @Autowired
+    private AlbumService albumService;
+
     public AppUser findUserById(long userId) {
         return appUserRepository
                 .findById(userId)
@@ -25,5 +28,14 @@ public class UserService {
     public Set<Album> getLikedAlbums(long userId){
         AppUser foundUser = findUserById(userId);
         return foundUser.getLikedAlbums();
+    }
+
+    public Album addAlbumToLiked(long userId, long albumId) {
+        appUserRepository.addAlbumToLiked(userId, albumId);
+        return albumService.findById(albumId);
+    }
+
+    public void removeAlbumFromLiked(long userId, long albumId) {
+        appUserRepository.removeAlbumFromLiked(userId, albumId);
     }
 }
