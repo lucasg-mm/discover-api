@@ -20,40 +20,23 @@ public class UserController {
 
     // gets a user's list of liked albums
     @Operation(description = "Gets the list of albums liked by the user")
-    @GetMapping(value = "/{userId}/albums", produces = "application/json")
-    public ResponseEntity<Set<Album>> getLikedAlbums(@PathVariable long userId){
-        Set<Album> likedAlbums = userService.getLikedAlbums(userId);
+    @GetMapping(value = "/{username}/albums", produces = "application/json")
+    public ResponseEntity<Set<Album>> getLikedAlbums(@PathVariable String username){
+        Set<Album> likedAlbums = userService.getLikedAlbums(username);
         return ResponseEntity.ok(likedAlbums);
     }
 
     // adds an album to the user's list of albums
-    @PutMapping(value = "/{userId}/albums/{albumId}", produces = "application/json")
-    public ResponseEntity<Album> addAlbumToLiked(@PathVariable long userId, @PathVariable long albumId){
-        Album addedAlbum = userService.addAlbumToLiked(userId, albumId);
-
+    @PutMapping(value = "/{username}/albums/{albumId}", produces = "application/json")
+    public ResponseEntity<Album> addAlbumToLiked(@PathVariable String username, @PathVariable long albumId){
+        Album addedAlbum = userService.addAlbumToLiked(username, albumId);
         return ResponseEntity.ok(addedAlbum);
     }
 
     // removes an album from the user's list of albums
-    @DeleteMapping(value = "/{userId}/albums/{albumId}", produces = "application/json")
-    public ResponseEntity<Album> removeAlbumFromLiked(@PathVariable long userId, @PathVariable long albumId){
-        userService.removeAlbumFromLiked(userId, albumId);
-
+    @DeleteMapping(value = "/{username}/albums/{albumId}", produces = "application/json")
+    public ResponseEntity<Album> removeAlbumFromLiked(@PathVariable String username, @PathVariable long albumId){
+        userService.removeAlbumFromLiked(username, albumId);
         return ResponseEntity.noContent().build();
     }
-
-//    // gets a user's list of liked tracks
-//    public ResponseEntity<Set<Track>> getLikedTracks(){
-//
-//    }
-//
-//    // gets a user's list of liked artists
-//    public ResponseEntity<Set<Artist>> getLikedArtist(){
-//
-//    }
-//
-//    // gets a user's list of liked genres
-//    public ResponseEntity<Set<Genre>> getLikedGenres(){
-//
-//    }
 }

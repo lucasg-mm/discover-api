@@ -12,12 +12,12 @@ public interface AppUserRepository extends Neo4jRepository<AppUser, Long> {
     List<AppUser> findByUsername(String username);
 
     @Query("MATCH (user:AppUser)-[edge:LIKES]->(album:Album)\n" +
-            "WHERE ID(album) = $albumId AND ID(user) = $userId\n" +
+            "WHERE ID(album) = $albumId AND user.username = $username\n" +
             "DELETE edge")
-    void removeAlbumFromLiked(long userId, long albumId);
+    void removeAlbumFromLiked(String username, long albumId);
 
     @Query("MATCH (user:AppUser), (album:Album)\n" +
-            "WHERE ID(album) = $albumId AND ID(user) = $userId\n" +
+            "WHERE ID(album) = $albumId AND user.username = $username\n" +
             "CREATE (user)-[:LIKES]->(album)")
-    void  addAlbumToLiked(long userId, long albumId);
+    void  addAlbumToLiked(String username, long albumId);
 }
