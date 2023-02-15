@@ -27,7 +27,7 @@ import java.util.Set;
 @RestController
 @RequestMapping(value = "/artists")
 @AllArgsConstructor
-@Tag(name = "Artist Controller")
+@Tag(name = "Artist Controller", description = "hahah")
 public class ArtistController {
     private ArtistService artistService;
 
